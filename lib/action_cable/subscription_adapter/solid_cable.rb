@@ -48,7 +48,7 @@ module ActionCable
           while running?
             with_polling_volume { broadcast_messages }
 
-            sleep SolidCable.polling_interval
+            sleep ::SolidCable.polling_interval
           end
         end
 
