@@ -1,6 +1,6 @@
 # SolidCable
 
-Solid Cable is a DB-based queuing backend for Action Cabble, designed with simplicity and performance in mind.
+Solid Cable is a DB-based backend for Action Cable, designed with simplicity and performance in mind.
 
 
 ## Installation
