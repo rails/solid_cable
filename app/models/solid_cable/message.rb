@@ -9,7 +9,7 @@ module SolidCable
       where(channel: channels).where(id: (last_id + 1)..).order(:id)
     }
 
-    def prune
+    def self.prune
       prunable.delete_all
     end
   end
