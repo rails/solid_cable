@@ -31,12 +31,17 @@ Update `config/cable.yml` to use the new adapter:
 ```yaml
 development:
   adapter: solid_cable
+  silence_polling: true
+  polling_interval: 1
+  keep_messages_around_for: 30.minutes
 
 test:
   adapter: test
 
 production:
   adapter: solid_cable
+  polling_interval: 0.1
+  keep_messages_around_for: 10.minutes
 ```
 
 Finally, you need to run the migrations:
