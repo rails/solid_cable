@@ -54,7 +54,6 @@ module ActionCable
 
         def shutdown
           self.running = false
-          ::SolidCable::Message.prune
           Thread.pass while thread.alive?
         end
 
@@ -65,6 +64,8 @@ module ActionCable
 
         def remove_channel(channel)
           channels.delete(channel)
+
+          ::SolidCable::Message.prune
         end
 
         def invoke_callback(*)
