@@ -20,7 +20,7 @@ Or install it yourself as:
 $ gem install solid_cable
 ```
 
-Now, you need to install the necessary migrations and configure the Action Cable's adapter.
+Now, you need to install the necessary migrations and configure Action Cable's adapter.
 
 ```bash
 $ bin/rails generate solid_cable:install
