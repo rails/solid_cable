@@ -1,0 +1,8 @@
+Description:
+    Installs solid_cable as the Action Cable adapter
+
+Example:
+    bin/rails generate solid_cable:install
+
+    This will perform the following:
+        Installs solid_cable migrations
