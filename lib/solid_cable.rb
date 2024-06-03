@@ -15,7 +15,7 @@ module SolidCable
     end
 
     def polling_interval
-      parse_duration(cable_config.polling_interval, default: 100.milliseconds)
+      parse_duration(cable_config.polling_interval, default: 0.1.seconds)
     end
 
     def keep_messages_around_for
@@ -30,8 +30,8 @@ module SolidCable
 
     def parse_duration(duration, default:)
       if duration.present?
-        amount, units = duration.to_s.split(".")
-        amount.to_i.public_send(units)
+        *amount, units = duration.to_s.split(".")
+        amount.join(".").to_f.public_send(units)
       else
         default
       end

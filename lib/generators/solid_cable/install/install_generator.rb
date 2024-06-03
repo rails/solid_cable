@@ -13,9 +13,9 @@ class SolidCable::InstallGenerator < Rails::Generators::Base
   def create_migrations
     return if options[:skip_migrations]
 
-    db_clause = "DATABASE=#{options[:database]}"
+    db_clause = "DATABASE=#{options[:database]}" if options[:database].present?
 
-    rails_command "railties:install:migrations FROM=solid_cable #{db_clause}",
+    rails_command "railties:install:migrations FROM=solid_cable #{db_clause}".strip,
                   inline: true
   end
 end

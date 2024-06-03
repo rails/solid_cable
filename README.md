@@ -50,7 +50,7 @@ test:
 
 production:
   adapter: solid_cable
-  polling_interval: 0.1.milliseconds
+  polling_interval: 0.1.seconds
   keep_messages_around_for: 10.minutes
 ```
 
