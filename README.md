@@ -26,21 +26,31 @@ Now, you need to install the necessary migrations and configure Action Cable's a
 $ bin/rails generate solid_cable:install
 ```
 
-Update `config/cable.yml` to use the new adapter:
+If you want to install to a different database you can pass an env variable.
+```bash
+$ DATABASE=cable bin/rails generate solid_cable:install
+```
+
+Update `config/cable.yml` to use the new adapter. connects_to is can be omitted
+if you want to use the primary database.
 
 ```yaml
 development:
   adapter: solid_cable
   silence_polling: true
-  polling_interval: 1
+  polling_interval: 1.second
   keep_messages_around_for: 30.minutes
+  connects_to:
+    database:
+      writing: solid_cable_primary
+      reading: solid_cable_replica
 
 test:
   adapter: test
 
 production:
   adapter: solid_cable
-  polling_interval: 0.1
+  polling_interval: 0.1.milliseconds
   keep_messages_around_for: 10.minutes
 ```
 
