@@ -3,13 +3,19 @@
 class SolidCable::InstallGenerator < Rails::Generators::Base
   source_root File.expand_path("templates", __dir__)
 
-  class_option :skip_migrations, type: :boolean, default: nil, 
+  class_option :database,
+               type: :string, aliases: %i(--db),
+               desc: "The database for your migration. By default, the " \
+                     "current environment's primary database is used."
+  class_option :skip_migrations, type: :boolean, default: nil,
                                  desc: "Skip migrations"
 
   def create_migrations
     return if options[:skip_migrations]
 
-      rails_command "railties:install:migrations FROM=solid_cable", inline: true
-    
+    db_clause = "DATABASE=#{options[:database]}"
+
+    rails_command "railties:install:migrations FROM=solid_cable #{db_clause}",
+                  inline: true
   end
 end
