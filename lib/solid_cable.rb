@@ -5,24 +5,36 @@ require "solid_cable/engine"
 require "action_cable/subscription_adapter/solid_cable"
 
 module SolidCable
-  mattr_accessor :connects_to
+  class << self
+    def connects_to
+      cable_config.connects_to
+    end
 
-  def self.silence_polling?
-    !!Rails.application.config_for("cable")[:silence_polling]
-  end
+    def silence_polling?
+      !!cable_config.silence_polling
+    end
 
-  def self.polling_interval
-    Rails.application.config_for("cable")[:polling_interval].presence || 0.1
-  end
+    def polling_interval
+      parse_duration(cable_config.polling_interval, default: 100.milliseconds)
+    end
 
-  def self.keep_messages_around_for
-    duration = Rails.application.config_for("cable")[:keep_messages_around_for]
+    def keep_messages_around_for
+      parse_duration(cable_config.keep_messages_around_for, default: 30.minutes)
+    end
 
-    if duration.present?
-      amount, units = duration.to_s.split(".")
-      amount.to_i.public_send(units)
-    else
-      30.minutes
+    private
+
+    def cable_config
+      Rails.application.config_for("cable")
+    end
+
+    def parse_duration(duration, default:)
+      if duration.present?
+        amount, units = duration.to_s.split(".")
+        amount.to_i.public_send(units)
+      else
+        default
+      end
     end
   end
 end
