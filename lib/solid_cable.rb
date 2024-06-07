@@ -19,7 +19,12 @@ module SolidCable
     end
 
     def keep_messages_around_for
-      parse_duration(cable_config.keep_messages_around_for, default: 30.minutes)
+      time = cable_config.keep_messages_around_for
+      if time == "ever"
+        Float::INFINITY
+      else
+        parse_duration(time, default: 30.minutes)
+      end
     end
 
     private
