@@ -19,12 +19,12 @@ module SolidCable
     end
 
     def keep_messages_around_for
-      time = cable_config.keep_messages_around_for
-      if time == "ever"
-        Float::INFINITY
-      else
-        parse_duration(time, default: 30.minutes)
-      end
+      parse_duration(cable_config.keep_messages_around_for, default: 1.day)
+    end
+
+    def async_pool
+      @async_pool ||= Concurrent::FixedThreadPool.
+                      new(1, max_queue: 100, fallback_policy: :discard)
     end
 
     private

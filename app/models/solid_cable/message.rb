@@ -10,7 +10,7 @@ module SolidCable
     }
 
     def self.prune
-      prunable.delete_all unless ::SolidCable.keep_messages_around_for.infinite?
+      prunable.delete_all
     end
   end
 end
