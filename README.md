@@ -35,11 +35,14 @@ Update `config/cable.yml` to use the new adapter. connects_to is can be omitted
 if you want to use the primary database.
 
 ```yaml
-development:
+default: &default
   adapter: solid_cable
-  silence_polling: true
   polling_interval: 1.second
-  keep_messages_around_for: 30.minutes
+  keep_messages_around_for: 1.day
+
+development:
+  <<: *default
+  silence_polling: true
   connects_to:
     database:
       writing: solid_cable_primary
@@ -49,9 +52,8 @@ test:
   adapter: test
 
 production:
-  adapter: solid_cable
+  <<: *default
   polling_interval: 0.1.seconds
-  keep_messages_around_for: 10.minutes
 ```
 
 Finally, you need to run the migrations:
@@ -59,6 +61,11 @@ Finally, you need to run the migrations:
 ```bash
 $ bin/rails db:migrate
 ```
+
+By default messages are kept around forever. SolidCable ships with a job to
+prune messages. You can run `SolidCable::PruneJob.perform_later` which removes
+Messages that are older than what is specified in `keep_messages_around_for`
+setting.
 
 ## License
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

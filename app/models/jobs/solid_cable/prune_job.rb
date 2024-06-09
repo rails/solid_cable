@@ -3,7 +3,7 @@
 module SolidCable
   class PruneJob < ActiveJob::Base
     def perform
-      Message.prunable.delete_all
+      ::SolidCable::Message.prunable.delete_all
     end
   end
 end
