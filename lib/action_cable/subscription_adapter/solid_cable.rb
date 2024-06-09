@@ -64,8 +64,6 @@ module ActionCable
 
         def remove_channel(channel)
           channels.delete(channel)
-
-          ::SolidCable.async_pool << -> { ::SolidCable::Message.prune }
         end
 
         def invoke_callback(*)

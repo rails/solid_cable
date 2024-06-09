@@ -8,9 +8,5 @@ module SolidCable
     scope :broadcastable, lambda { |channels, last_id|
       where(channel: channels).where(id: (last_id + 1)..).order(:id)
     }
-
-    def self.prune
-      prunable.delete_all
-    end
   end
 end

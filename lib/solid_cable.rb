@@ -22,11 +22,6 @@ module SolidCable
       parse_duration(cable_config.keep_messages_around_for, default: 1.day)
     end
 
-    def async_pool
-      @async_pool ||= Concurrent::FixedThreadPool.
-                      new(1, max_queue: 100, fallback_policy: :discard)
-    end
-
     private
 
     def cable_config
