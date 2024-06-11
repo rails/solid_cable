@@ -7,7 +7,7 @@ require "action_cable/subscription_adapter/solid_cable"
 module SolidCable
   class << self
     def connects_to
-      cable_config.connects_to
+      cable_config.connects_to.to_h.deep_transform_values(&:to_sym)
     end
 
     def silence_polling?
