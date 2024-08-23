@@ -1,0 +1,22 @@
+development:
+  # adapter: redis
+  # url: redis://localhost:6379/1
+  adapter: solid_cable
+  keep_messages_around_for: 15.minutes
+  polling_interval: 0.1.seconds
+  connects_to:
+    database:
+      writing: cable
+      reading: cable
+
+test:
+  adapter: test
+
+production:
+  # adapter: redis
+  # url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  # channel_prefix: cablebench_production
+
+  adapter: solid_cable
+  keep_messages_around_for: ever
+  polling_interval: 0.2.seconds

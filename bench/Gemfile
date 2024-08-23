@@ -1,0 +1,14 @@
+source "https://rubygems.org"
+
+gem "rails", github: "rails/rails", branch: "main"
+gem "activeerror"
+gem "propshaft"
+gem "solid_cable", github: "npezza93/solid_cable"
+gem "sqlite3"
+gem "trilogy"
+gem "puma"
+gem "importmap-rails"
+gem "redis"
+gem "bootsnap", require: false
+gem "kamal", require: false
+gem "tailwindcss-rails"

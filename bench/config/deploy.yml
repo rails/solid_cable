@@ -1,0 +1,36 @@
+service: cablebench
+image: npezza/cablebench
+asset_path: /rails/public/assets
+servers:
+  web:
+    - 5.161.74.46
+registry:
+  username: npezza
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  secret:
+    - RAILS_MASTER_KEY
+
+volumes:
+  - "cablebench:/data"
+builder:
+  context: "."
+  local:
+    arch: amd64
+
+accessories:
+  mysql:
+    image: mysql:8.3
+    host: 5.161.74.46
+    port: 3306
+    env:
+      clear:
+        MYSQL_ROOT_HOST: '%'
+      secret:
+        - MYSQL_ROOT_PASSWORD
+    files:
+      - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - data:/var/lib/mysql

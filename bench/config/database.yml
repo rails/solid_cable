@@ -1,0 +1,39 @@
+default: &default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+development:
+  <<: *default
+  database: storage/development.sqlite3
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: storage/test.sqlite3
+
+
+# Store production database in the storage/ directory, which by default
+# is mounted as a persistent Docker volume in config/deploy.yml.
+production:
+  <<: *default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  database: /data/production.sqlite3
+
+  # adapter: trilogy
+  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
+  # timeout: 5000
+  # database: cablebench
+  # user: root
+  # password: password
+  # host: <%= Rails.application.credentials.trilogy.host %>
+  #
+  # username: cablebench
+  # password: <%= Rails.application.credentials.mysql.password %>
+  # host: <%= Rails.application.credentials.mysql.host %>
+  # port: 25060
+  # ssl: true
