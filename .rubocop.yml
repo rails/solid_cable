@@ -8,6 +8,7 @@ AllCops:
     - db/schema.rb
     - tmp/**/*
     - bin/**/*
+    - test/dummy/**/*
   TargetRubyVersion: 3.3
 
 # Department Bundler

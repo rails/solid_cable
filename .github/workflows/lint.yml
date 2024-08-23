@@ -1,0 +1,20 @@
+name: lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Linting
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+    - name: Install dependencies
+      run: bundle install
+    - name: Run tests
+      run: bundle exec rubocop --config=./.rubocop.yml --parallel
