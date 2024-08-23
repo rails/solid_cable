@@ -8,7 +8,7 @@ require "pathname"
 
 class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
-  WAIT_WHEN_EXPECTING_EVENT = 3
+  WAIT_WHEN_EXPECTING_EVENT = 1
   WAIT_WHEN_NOT_EXPECTING_EVENT = 0.2
 
   def setup
