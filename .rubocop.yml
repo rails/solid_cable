@@ -9,6 +9,8 @@ AllCops:
     - tmp/**/*
     - bin/**/*
     - test/dummy/**/*
+    - bench/**/*
+    - test/lib/action_cable/subscription_adapter/solid_cable_test.rb
   TargetRubyVersion: 3.3
 
 # Department Bundler
