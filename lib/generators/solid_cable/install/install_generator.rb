@@ -9,20 +9,11 @@ class SolidCable::InstallGenerator < Rails::Generators::Base
 
   def configure_production_cable
     gsub_file("config/cable.yml",
-              old_production_cable_config,
+              /production:\n(^\s*.*$\n){2,}/,
               new_production_cable_config)
   end
 
   private
-
-  def old_production_cable_config
-    <<~YAML
-      production:
-        adapter: redis
-        url: <%%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
-        channel_prefix: <%= app_name %>_production
-    YAML
-  end
 
   def new_production_cable_config
     <<~YAML
