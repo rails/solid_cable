@@ -4,7 +4,7 @@ class SolidCable::InstallGenerator < Rails::Generators::Base
   source_root File.expand_path("templates", __dir__)
 
   def add_solid_errors_db_schema
-    template "cable_schema.rb"
+    template "db/cable_schema.rb"
   end
 
   def configure_production_cable
