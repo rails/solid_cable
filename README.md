@@ -28,7 +28,7 @@ $ bin/rails generate solid_cable:install
 
 This will create the `db/cable_schema.rb` file.
 
-You will then have to add the configuration for the errors database in `config/database.yml`. If you're using sqlite, it'll look something like this:
+You will then have to add the configuration for the database in `config/database.yml`. If you're using SQLite, it'll look something like this:
 
 ```yaml
 production:
