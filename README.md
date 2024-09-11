@@ -1,34 +1,18 @@
-# SolidCable
+# Solid Cable
 
-Solid Cable is a DB-based backend for Action Cable.
+Solid Cache is a database-backed Action Cable adapter that keeps messages in a table and continously polls for updates. This makes it possible to drop the common dependency on Redis, if it isn't needed for any other purpose. Despite polling, the performance of Solid Cable is comparable to Redis in most situations. And in all circumstances, it makes it easier to deploy Rails when Redis is no longer a required dependency for Action Cable functionality.
 
 
 ## Installation
-Add this line to your application's Gemfile:
 
-```ruby
-gem "solid_cable"
-```
+Solid Cable is configured by default in new Rails 8 applications. But if you're running an earlier version, you can add it manually following these steps:
 
-And then execute:
-```bash
-$ bundle
-```
+1. `bundle add solid_cable`
+2. `bin/rails solid_cable:install`
 
-Or install it yourself as:
-```bash
-$ gem install solid_cable
-```
+This will configure Solid Cable as the production cable adapter by overwritting `config/cable.yml` and create `db/cable_schema.rb`.
 
-Now, you need to run the installer:
-
-```bash
-$ bin/rails generate solid_cable:install
-```
-
-This will create the `db/cable_schema.rb` file.
-
-You will then have to add the configuration for the database in `config/database.yml`. If you're using SQLite, it'll look something like this:
+You will then have to add the configuration for the cable database in `config/database.yml`. If you're using sqlite, it'll look like this:
 
 ```yaml
 production:
@@ -57,42 +41,35 @@ production:
 ```
 
 > [!NOTE]
-> Calling `bin/rails generate solid_cable:install` will automatically setup `config/cable.yml`, so no additional configuration is needed there (although you must make sure that you use the `cable` name in `database.yml` for this to match!). But if you want to use Solid Cable in a different environment (like staging or even development), you'll have to manually add that `connects_to` block to the respective environment in the `config/cable.yml` file. And, as always, make sure that the name you're using for the database in `config/cable.yml` matches the name you define in `config/database.yml`.
+> Calling `bin/rails solid_cable:install` will automatically setup `config/cable.yml`, so no additional configuration is needed there (although you must make sure that you use the `cable` name in `database.yml` for this to match!). But if you want to use Solid Cable in a different environment (like staging or even development), you'll have to manually add that `connects_to` block to the respective environment in the `config/cable.yml` file. And, as always, make sure that the name you're using for the database in `config/cable.yml` matches the name you define in `config/database.yml`.
 
 Then run `db:prepare` in production to ensure the database is created and the schema is loaded.
 
-## Usage
-
-By default messages are kept around forever. SolidCable ships with a job to
-prune messages. You can run `SolidCable::PruneJob.perform_later` which removes
-Messages that are older than what is specified in `keep_messages_around_for`
-setting.
-
 ## Configuration
 
-All configuration is managed via the `config/cable.yml`file. To use Solid Cable, the `adapter` value *must be* `solid_cable`. When using Solid Cable, the other values you can set are: `connects_to`, `polling_interval`, `silence_polling`, and `keep_messages_around_for`. For example:
+All configuration is managed via the `config/cable.yml` file. By default, it'll be configured like this: 
 
 ```yaml
-default: &default
+production:
   adapter: solid_cable
-  polling_interval: 1.second
-  keep_messages_around_for: 1.day
-
-development:
-  <<: *default
-  silence_polling: true
   connects_to:
     database:
-      writing: solid_cable_primary
-      reading: solid_cable_replica
-
-test:
-  adapter: test
-
-production:
-  <<: *default
+      writing: cable
   polling_interval: 0.1.seconds
+  keep_messages_around_for: 1.day
 ```
 
+The options are:
+
+- `connects_to` - set the Active Record database configuration for the Solid Cable models. All options available in Active Record can be used here.
+- `polling_interval` - sets the frequency of the polling interval.
+- `keep_messages_around_for` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed.
+
+## Trimming
+
+Currently, messages are kept around forever, and have to be manually pruned via the `SolidCable::PruneJob.perform_later` job.
+This job uses the `keep_messages_around_for` setting to determine how long messages are to be kept around.
+
 ## License
+
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
