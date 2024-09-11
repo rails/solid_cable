@@ -73,25 +73,13 @@ setting.
 All configuration is managed via the `config/cable.yml`file. To use Solid Cable, the `adapter` value *must be* `solid_cable`. When using Solid Cable, the other values you can set are: `connects_to`, `polling_interval`, `silence_polling`, and `keep_messages_around_for`. For example:
 
 ```yaml
-default: &default
+production:
   adapter: solid_cable
-  polling_interval: 1.second
-  keep_messages_around_for: 1.day
-
-development:
-  <<: *default
-  silence_polling: true
   connects_to:
     database:
-      writing: solid_cable_primary
-      reading: solid_cable_replica
-
-test:
-  adapter: test
-
-production:
-  <<: *default
+      writing: cable
   polling_interval: 0.1.seconds
+  keep_messages_around_for: 1.day
 ```
 
 ## License
