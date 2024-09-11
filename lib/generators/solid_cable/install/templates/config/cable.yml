@@ -1,0 +1,13 @@
+development:
+  adapter: async
+
+test:
+  adapter: test
+
+production:
+  adapter: solid_cable
+  connects_to:
+    database:
+      writing: cable
+  polling_interval: 0.1.seconds
+  keep_messages_around_for: 1.day
