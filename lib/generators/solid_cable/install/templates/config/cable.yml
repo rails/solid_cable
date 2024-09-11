@@ -10,4 +10,4 @@ production:
     database:
       writing: cable
   polling_interval: 0.1.seconds
-  keep_messages_around_for: 1.day
+  message_retention: 1.day

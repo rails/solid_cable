@@ -65,12 +65,12 @@ Then run `db:prepare` in production to ensure the database is created and the sc
 
 By default messages are kept around forever. SolidCable ships with a job to
 prune messages. You can run `SolidCable::PruneJob.perform_later` which removes
-Messages that are older than what is specified in `keep_messages_around_for`
+Messages that are older than what is specified in `message_retention`
 setting.
 
 ## Configuration
 
-All configuration is managed via the `config/cable.yml`file. To use Solid Cable, the `adapter` value *must be* `solid_cable`. When using Solid Cable, the other values you can set are: `connects_to`, `polling_interval`, `silence_polling`, and `keep_messages_around_for`. For example:
+All configuration is managed via the `config/cable.yml`file. To use Solid Cable, the `adapter` value *must be* `solid_cable`. When using Solid Cable, the other values you can set are: `connects_to`, `polling_interval`, `silence_polling`, and `message_retention`. For example:
 
 ```yaml
 production:
@@ -79,7 +79,7 @@ production:
     database:
       writing: cable
   polling_interval: 0.1.seconds
-  keep_messages_around_for: 1.day
+  message_retention: 1.day
 ```
 
 ## License
