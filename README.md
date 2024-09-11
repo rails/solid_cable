@@ -12,7 +12,7 @@ Solid Cable is configured by default in new Rails 8 applications. But if you're 
 
 This will configure Solid Cable as the production cable adapter by overwritting `config/cable.yml` and create `db/cable_schema.rb`.
 
-You will then have to add the configuration for the cable database in `config/database.yml`. If you're using sqlite, it'll look like this:
+You will then have to add the configuration for the cable database in `config/database.yml`. If you're using SQLite, it'll look like this:
 
 ```yaml
 production:
