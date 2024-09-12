@@ -12,7 +12,7 @@ module SolidCable
 
     class << self
       def broadcast(channel, payload)
-        create(channel:, payload:, channel_hash: channel_hash_for(channel))
+        insert({ channel:, payload:, channel_hash: channel_hash_for(channel) })
       end
 
       def channel_hashes_for(channels)

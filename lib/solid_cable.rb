@@ -38,6 +38,15 @@ module SolidCable
       cable_config.use_skip_locked != false
     end
 
+    # For every write that we do, we attempt to delete TRIM_MULTIPLIER times as
+    # many records. This ensures there is downward pressure on the cache size
+    # while there is valid data to delete. Read this as 'every time the trim job
+    # runs theres a trim_multiplier chance this trims'. Adjust number to make it
+    # more or less likely to trim.
+    def trim_multiplier
+      40
+    end
+
     private
 
     def cable_config

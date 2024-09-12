@@ -2,10 +2,8 @@
 
 module SolidCable
   class TrimJob < ActiveJob::Base
-    def perform(id = nil)
-      id ||= ::SolidCable::Message.maximum(:id)
-
-      return unless (id % (trim_batch_size / 2)).zero?
+    def perform
+      return unless trim?
 
       ::SolidCable::Message.transaction do
         ids = ::SolidCable::Message.trimmable.non_blocking_lock.
@@ -18,6 +16,13 @@ module SolidCable
 
     def trim_batch_size
       ::SolidCable.trim_batch_size
+    end
+
+    def trim?
+      expires_per_write =
+        (1 / trim_batch_size.to_f) * ::SolidCable.trim_multiplier
+
+      rand < (expires_per_write - expires_per_write.floor)
     end
   end
 end

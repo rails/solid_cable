@@ -15,9 +15,9 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        id = ::SolidCable::Message.broadcast(channel, payload).id
+        ::SolidCable::Message.broadcast(channel, payload)
 
-        ::SolidCable::TrimJob.perform_now(id) if ::SolidCable.autotrim?
+        ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
 
       def subscribe(channel, callback, success_callback = nil)
