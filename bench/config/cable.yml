@@ -2,7 +2,7 @@ development:
   # adapter: redis
   # url: redis://localhost:6379/1
   adapter: solid_cable
-  keep_messages_around_for: 15.minutes
+  message_retention: 15.minutes
   polling_interval: 0.1.seconds
   connects_to:
     database:
@@ -18,5 +18,5 @@ production:
   # channel_prefix: cablebench_production
 
   adapter: solid_cable
-  keep_messages_around_for: ever
+  message_retention: ever
   polling_interval: 0.2.seconds

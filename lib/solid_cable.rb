@@ -18,8 +18,8 @@ module SolidCable
       parse_duration(cable_config.polling_interval, default: 0.1.seconds)
     end
 
-    def keep_messages_around_for
-      parse_duration(cable_config.keep_messages_around_for, default: 1.day)
+    def message_retention
+      parse_duration(cable_config.message_retention, default: 1.day)
     end
 
     private
