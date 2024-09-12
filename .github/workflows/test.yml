@@ -36,9 +36,10 @@ jobs:
       uses: ruby/setup-ruby@v1
     - name: Install dependencies
       run: bundle install
-    - name: Run tests
+    - name: Setup db
       run: |
         cd test/dummy
         bin/rails db:setup
         cd ../../
-        bin/test
+    - name: Run tests
+      run: bin/test
