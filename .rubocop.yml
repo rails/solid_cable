@@ -11,6 +11,7 @@ AllCops:
     - test/dummy/**/*
     - bench/**/*
     - test/lib/action_cable/subscription_adapter/solid_cable_test.rb
+    - lib/generators/**/*_schema.rb
   TargetRubyVersion: 3.3
 
 # Department Bundler
@@ -676,6 +677,8 @@ Layout/LineLength:
     - 'db/**/*'
     - 'config/initializers/**/*'
     - 'config/environments/**/*'
+    - 'lib/generators/solid_cable/update/templates/db/migrate/**/*'
+    - 'lib/generators/solid_cable/install/templates/db/migrate/**/*'
 
 Metrics/MethodLength:
   Description: Avoid methods longer than 10 lines of code.
@@ -684,6 +687,8 @@ Metrics/MethodLength:
   Max: 7
   Exclude:
     - 'db/**/*'
+    - 'lib/generators/solid_cable/update/templates/db/migrate/**/*'
+    - 'lib/generators/solid_cable/install/templates/db/migrate/**/*'
 
 Metrics/ModuleLength:
   Description: Avoid modules longer than 100 lines of code.

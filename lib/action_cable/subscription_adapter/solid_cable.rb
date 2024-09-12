@@ -15,7 +15,7 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        ::SolidCable::Message.insert({ channel:, payload: })
+        ::SolidCable::Message.broadcast(channel, payload)
       end
 
       def subscribe(channel, callback, success_callback = nil)

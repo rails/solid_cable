@@ -5,4 +5,8 @@ namespace :solid_cable do
   task :install do
     Rails::Command.invoke :generate, ["solid_cable:install"]
   end
+
+  task :update do
+    Rails::Command.invoke :generate, ["solid_cable:update"]
+  end
 end
