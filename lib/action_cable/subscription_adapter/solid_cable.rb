@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 require "action_cable/subscription_adapter/base"
+require "action_cable/subscription_adapter/channel_prefix"
 
 module ActionCable
   module SubscriptionAdapter
     class SolidCable < ::ActionCable::SubscriptionAdapter::Base
-      prepend ChannelPrefix
+      prepend ::ActionCable::SubscriptionAdapter::ChannelPrefix
 
       def initialize(*)
         super
