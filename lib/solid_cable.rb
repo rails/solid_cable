@@ -22,6 +22,10 @@ module SolidCable
       parse_duration(cable_config.message_retention, default: 1.day)
     end
 
+    def autotrim?
+      cable_config.autotrim != false
+    end
+
     private
 
     def cable_config

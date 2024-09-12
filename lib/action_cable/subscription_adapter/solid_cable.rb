@@ -64,6 +64,8 @@ module ActionCable
 
         def remove_channel(channel)
           channels.delete(channel)
+
+          ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
         end
 
         def invoke_callback(*)
