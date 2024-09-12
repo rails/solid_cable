@@ -2,6 +2,7 @@
 
 require "action_cable/subscription_adapter/base"
 require "action_cable/subscription_adapter/channel_prefix"
+require "action_cable/subscription_adapter/subscriber_map"
 
 module ActionCable
   module SubscriptionAdapter
@@ -35,7 +36,7 @@ module ActionCable
         end
       end
 
-      class Listener < SubscriberMap
+      class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
         def initialize(event_loop)
           super()
 
