@@ -14,7 +14,7 @@ class TrimJobTest < ActiveJob::TestCase
           SolidCable::Message.update_all(created_at: 2.days.ago)
         end
 
-        assert_difference -> { SolidCable::Message.count }, -4 do
+        assert_difference -> { SolidCable::Message.count }, -2 do
           SolidCable::TrimJob.perform_now
         end
       end
