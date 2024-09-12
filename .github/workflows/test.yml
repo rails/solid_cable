@@ -8,7 +8,28 @@ on:
 
 jobs:
   build:
+    name: Tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        database: [mysql, postgres, sqlite]
+    services:
+      mysql:
+        image: mysql:8.0.31
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - 33060:3306
+        options: --health-cmd "mysql -h localhost -e \"select now()\"" --health-interval 1s --health-timeout 5s --health-retries 30
+      postgres:
+        image: postgres:15.1
+        env:
+          POSTGRES_HOST_AUTH_METHOD: "trust"
+        ports:
+          - 55432:5432
+    env:
+      TARGET_DB: ${{ matrix.database }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Ruby
@@ -16,4 +37,8 @@ jobs:
     - name: Install dependencies
       run: bundle install
     - name: Run tests
-      run: bin/test
+      run: |
+        cd test/dummy
+        bin/rails db:setup
+        cd ../../
+        bin/test
