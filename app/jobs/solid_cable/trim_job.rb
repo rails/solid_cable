@@ -4,6 +4,7 @@ module SolidCable
   class TrimJob < ActiveJob::Base
     def perform(id = nil)
       id ||= ::SolidCable::Message.maximum(:id)
+
       return unless (id % (trim_batch_size / 2)).zero?
 
       ::SolidCable::Message.where(id: ::SolidCable::Message.trimmable.
