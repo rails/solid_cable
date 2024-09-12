@@ -8,6 +8,8 @@ gemspec
 
 gem "puma"
 
+gem "pg"
 gem "sqlite3"
+gem "trilogy"
 
 gem "rubocop"

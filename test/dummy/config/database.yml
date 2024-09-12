@@ -1,25 +1,33 @@
-# SQLite. Versions 3.8.0 and up are supported.
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem "sqlite3"
-#
+<% def database_name_from(name); ENV["TARGET_DB"]=="sqlite" ? "db/#{name}.sqlite3" : name; end %>
+
+<% if ENV["TARGET_DB"] == "mysql" %>
+default: &default
+  adapter: trilogy
+  username: root
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: "127.0.0.1"
+  port: 33060
+<% elsif ENV["TARGET_DB"] == "postgres" %>
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: postgres
+  pool: 5
+  host: "127.0.0.1"
+  port: 55432
+  gssencmode: disable # https://github.com/ged/ruby-pg/issues/311
+<% else %>
 default: &default
   adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
+  retries: 100
+<% end %>
 
 development:
   <<: *default
-  database: storage/development.sqlite3
+  database: <%= database_name_from("solid_cable_development") %>
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: storage/test.sqlite3
-
-production:
-  <<: *default
-  database: storage/production.sqlite3
+  pool: 20
+  database: <%= database_name_from("solid_cable_test") %>
