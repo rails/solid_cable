@@ -63,12 +63,12 @@ The options are:
 
 - `connects_to` - set the Active Record database configuration for the Solid Cable models. All options available in Active Record can be used here.
 - `polling_interval` - sets the frequency of the polling interval.
-- `keep_messages_around_for` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed.
+- `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed.
 
 ## Trimming
 
 Currently, messages are kept around forever, and have to be manually pruned via the `SolidCable::PruneJob.perform_later` job.
-This job uses the `keep_messages_around_for` setting to determine how long messages are to be kept around.
+This job uses the `message_retention` setting to determine how long messages are to be kept around.
 
 ## License
 
