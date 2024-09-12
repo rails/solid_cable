@@ -73,7 +73,7 @@ The options are:
 Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. Messages are trimmed when a subscriber unsubscribes.
 
 Autotrimming can negatively impact performance depending on your workload because it is doing a delete on ubsubscribe. If
-you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::PruneJob.perform_later`, or run it on a recurring interval out of band.
+you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::TrimJob.perform_later`, or run it on a recurring interval out of band.
 
 ## License
 
