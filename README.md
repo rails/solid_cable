@@ -70,6 +70,9 @@ The options are:
 - `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed. (Defaults to 1.day)
 - `autotrim` - sets wether you want Solid Cable to handle autotrimming messages. (Defaults to true)
 - `silence_polling` - whether to silence Active Record logs emitted when polling (Defaults to true)
+- `use_skip_locked` - whether to use `FOR UPDATE SKIP LOCKED` when performing trimming. This will be automatically detected in the future, and for now, you'd only need to set this to `false` if your database doesn't support it. For MySQL, that'd be versions < 8, and for PostgreSQL, versions < 9.5. If you use SQLite, this has no effect, as writes are sequential. (Defaults to true)
+- `trim_batch_size` - the batch size to use when deleting old records (default: `100`)
+
 
 ## Trimming
 

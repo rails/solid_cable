@@ -16,6 +16,8 @@ module ActionCable
 
       def broadcast(channel, payload)
         ::SolidCable::Message.broadcast(channel, payload)
+
+        ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
 
       def subscribe(channel, callback, success_callback = nil)
@@ -68,8 +70,6 @@ module ActionCable
 
         def remove_channel(channel)
           channels.delete(channel)
-
-          ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
         end
 
         def invoke_callback(*)

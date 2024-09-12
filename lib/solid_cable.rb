@@ -26,6 +26,27 @@ module SolidCable
       cable_config.autotrim != false
     end
 
+    def trim_batch_size
+      if (size = cable_config.trim_batch_size.to_i) < 2
+        100
+      else
+        size
+      end
+    end
+
+    def use_skip_locked
+      cable_config.use_skip_locked != false
+    end
+
+    # For every write that we do, we attempt to delete trim_chance times as
+    # many records. This ensures there is downward pressure on the cache size
+    # while there is valid data to delete. Read this as 'every time the trim job
+    # runs theres a trim_multiplier chance this trims'. Adjust number to make it
+    # more or less likely to trim.
+    def trim_chance
+      10
+    end
+
     private
 
     def cable_config
