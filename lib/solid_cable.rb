@@ -27,7 +27,7 @@ module SolidCable
     end
 
     def trim_batch_size
-      if (size = cable_config.trim_batch_size.to_i) < 2
+      if (size = cable_config.trim_batch_size.to_i) < 1
         100
       else
         size

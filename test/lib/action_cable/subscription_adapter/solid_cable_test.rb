@@ -64,7 +64,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
   test "trims_after_unsubscribe" do
     SolidCable.stub(:trim_chance, 99.999) do
-      with_cable_config message_retention: "1.second", trim_batch_size: 2 do
+      with_cable_config message_retention: "2.seconds", trim_batch_size: 1 do
         subscribe_as_queue("channel") do |queue|
           4.times do
             @tx_adapter.broadcast("channel", "hello world")
@@ -73,7 +73,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
           queue.clear
         end
-        assert_equal 0, SolidCable::Message.where(channel: "channel").count
+        assert_equal 1, SolidCable::Message.where(channel: "channel").count
       end
     end
   end
