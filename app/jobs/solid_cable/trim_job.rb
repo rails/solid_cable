@@ -7,8 +7,9 @@ module SolidCable
 
       return unless (id % (trim_batch_size / 2)).zero?
 
-      ::SolidCable::Message.where(id: ::SolidCable::Message.trimmable.
-            non_blocking_lock.select(:id)).limit(trim_batch_size).delete_all
+      ::SolidCable::Message.where(
+        id: ::SolidCable::Message.trimmable.non_blocking_lock.select(:id)
+      ).limit(trim_batch_size).delete_all
     end
 
     private
