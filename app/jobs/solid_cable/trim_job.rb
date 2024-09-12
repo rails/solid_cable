@@ -3,12 +3,12 @@
 module SolidCable
   class TrimJob < ActiveJob::Base
     def perform
-      return unless trim?
-
-      ::SolidCable::Message.transaction do
-        ids = ::SolidCable::Message.trimmable.non_blocking_lock.
-              limit(trim_batch_size).pluck(:id)
-        ::SolidCable::Message.where(id: ids).delete_all
+      trim_batches.times do
+        ::SolidCable::Message.transaction do
+          ids = ::SolidCable::Message.trimmable.non_blocking_lock.
+                limit(trim_batch_size).pluck(:id)
+          ::SolidCable::Message.where(id: ids).delete_all
+        end
       end
     end
 
@@ -18,11 +18,13 @@ module SolidCable
       ::SolidCable.trim_batch_size
     end
 
-    def trim?
+    def trim_batches
       expires_per_write =
-        (1 / trim_batch_size.to_f) * ::SolidCable.trim_multiplier
-
-      rand < (expires_per_write - expires_per_write.floor)
+        (1 / trim_batch_size.to_f) * ::SolidCable.trim_chance
+      batches = expires_per_write.floor
+      overflow_batch_chance = expires_per_write - batches
+      batches += 1 if rand < overflow_batch_chance
+      batches
     end
   end
 end

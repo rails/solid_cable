@@ -63,7 +63,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   end
 
   test "trims_after_unsubscribe" do
-    SolidCable.stub(:trim_multiplier, 99.999) do
+    SolidCable.stub(:trim_chance, 99.999) do
       with_cable_config message_retention: "1.second", trim_batch_size: 2 do
         keep_queue = nil
         subscribe_as_queue("channel") do |queue|
