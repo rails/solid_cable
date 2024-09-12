@@ -26,6 +26,18 @@ module SolidCable
       cable_config.autotrim != false
     end
 
+    def trim_batch_size
+      if (size = cable_config.trim_batch_size.to_i).zero?
+        100
+      else
+        size
+      end
+    end
+
+    def use_skip_locked
+      cable_config.use_skip_locked != false
+    end
+
     private
 
     def cable_config
