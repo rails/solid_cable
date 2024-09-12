@@ -5,8 +5,8 @@ require_relative "lib/solid_cable/version"
 Gem::Specification.new do |spec|
   spec.name        = "solid_cable"
   spec.version     = SolidCable::VERSION
-  spec.authors     = ["Nick Pezza"]
-  spec.email       = ["pezza@hey.com"]
+  spec.authors     = [ "Nick Pezza" ]
+  spec.email       = [ "pezza@hey.com" ]
   spec.homepage    = "http://github.com/npezza93/solid_cable"
   spec.summary     = "Database-backed Action Cable backend."
   spec.description = "Database-backed Action Cable backend."
