@@ -65,8 +65,8 @@ The options are:
 - `polling_interval` - sets the frequency of the polling interval. (Defaults to
   0.1.seconds)
 - `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed. (Defaults to 1.day)
-- `autotrim` - sets wether you want Solid Cable to handle autotrimming messages.
-  (Defaults to true)
+- `autotrim` - sets wether you want Solid Cable to handle autotrimming messages. (Defaults to true)
+- `silence_polling` - whether to silence Active Record logs emitted when polling (Defaults to true)
 
 ## Trimming
 
