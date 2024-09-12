@@ -3,7 +3,7 @@ image: npezza/cablebench
 asset_path: /rails/public/assets
 servers:
   web:
-    - 5.161.74.46
+    - 178.156.138.21
 registry:
   username: npezza
   password:
@@ -23,7 +23,7 @@ builder:
 accessories:
   mysql:
     image: mysql:8.3
-    host: 5.161.74.46
+    host: 178.156.138.21
     port: 3306
     env:
       clear:

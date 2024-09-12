@@ -19,8 +19,7 @@ module SolidCable
     end
 
     def trim?
-      expires_per_write =
-        (1 / trim_batch_size.to_f) * ::SolidCable.trim_chance
+      expires_per_write = (1 / trim_batch_size.to_f) * ::SolidCable.trim_chance
 
       rand < (expires_per_write - expires_per_write.floor)
     end

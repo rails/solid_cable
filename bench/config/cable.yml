@@ -18,5 +18,5 @@ production:
   # channel_prefix: cablebench_production
 
   adapter: solid_cable
-  message_retention: ever
+  message_retention: 1.day
   polling_interval: 0.2.seconds
