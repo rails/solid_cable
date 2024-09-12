@@ -5,8 +5,10 @@ require "concurrent"
 
 require "active_support/core_ext/hash/indifferent_access"
 require "pathname"
+require "config_stubs"
 
 class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
+  include ConfigStubs
 
   WAIT_WHEN_EXPECTING_EVENT = 1
   WAIT_WHEN_NOT_EXPECTING_EVENT = 0.2
@@ -28,7 +30,8 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   end
 
   def cable_config
-    { adapter: "solid_cable", polling_interval: "0.01.seconds" }
+    { adapter: "solid_cable", message_retention: "1.second",
+      polling_interval: "0.01.seconds" }
   end
 
   def teardown
@@ -80,6 +83,24 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
     sleep WAIT_WHEN_NOT_EXPECTING_EVENT
     assert_empty keep_queue
+  end
+
+  def test_trims_after_unsubscribe
+    with_cable_config message_retention: "1.second" do
+      keep_queue = nil
+      subscribe_as_queue("channel") do |queue|
+        keep_queue = queue
+
+        @tx_adapter.broadcast("channel", "hello world")
+
+        assert_equal 1, SolidCable::Message.where(channel: "channel").count
+        assert_equal "hello world", queue.pop
+        sleep 2
+      end
+      sleep 3
+
+      assert_equal 0, SolidCable::Message.where(channel: "channel").count
+    end
   end
 
   def test_multiple_broadcast

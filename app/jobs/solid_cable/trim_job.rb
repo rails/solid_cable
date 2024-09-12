@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module SolidCable
-  class PruneJob < ActiveJob::Base
+  class TrimJob < ActiveJob::Base
     def perform
-      ::SolidCable::Message.prunable.delete_all
+      ::SolidCable::Message.trimmable.delete_all
     end
   end
 end

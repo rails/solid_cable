@@ -2,7 +2,7 @@
 
 module SolidCable
   class Message < SolidCable::Record
-    scope :prunable, lambda {
+    scope :trimmable, lambda {
       where(created_at: ..::SolidCable.message_retention.ago)
     }
     scope :broadcastable, lambda { |channels, last_id|

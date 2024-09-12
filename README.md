@@ -62,13 +62,18 @@ production:
 The options are:
 
 - `connects_to` - set the Active Record database configuration for the Solid Cable models. All options available in Active Record can be used here.
-- `polling_interval` - sets the frequency of the polling interval.
-- `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed.
+- `polling_interval` - sets the frequency of the polling interval. (Defaults to
+  0.1.seconds)
+- `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed. (Defaults to 1.day)
+- `autotrim` - sets wether you want Solid Cable to handle autotrimming messages. (Defaults to true)
+- `silence_polling` - whether to silence Active Record logs emitted when polling (Defaults to true)
 
 ## Trimming
 
-Currently, messages are kept around forever, and have to be manually pruned via the `SolidCable::PruneJob.perform_later` job.
-This job uses the `message_retention` setting to determine how long messages are to be kept around.
+Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. Messages are trimmed when a subscriber unsubscribes.
+
+Autotrimming can negatively impact performance depending on your workload because it is doing a delete on ubsubscribe. If
+you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::PruneJob.perform_later`, or run it on a recurring interval out of band.
 
 ## License
 
