@@ -12,4 +12,4 @@ gem "pg"
 gem "sqlite3"
 gem "trilogy"
 
-gem "rubocop"
+gem "rubocop-rails-omakase"
