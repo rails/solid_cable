@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "http://github.com/npezza93/solid_cable"
+  spec.metadata["source_code_uri"] = "http://github.com/rails/solid_cable"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
