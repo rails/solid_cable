@@ -6,8 +6,8 @@ module SolidCable
       id ||= ::SolidCable::Message.maximum(:id)
       return unless (id % (trim_batch_size / 2)).zero?
 
-      ::SolidCable::Message.trimmable.
-        limit(trim_batch_size).non_blocking_lock.delete_all
+      ::SolidCable::Message.where(id: ::SolidCable::Message.trimmable.
+            non_blocking_lock.select(:id)).limit(trim_batch_size).delete_all
     end
 
     private
