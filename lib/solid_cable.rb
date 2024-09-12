@@ -44,7 +44,7 @@ module SolidCable
     # runs theres a trim_multiplier chance this trims'. Adjust number to make it
     # more or less likely to trim.
     def trim_chance
-      50
+      10
     end
 
     private
