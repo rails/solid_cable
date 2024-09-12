@@ -2,6 +2,7 @@
 
 require "solid_cable/version"
 require "solid_cable/engine"
+require "action_cable/subscription_adapter/base"
 require "action_cable/subscription_adapter/solid_cable"
 
 module SolidCable
