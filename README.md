@@ -45,6 +45,9 @@ production:
 
 Then run `db:prepare` in production to ensure the database is created and the schema is loaded.
 
+If you have already installed Solid Cable, run `solid_cable:update` to get the
+latest changes to migrations.
+
 ## Configuration
 
 All configuration is managed via the `config/cable.yml` file. By default, it'll be configured like this:

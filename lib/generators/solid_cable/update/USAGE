@@ -1,0 +1,8 @@
+Description:
+    Updates Solid Cable migrations
+
+Example:
+    bin/rails generate solid_cable:update
+
+    This will perform the following:
+        Installs new Solid Cable migrations
