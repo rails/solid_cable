@@ -10,6 +10,6 @@ fi
 
 printf "# frozen_string_literal: true\n\nmodule SolidCable\n  VERSION = \"$VERSION\"\nend\n" > ./lib/solid_cable/version.rb
 bundle
-git add Gemfile.lock lib/solid_cache/version.rb
+git add lib/solid_cable/version.rb
 git commit -m "Bump version for $VERSION"
 rake release
