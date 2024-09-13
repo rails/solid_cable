@@ -81,13 +81,131 @@ The options are:
 
 Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. Messages are trimmed when a messsage is broadcast.
 
-Autotrimming can negatively impact performance depending on your workload because it is potentially doing a delete on broadcast. If
+Autotrimming can negatively impact performance slightly depending on your workload because it is potentially doing a delete on broadcast. If
 you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::TrimJob.perform_later`, or run it on a recurring interval out of band.
+
 
 ## Upgrading
 
 If you have already installed Solid Cable < 3 and are upgrading to version 3,
 run `solid_cable:update` to install a new migration.
+
+
+## Benchmarks
+
+Inside the `bench` directory there is a minimal Rails app that is used to benchmark.
+You are welcome to update the config/deploy.yml file to point to your own server
+if you want to deploy the app to your own server and run benchmarks.
+
+To benchmark we use [k6](https://k6.io). Most of the setup was gotten from this
+[article](https://evilmartians.com/chronicles/real-time-stress-anycable-k6-websockets-and-yabeda).
+1. Install k6
+1. Install xk6-cable by running `xk6 build --with
+   github.com/anycable/xk6-cable`. This will output a custom k6 binary.
+1. Run the load test with `./k6 run loadtest.js`
+    - This script takes a variety of ENV variables:
+        - WS_URL: The url to send websocket connections
+        - MAX: The number of virtual users to hit the server with
+        - TIME: The duration of the load test
+        - MESSAGES_NUM: The number of messages each VU will send to the server
+
+
+#### Results
+
+Our loadtest is run on a Hetzner CCX13, with a MESSAGES_NUM of 5, and a TIME of 90.
+
+##### SQLite
+
+With a polling interval of 0.1 seconds and autotrimming enabled.
+
+100 VUs
+```
+rtt..................: avg=135.82ms min=50ms     med=138ms    max=357ms    p(90)=174ms    p(95)=195ms
+ws_connecting........: avg=205.81ms min=149.35ms med=199.01ms max=509.48ms p(90)=254.04ms p(95)=261.77ms
+```
+250 VUs
+```
+rtt..................: avg=146.24ms min=50ms     med=144ms    max=435ms p(90)=209ms   p(95)=234.04ms
+ws_connecting........: avg=222.15ms min=146.47ms med=208.57ms max=1.3s  p(90)=263.6ms p(95)=284.18ms
+```
+500 VUs
+```
+rtt..................: avg=271.79ms min=48ms     med=205ms    max=1.15s p(90)=558ms    p(95)=660ms
+ws_connecting........: avg=248.81ms min=145.89ms med=221.89ms max=1.38s p(90)=290.41ms p(95)=322.2ms
+```
+750 VUs
+```
+rtt..................: avg=548.27ms min=51ms     med=438ms    max=5.19s  p(90)=1.18s  p(95)=1.29s
+ws_connecting........: avg=266.37ms min=144.06ms med=224.93ms max=2.33s  p(90)=298ms  p(95)=342.87ms
+```
+
+With trimming disabled
+
+250 VUs
+```
+rtt..................: avg=139.47ms min=48ms     med=142ms    max=807ms p(90)=189ms    p(95)=214ms
+ws_connecting........: avg=212.58ms min=146.19ms med=196.25ms max=1.25s p(90)=255.74ms p(95)=272.44ms
+```
+
+With a polling interval of 0.01 seconds it becomes comparable to Redis
+
+250 VUs
+```
+rtt..................: avg=84.22ms  min=43ms     med=69ms     max=416ms p(90)=137ms    p(95)=150ms
+ws_connecting........: avg=219.37ms min=144.71ms med=200.77ms max=2.17s p(90)=265.23ms p(95)=290.83ms
+```
+
+##### Redis
+
+This instance was hosted on the same machine.
+
+100 VUs
+```
+rtt..................: avg=68.95ms  min=41ms     med=56ms     max=6.23s  p(90)=114ms   p(95)=129ms
+ws_connecting........: avg=211.09ms min=153.23ms med=195.69ms max=1.44s  p(90)=258.1ms p(95)=272.23ms
+```
+250 VUs
+```
+rtt..................: avg=69.32ms  min=40ms     med=56ms     max=645ms p(90)=119ms    p(95)=135ms
+ws_connecting........: avg=212.95ms min=142.92ms med=196.31ms max=1.25s p(90)=260.25ms p(95)=273.49ms
+```
+500 VUs
+```
+rtt..................: avg=87.5ms   min=40ms     med=67ms     max=839ms p(90)=149ms    p(95)=176ms
+ws_connecting........: avg=242.62ms min=142.03ms med=213.76ms max=2.34s p(90)=291.25ms p(95)=324.04ms
+```
+750 VUs
+```
+rtt..................: avg=162.54ms min=39ms  med=123ms    max=2.26s p(90)=343.1ms  p(95)=438ms
+ws_connecting........: avg=353.08ms min=143ms med=264.15ms max=2.73s p(90)=541.36ms p(95)=1.15s
+```
+
+
+##### MySQL
+
+With a polling interval of 0.1 seconds and autotrimming enabled. This instance
+was also hosted on the same machine.
+
+100 VUs
+```
+rtt..................: avg=136.02ms min=51ms     med=137ms    max=877ms p(90)=168.1ms  p(95)=198ms
+ws_connecting........: avg=207.76ms min=151.93ms med=196.74ms max=1.21s p(90)=249.91ms p(95)=260.37ms
+```
+250 VUs
+```
+rtt..................: avg=159.33ms min=51ms    med=149ms    max=559ms p(90)=236ms    p(95)=263ms
+ws_connecting........: avg=232.38ms min=151.6ms med=218.09ms max=1.38s p(90)=287.99ms p(95)=324.6ms
+```
+500 VUs
+```
+rtt..................: avg=441.07ms min=51ms     med=312ms    max=2.29s  p(90)=931ms    p(95)=1.07s
+ws_connecting........: avg=256.73ms min=152.23ms med=231.02ms max=2.31s  p(90)=305.69ms p(95)=340.83ms
+```
+750 VUs
+```
+rtt..................: avg=822.08ms min=51ms     med=732ms    max=5.05s  p(90)=1.76s    p(95)=1.97s
+ws_connecting........: avg=278.08ms min=146.66ms med=236.35ms max=2.37s  p(90)=318.17ms p(95)=374.98ms
+```
 
 ## License
 

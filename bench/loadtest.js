@@ -5,7 +5,7 @@ import { Trend } from "k6/metrics";
 
 let rttTrend = new Trend("rtt", true);
 
-const WS_URL = __ENV.WS_URL || "wss://felling.app/cable";
+const WS_URL = __ENV.WS_URL || "wss://solid-cable.dev/cable";
 const WS_COOKIE = __ENV.WS_COOKIE; // we need a valid cookie to authorize request
 const MAX = parseInt(__ENV.MAX || "20");
 // Total test duration

@@ -7,30 +7,31 @@
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.3.1
-FROM docker.io/library/ruby:$RUBY_VERSION-slim as base
+ARG RUBY_VERSION=3.3.5
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libsqlite3-0 libvips && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    apt-get install --no-install-recommends -y curl libjemalloc2 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set production environment
 ENV RAILS_ENV="production" \
+    BUNDLE_WITHOUT="development:test:linters:deploy" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
 # Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+    apt-get clean && rm -rf /var/cache/apt/archives /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -41,14 +42,9 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
+RUN bundle exec bootsnap precompile app/ lib/ && \
+    SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile && \
+    rm -rf vendor/ruby/3.3.0/cache
 
 # Final stage for app image
 FROM base

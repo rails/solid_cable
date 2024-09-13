@@ -27,13 +27,8 @@ production:
   # adapter: trilogy
   # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
   # timeout: 5000
-  # database: cablebench
+  # database: solid_cable
   # user: root
-  # password: password
-  # host: <%= Rails.application.credentials.trilogy.host %>
-  #
-  # username: cablebench
-  # password: <%= Rails.application.credentials.mysql.password %>
-  # host: <%= Rails.application.credentials.mysql.host %>
-  # port: 25060
+  # password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
+  # host: <%= ENV["HOST"] %>
   # ssl: true

@@ -25,3 +25,4 @@ Gemfile.lock
 /bench/public/assets
 /bench/.env*
 !/bench/.env*.erb
+/bench/k6
