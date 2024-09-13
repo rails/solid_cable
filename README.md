@@ -6,7 +6,7 @@ Solid Cable is a database-backed Action Cable adapter that keeps messages in a t
 > Solid Cable is primarily targeted at MySQL and SQLite but is tested to work
 > with PostgreSQL. PostgreSQL has its own Action Cable adapter which utilizes
 > the NOTIFY command for better performance. However, the PostgreSQL adapter
-> does have an 8kb limit on its payload so if you find yourself broadcasting
+> does have an 8kb limit on its payload, so if you find yourself broadcasting
 > large payloads, Solid Cable will work without a hitch.
 
 ## Installation
