@@ -2,6 +2,12 @@
 
 Solid Cable is a database-backed Action Cable adapter that keeps messages in a table and continously polls for updates. This makes it possible to drop the common dependency on Redis, if it isn't needed for any other purpose. Despite polling, the performance of Solid Cable is comparable to Redis in most situations. And in all circumstances, it makes it easier to deploy Rails when Redis is no longer a required dependency for Action Cable functionality.
 
+> [!NOTE]
+> Solid Cable is primarily targeted at MySQL and SQLite but is tested to work
+> with PostgreSQL. PostgreSQL has its own Action Cable adapter which utilizes
+> the NOTIFY command for better performance. However, the PostgreSQL adapter
+> does have an 8kb limit on its payload so if you find yourself broadcasting
+> large payloads, Solid Cable will work without a hitch.
 
 ## Installation
 
@@ -45,9 +51,6 @@ production:
 
 Then run `db:prepare` in production to ensure the database is created and the schema is loaded.
 
-If you have already installed Solid Cable, run `solid_cable:update` to get the
-latest changes to migrations.
-
 ## Configuration
 
 All configuration is managed via the `config/cable.yml` file. By default, it'll be configured like this:
@@ -76,10 +79,15 @@ The options are:
 
 ## Trimming
 
-Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. Messages are trimmed when a subscriber unsubscribes.
+Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. Messages are trimmed when a messsage is broadcast.
 
-Autotrimming can negatively impact performance depending on your workload because it is doing a delete on ubsubscribe. If
+Autotrimming can negatively impact performance depending on your workload because it is potentially doing a delete on broadcast. If
 you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::TrimJob.perform_later`, or run it on a recurring interval out of band.
+
+## Upgrading
+
+If you have already installed Solid Cable < 3 and are upgrading to version 3,
+run `solid_cable:update` to install a new migration.
 
 ## License
 
