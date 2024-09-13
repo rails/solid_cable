@@ -11,7 +11,7 @@ module SolidCable
     end
 
     def silence_polling?
-      !!cable_config.silence_polling
+      cable_config.silence_polling != false
     end
 
     def polling_interval
