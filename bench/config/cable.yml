@@ -4,10 +4,6 @@ development:
   adapter: solid_cable
   message_retention: 15.minutes
   polling_interval: 0.1.seconds
-  connects_to:
-    database:
-      writing: cable
-      reading: cable
 
 test:
   adapter: test
