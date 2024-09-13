@@ -10,9 +10,9 @@ test:
 
 production:
   # adapter: redis
-  # url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  # url: <%= ENV.fetch("REDIS_URL") { "redis://#{ENV["HOST"]}:6379/1" } %>
   # channel_prefix: cablebench_production
 
   adapter: solid_cable
   message_retention: 1.day
-  polling_interval: 0.2.seconds
+  polling_interval: 0.1.seconds

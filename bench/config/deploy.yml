@@ -1,9 +1,9 @@
-service: cablebench
-image: npezza/cablebench
+service: solidcable
+image: npezza/solid_cable
 asset_path: /rails/public/assets
 servers:
   web:
-    - 178.156.138.21
+    - <%= ENV["HOST"] %>
 registry:
   username: npezza
   password:
@@ -12,9 +12,11 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
+    - MYSQL_ROOT_PASSWORD
+    - HOST
 
 volumes:
-  - "cablebench:/data"
+  - "solidcable:/data"
 builder:
   context: "."
   local:
@@ -23,7 +25,7 @@ builder:
 accessories:
   mysql:
     image: mysql:8.3
-    host: 178.156.138.21
+    host: "<%= ENV['HOST'] %>"
     port: 3306
     env:
       clear:
@@ -34,3 +36,10 @@ accessories:
       - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
+  redis:
+    image: redis:latest
+    host: "<%= ENV['HOST'] %>"
+    port: 6379
+    cmd: "redis-server"
+    volumes:
+      - /var/lib/redis:/data
