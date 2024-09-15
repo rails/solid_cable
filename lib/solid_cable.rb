@@ -48,18 +48,17 @@ module SolidCable
     end
 
     private
-
-    def cable_config
-      Rails.application.config_for("cable")
-    end
-
-    def parse_duration(duration, default:)
-      if duration.present?
-        *amount, units = duration.to_s.split(".")
-        amount.join(".").to_f.public_send(units)
-      else
-        default
+      def cable_config
+        Rails.application.config_for("cable")
       end
-    end
+
+      def parse_duration(duration, default:)
+        if duration.present?
+          *amount, units = duration.to_s.split(".")
+          amount.join(".").to_f.public_send(units)
+        else
+          default
+        end
+      end
   end
 end

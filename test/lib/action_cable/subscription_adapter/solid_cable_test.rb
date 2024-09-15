@@ -137,27 +137,26 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   end
 
   private
+    def cable_config
+      { adapter: "solid_cable", message_retention: "1.second",
+        polling_interval: "0.01.seconds" }
+    end
 
-  def cable_config
-    { adapter: "solid_cable", message_retention: "1.second",
-      polling_interval: "0.01.seconds" }
-  end
+    def subscribe_as_queue(channel, adapter = @rx_adapter)
+      queue = Queue.new
 
-  def subscribe_as_queue(channel, adapter = @rx_adapter)
-    queue = Queue.new
+      callback = ->(data) { queue << data }
+      subscribed = Concurrent::Event.new
+      adapter.subscribe(channel, callback, proc { subscribed.set })
+      subscribed.wait(WAIT_WHEN_EXPECTING_EVENT)
+      sleep WAIT_WHEN_EXPECTING_EVENT
+      assert_predicate subscribed, :set?
 
-    callback = ->(data) { queue << data }
-    subscribed = Concurrent::Event.new
-    adapter.subscribe(channel, callback, proc { subscribed.set })
-    subscribed.wait(WAIT_WHEN_EXPECTING_EVENT)
-    sleep WAIT_WHEN_EXPECTING_EVENT
-    assert_predicate subscribed, :set?
+      yield queue
 
-    yield queue
-
-    sleep WAIT_WHEN_NOT_EXPECTING_EVENT
-    assert_empty queue
-  ensure
-    adapter.unsubscribe(channel, callback) if subscribed.set?
-  end
+      sleep WAIT_WHEN_NOT_EXPECTING_EVENT
+      assert_empty queue
+    ensure
+      adapter.unsubscribe(channel, callback) if subscribed.set?
+    end
 end

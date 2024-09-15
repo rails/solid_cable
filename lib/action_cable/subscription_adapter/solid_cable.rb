@@ -31,88 +31,86 @@ module ActionCable
       delegate :shutdown, to: :listener
 
       private
-
-      def listener
-        @listener || @server.mutex.synchronize do
-          @listener ||= Listener.new(@server.event_loop)
-        end
-      end
-
-      class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
-        def initialize(event_loop)
-          super()
-
-          @event_loop = event_loop
-
-          @thread = Thread.new do
-            Thread.current.abort_on_exception = true
-            listen
+        def listener
+          @listener || @server.mutex.synchronize do
+            @listener ||= Listener.new(@server.event_loop)
           end
         end
 
-        def listen
-          while running?
-            with_polling_volume { broadcast_messages }
+        class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
+          def initialize(event_loop)
+            super()
 
-            sleep ::SolidCable.polling_interval
+            @event_loop = event_loop
+
+            @thread = Thread.new do
+              Thread.current.abort_on_exception = true
+              listen
+            end
           end
-        end
 
-        def shutdown
-          self.running = false
-          Thread.pass while thread.alive?
-        end
+          def listen
+            while running?
+              with_polling_volume { broadcast_messages }
 
-        def add_channel(channel, on_success)
-          channels.add(channel)
-          event_loop.post(&on_success) if on_success
-        end
-
-        def remove_channel(channel)
-          channels.delete(channel)
-        end
-
-        def invoke_callback(*)
-          event_loop.post { super }
-        end
-
-        private
-
-        attr_reader :event_loop, :thread
-        attr_writer :running, :last_id
-
-        def running?
-          if defined?(@running)
-            @running
-          else
-            self.running = true
+              sleep ::SolidCable.polling_interval
+            end
           end
-        end
 
-        def last_id
-          @last_id ||= ::SolidCable::Message.maximum(:id) || 0
-        end
+          def shutdown
+            self.running = false
+            Thread.pass while thread.alive?
+          end
 
-        def channels
-          @channels ||= Set.new
-        end
+          def add_channel(channel, on_success)
+            channels.add(channel)
+            event_loop.post(&on_success) if on_success
+          end
 
-        def broadcast_messages
-          ::SolidCable::Message.broadcastable(channels, last_id).
-            each do |message|
-              broadcast(message.channel, message.payload)
-              self.last_id = message.id
+          def remove_channel(channel)
+            channels.delete(channel)
+          end
+
+          def invoke_callback(*)
+            event_loop.post { super }
+          end
+
+          private
+            attr_reader :event_loop, :thread
+            attr_writer :running, :last_id
+
+            def running?
+              if defined?(@running)
+                @running
+              else
+                self.running = true
+              end
+            end
+
+            def last_id
+              @last_id ||= ::SolidCable::Message.maximum(:id) || 0
+            end
+
+            def channels
+              @channels ||= Set.new
+            end
+
+            def broadcast_messages
+              ::SolidCable::Message.broadcastable(channels, last_id).
+                each do |message|
+                  broadcast(message.channel, message.payload)
+                  self.last_id = message.id
+                end
+            end
+
+            def with_polling_volume
+              if ::SolidCable.silence_polling?
+                ActiveRecord::Base.logger.silence { yield }
+              else
+                yield
+              end
             end
         end
-
-        def with_polling_volume
-          if ::SolidCable.silence_polling?
-            ActiveRecord::Base.logger.silence { yield }
-          else
-            yield
-          end
-        end
-      end
     end
   end
 end
