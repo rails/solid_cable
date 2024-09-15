@@ -13,15 +13,14 @@ module SolidCable
     end
 
     private
+      def trim_batch_size
+        ::SolidCable.trim_batch_size
+      end
 
-    def trim_batch_size
-      ::SolidCable.trim_batch_size
-    end
+      def trim?
+        expires_per_write = (1 / trim_batch_size.to_f) * ::SolidCable.trim_chance
 
-    def trim?
-      expires_per_write = (1 / trim_batch_size.to_f) * ::SolidCable.trim_chance
-
-      rand < (expires_per_write - expires_per_write.floor)
-    end
+        rand < (expires_per_write - expires_per_write.floor)
+      end
   end
 end
