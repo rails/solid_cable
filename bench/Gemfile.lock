@@ -195,6 +195,7 @@ GEM
     nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     ostruct (0.6.0)
+    pg (1.5.8)
     propshaft (1.0.0)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
@@ -293,6 +294,7 @@ DEPENDENCIES
   bootsnap
   importmap-rails
   kamal
+  pg
   propshaft
   puma
   rails!

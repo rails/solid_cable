@@ -14,6 +14,7 @@ env:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
     - HOST
+    - POSTGRES_PASSWORD
 
 volumes:
   - "solidcable:/data"
@@ -43,3 +44,17 @@ accessories:
     cmd: "redis-server"
     volumes:
       - /var/lib/redis:/data
+  postgres:
+    image: postgres:16
+    host: "<%= ENV['HOST'] %>"
+    port: 5432
+    env:
+      clear:
+        POSTGRES_USER: "cablebench"
+        POSTGRES_DB: "cablebench"
+      secret:
+        - POSTGRES_PASSWORD
+    files:
+      - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - data:/var/lib/postgresql/data
