@@ -207,6 +207,42 @@ rtt..................: avg=822.08ms min=51ms     med=732ms    max=5.05s  p(90)=1
 ws_connecting........: avg=278.08ms min=146.66ms med=236.35ms max=2.37s  p(90)=318.17ms p(95)=374.98ms
 ```
 
+
+##### PostgreSQL with Solid Cable
+
+With a polling interval of 0.1 seconds and autotrimming enabled. This instance
+was also hosted on the same machine.
+
+100 VUs
+```
+rtt..................: avg=137.45ms min=48ms     med=139ms    max=439ms    p(90)=179.1ms  p(95)=204ms
+ws_connecting........: avg=207.13ms min=150.29ms med=197.76ms max=443.67ms p(90)=254.44ms p(95)=263.29ms
+```
+250 VUs
+```
+rtt..................: avg=151.63ms min=49ms     med=146ms    max=538ms p(90)=222ms    p(95)=248.04ms
+ws_connecting........: avg=245.89ms min=147.18ms med=205.57ms max=30s   p(90)=265.08ms p(95)=281.15ms
+```
+500 VUs
+```
+rtt..................: avg=362.79ms min=50ms     med=249ms    max=1.21s p(90)=757ms    p(95)=844ms
+ws_connecting........: avg=257.02ms min=146.13ms med=227.65ms max=2.39s p(90)=303.22ms p(95)=344.39ms
+```
+
+
+##### PostgreSQL with dedicated adapter
+
+100 VUs
+```
+rtt..................: avg=69.76ms  min=41ms     med=57ms     max=622ms p(90)=116ms    p(95)=133ms
+ws_connecting........: avg=210.97ms min=149.68ms med=196.06ms max=1.27s p(90)=259.67ms p(95)=273.17ms
+```
+250 VUs
+```
+rtt..................: avg=73.43ms  min=40ms     med=58ms     max=698ms p(90)=126ms    p(95)=141ms
+ws_connecting........: avg=210.83ms min=143.01ms med=195.22ms max=1.27s p(90)=259.27ms p(95)=272.6ms
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
