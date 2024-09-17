@@ -3,7 +3,7 @@
 module SolidCable
   class Message < SolidCable::Record
     scope :trimmable, lambda {
-      where(created_at: ..::SolidCable.message_retention.ago)
+      where(created_at: ...::SolidCable.message_retention.ago)
     }
     scope :broadcastable, lambda { |channels, last_id|
       where(channel_hash: channel_hashes_for(channels)).
@@ -12,7 +12,8 @@ module SolidCable
 
     class << self
       def broadcast(channel, payload)
-        insert({ channel:, payload:, channel_hash: channel_hash_for(channel) })
+        insert({ created_at: Time.current, channel:, payload:,
+          channel_hash: channel_hash_for(channel) })
       end
 
       def channel_hashes_for(channels)
