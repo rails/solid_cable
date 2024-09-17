@@ -27,7 +27,7 @@ module SolidCable
     end
 
     def trim_batch_size
-      if (size = cable_config.trim_batch_size.to_i) < 1
+      if (size = cable_config.trim_batch_size.to_i) < 2
         100
       else
         size
@@ -42,9 +42,10 @@ module SolidCable
     # many records. This ensures there is downward pressure on the cache size
     # while there is valid data to delete. Read this as 'every time the trim job
     # runs theres a trim_multiplier chance this trims'. Adjust number to make it
-    # more or less likely to trim.
+    # more or less likely to trim. Only works like this if trim_batch_size is
+    # 100
     def trim_chance
-      10
+      2
     end
 
     private
