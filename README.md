@@ -3,11 +3,12 @@
 Solid Cable is a database-backed Action Cable adapter that keeps messages in a table and continously polls for updates. This makes it possible to drop the common dependency on Redis, if it isn't needed for any other purpose. Despite polling, the performance of Solid Cable is comparable to Redis in most situations. And in all circumstances, it makes it easier to deploy Rails when Redis is no longer a required dependency for Action Cable functionality.
 
 > [!NOTE]
-> Solid Cable is tested to work with MySQL, SQLite, and PostgreSQL. However,
-> PostgreSQL has its own dedicated Action Cable adapter which utilizes
-> the builtin NOTIFY command for better performance. The dedicated PostgreSQL
-> adapter does have an 8kb limit on its payload, though, so if you find yourself
-> broadcasting large payloads, Solid Cable will work without a hitch.
+> Solid Cable is tested to work with MySQL, SQLite, and PostgreSQL.
+> 
+> Action Cable already has a [dedicated PostgreSQL adapter](https://guides.rubyonrails.org/action_cable_overview.html#postgresql-adapter),
+> which utilizes the builtin `NOTIFY` command for better performance. However, that
+> adapter has an 8kb limit on its payload. Solid Cable is a great alternative if you find yourself
+> broadcasting large payloads, or prefer not to use the `NOTIFY` command.
 
 ## Installation
 
