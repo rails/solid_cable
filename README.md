@@ -4,7 +4,7 @@ Solid Cable is a database-backed Action Cable adapter that keeps messages in a t
 
 > [!NOTE]
 > Solid Cable is tested to work with MySQL, SQLite, and PostgreSQL.
-> 
+>
 > Action Cable already has a [dedicated PostgreSQL adapter](https://guides.rubyonrails.org/action_cable_overview.html#postgresql-adapter),
 > which utilizes the builtin `NOTIFY` command for better performance. However, that
 > adapter has an 8kb limit on its payload. Solid Cable is a great alternative if you find yourself
@@ -15,7 +15,7 @@ Solid Cable is a database-backed Action Cable adapter that keeps messages in a t
 Solid Cable is configured by default in new Rails 8 applications. But if you're running an earlier version, you can add it manually following these steps:
 
 1. `bundle add solid_cable`
-2. `bin/rails solid_cable:install`
+2. `bin/rails generate solid_cable:install`
 
 This will configure Solid Cable as the production cable adapter by overwritting `config/cable.yml` and create `db/cable_schema.rb`.
 
@@ -48,7 +48,7 @@ production:
 ```
 
 > [!NOTE]
-> Calling `bin/rails solid_cable:install` will automatically setup `config/cable.yml`, so no additional configuration is needed there (although you must make sure that you use the `cable` name in `database.yml` for this to match!). But if you want to use Solid Cable in a different environment (like staging or even development), you'll have to manually add that `connects_to` block to the respective environment in the `config/cable.yml` file. And, as always, make sure that the name you're using for the database in `config/cable.yml` matches the name you define in `config/database.yml`.
+> Calling `bin/rails generate solid_cable:install` will automatically setup `config/cable.yml`, so no additional configuration is needed there (although you must make sure that you use the `cable` name in `database.yml` for this to match!). But if you want to use Solid Cable in a different environment (like staging or even development), you'll have to manually add that `connects_to` block to the respective environment in the `config/cable.yml` file. And, as always, make sure that the name you're using for the database in `config/cable.yml` matches the name you define in `config/database.yml`.
 
 Then run `db:prepare` in production to ensure the database is created and the schema is loaded.
 
