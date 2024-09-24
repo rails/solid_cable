@@ -58,7 +58,7 @@ Running Solid Cable in a separate database is recommended, but it's also possibl
 
 1. Copy the contents of `db/cable_schema.rb` into a normal migration and delete `db/cable_schema.rb`
 2. Remove `connects_to` from `config/cable.yml`
-3. Migrate your database
+3. `bin/rails db:migrate`
 
 You won't have multiple databases, so `database.yml` doesn't need to have primary and cable database.
 
