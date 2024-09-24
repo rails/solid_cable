@@ -4,7 +4,7 @@ Solid Cable is a database-backed Action Cable adapter that keeps messages in a t
 
 > [!NOTE]
 > Solid Cable is tested to work with MySQL, SQLite, and PostgreSQL.
-> 
+>
 > Action Cable already has a [dedicated PostgreSQL adapter](https://guides.rubyonrails.org/action_cable_overview.html#postgresql-adapter),
 > which utilizes the builtin `NOTIFY` command for better performance. However, that
 > adapter has an 8kb limit on its payload. Solid Cable is a great alternative if you find yourself
@@ -51,6 +51,16 @@ production:
 > Calling `bin/rails solid_cable:install` will automatically setup `config/cable.yml`, so no additional configuration is needed there (although you must make sure that you use the `cable` name in `database.yml` for this to match!). But if you want to use Solid Cable in a different environment (like staging or even development), you'll have to manually add that `connects_to` block to the respective environment in the `config/cable.yml` file. And, as always, make sure that the name you're using for the database in `config/cable.yml` matches the name you define in `config/database.yml`.
 
 Then run `db:prepare` in production to ensure the database is created and the schema is loaded.
+
+### Single database configuration
+
+Running Solid Cable in a separate database is recommended, but it's also possible to use a single database for both the app and Action Cable.
+
+1. Copy the contents of `db/cable_schema.rb` into a normal migration and delete `db/cable_schema.rb`
+2. Remove `connects_to` from `config/cable.yml`
+3. `bin/rails db:migrate`
+
+You won't have multiple databases, so `database.yml` doesn't need to have primary and cable database.
 
 ## Configuration
 
