@@ -54,7 +54,7 @@ Then run `db:prepare` in production to ensure the database is created and the sc
 
 ### Single database configuration
 
-Running Solid Cable in a separate database is recommended, but it's also possible to use one single database for both the app and the cable. Just follow these steps:
+Running Solid Cable in a separate database is recommended, but it's also possible to use a single database for both the app and Action Cable.
 
 1. Copy the contents of `db/cable_schema.rb` into a normal migration and delete `db/cable_schema.rb`
 2. Remove `connects_to` from `config/cable.yml`
