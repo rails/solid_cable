@@ -14,16 +14,16 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   WAIT_WHEN_NOT_EXPECTING_EVENT = 0.2
 
   setup do
-    server = ActionCable::Server::Base.new
-    server.config.cable = cable_config.with_indifferent_access
-    server.config.logger = Logger.new(StringIO.new).tap do |l|
+    @server = ActionCable::Server::Base.new
+    @server.config.cable = cable_config.with_indifferent_access
+    @server.config.logger = Logger.new(StringIO.new).tap do |l|
       l.level = Logger::UNKNOWN
     end
 
-    adapter_klass = server.config.pubsub_adapter
+    adapter_klass = @server.config.pubsub_adapter
 
-    @rx_adapter = adapter_klass.new(server)
-    @tx_adapter = adapter_klass.new(server)
+    @rx_adapter = adapter_klass.new(@server)
+    @tx_adapter = adapter_klass.new(@server)
 
     @tx_adapter.shutdown
     @tx_adapter = @rx_adapter
@@ -136,10 +136,18 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "silencing polling queries when there's no Active Record logger" do
+    with_active_record_logger(nil) do
+      @rx_adapter.send(:listener).send(:broadcast_messages)
+    end
+
+    assert true
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
-        polling_interval: "0.01.seconds" }
+        polling_interval: "0.01.seconds", silence_polling: true }
     end
 
     def subscribe_as_queue(channel, adapter = @rx_adapter)
@@ -158,5 +166,12 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       assert_empty queue
     ensure
       adapter.unsubscribe(channel, callback) if subscribed.set?
+    end
+
+    def with_active_record_logger(logger)
+      old_logger, @server.config.logger = @server.config.logger, logger
+      yield
+    ensure
+      @server.config.logger = old_logger
     end
 end
