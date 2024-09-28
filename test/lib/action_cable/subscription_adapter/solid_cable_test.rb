@@ -11,7 +11,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   include ConfigStubs
 
   WAIT_WHEN_EXPECTING_EVENT = 1
-  WAIT_WHEN_NOT_EXPECTING_EVENT = 1
+  WAIT_WHEN_NOT_EXPECTING_EVENT = 0.2
 
   setup do
     server = ActionCable::Server::Base.new
