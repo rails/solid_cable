@@ -105,17 +105,7 @@ module ActionCable
 
             def with_polling_volume
               if ::SolidCable.silence_polling? && ActiveRecord::Base.logger
-                if ActiveRecord::Base.logger.respond_to?(:silence)
-                  ActiveRecord::Base.logger.silence { yield }
-                else
-                  begin
-                    old_level = ActiveRecord::Base.logger.level
-                    ActiveRecord::Base.logger.level = Logger::ERROR
-                    yield
-                  ensure
-                    ActiveRecord::Base.logger.level = old_level
-                  end
-                end
+                ActiveRecord::Base.logger.silence { yield }
               else
                 yield
               end
