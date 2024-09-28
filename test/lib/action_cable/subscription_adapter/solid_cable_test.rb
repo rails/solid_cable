@@ -136,6 +136,18 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "does not raise error when polling with no Active Record logger" do
+    with_active_record_logger(nil) do
+      assert_nothing_raised do
+        subscribe_as_queue("channel") do |queue|
+          @tx_adapter.broadcast("channel", "hello world")
+
+          assert_equal "hello world", queue.pop
+        end
+      end
+    end
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
@@ -158,5 +170,13 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       assert_empty queue
     ensure
       adapter.unsubscribe(channel, callback) if subscribed.set?
+    end
+
+    def with_active_record_logger(logger)
+      old_logger = ActiveRecord::Base.logger
+      ActiveRecord::Base.logger = logger
+      yield
+    ensure
+      ActiveRecord::Base.logger = old_logger
     end
 end

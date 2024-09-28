@@ -104,7 +104,7 @@ module ActionCable
             end
 
             def with_polling_volume
-              if ::SolidCable.silence_polling?
+              if ::SolidCable.silence_polling? && ActiveRecord::Base.logger
                 ActiveRecord::Base.logger.silence { yield }
               else
                 yield
