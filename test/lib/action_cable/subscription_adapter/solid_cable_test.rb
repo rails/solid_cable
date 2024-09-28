@@ -136,18 +136,21 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
-  test "silencing polling queries when there's no Active Record logger" do
+  test "does not raise error when polling with no Active Record logger" do
     with_active_record_logger(nil) do
-      @rx_adapter.send(:listener).send(:broadcast_messages)
+      subscribe_as_queue("channel") do |queue|
+        assert_nothing_raised do
+          @tx_adapter.broadcast("channel", "hello world")
+        end
+        assert_equal "hello world", queue.pop
+      end
     end
-
-    assert true
   end
 
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
-        polling_interval: "0.01.seconds", silence_polling: true }
+        polling_interval: "0.01.seconds" }
     end
 
     def subscribe_as_queue(channel, adapter = @rx_adapter)
@@ -169,7 +172,8 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
 
     def with_active_record_logger(logger)
-      old_logger, @server.config.logger = @server.config.logger, logger
+      old_logger = @server.config.logger
+      @server.config.logger = logger
       yield
     ensure
       @server.config.logger = old_logger
