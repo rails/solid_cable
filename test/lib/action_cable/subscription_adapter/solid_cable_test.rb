@@ -11,19 +11,19 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   include ConfigStubs
 
   WAIT_WHEN_EXPECTING_EVENT = 1
-  WAIT_WHEN_NOT_EXPECTING_EVENT = 0.2
+  WAIT_WHEN_NOT_EXPECTING_EVENT = 1
 
   setup do
-    @server = ActionCable::Server::Base.new
-    @server.config.cable = cable_config.with_indifferent_access
-    @server.config.logger = Logger.new(StringIO.new).tap do |l|
+    server = ActionCable::Server::Base.new
+    server.config.cable = cable_config.with_indifferent_access
+    server.config.logger = Logger.new(StringIO.new).tap do |l|
       l.level = Logger::UNKNOWN
     end
 
-    adapter_klass = @server.config.pubsub_adapter
+    adapter_klass = server.config.pubsub_adapter
 
-    @rx_adapter = adapter_klass.new(@server)
-    @tx_adapter = adapter_klass.new(@server)
+    @rx_adapter = adapter_klass.new(server)
+    @tx_adapter = adapter_klass.new(server)
 
     @tx_adapter.shutdown
     @tx_adapter = @rx_adapter
@@ -138,11 +138,12 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
   test "does not raise error when polling with no Active Record logger" do
     with_active_record_logger(nil) do
-      subscribe_as_queue("channel") do |queue|
-        assert_nothing_raised do
+      assert_nothing_raised do
+        subscribe_as_queue("channel") do |queue|
           @tx_adapter.broadcast("channel", "hello world")
+
+          assert_equal "hello world", queue.pop
         end
-        assert_equal "hello world", queue.pop
       end
     end
   end
@@ -172,10 +173,10 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
 
     def with_active_record_logger(logger)
-      old_logger = @server.config.logger
-      @server.config.logger = logger
+      old_logger = ActiveRecord::Base.logger
+      ActiveRecord::Base.logger = logger
       yield
     ensure
-      @server.config.logger = old_logger
+      ActiveRecord::Base.logger = old_logger
     end
 end
