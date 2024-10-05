@@ -2,8 +2,6 @@ Rails.application.routes.draw do
   mount ActiveError::Engine => "/errors"
   mount ActionCable.server => "/cable"
 
-  resources :rooms
-
   get "/ws" => "ws_debugger#show"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
