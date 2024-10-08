@@ -148,6 +148,16 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "broadcast_list" do
+    subscribe_as_queue("channel:2-3") do |queue|
+      subscribe_as_queue("channel:3-4") do |queue2|
+        @tx_adapter.broadcast_list("channel:2", "hello world")
+        assert_empty queue2
+      end
+      assert_equal "hello world", queue.pop
+    end
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",

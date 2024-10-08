@@ -20,6 +20,12 @@ module ActionCable
         ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
 
+      def broadcast_list(channel, payload)
+        ::SolidCable::Message.broadcast_list(channel, payload)
+
+        ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
+      end
+
       def subscribe(channel, callback, success_callback = nil)
         listener.add_subscriber(channel, callback, success_callback)
       end
@@ -78,6 +84,7 @@ module ActionCable
           private
             attr_reader :event_loop, :thread
             attr_writer :running, :last_id
+            attr_writer :running, :last_list_id
 
             def running?
               if defined?(@running)
@@ -88,7 +95,11 @@ module ActionCable
             end
 
             def last_id
-              @last_id ||= ::SolidCable::Message.maximum(:id) || 0
+              @last_id ||= ::SolidCable::Message.where(broadcast_to_list: false).maximum(:id) || 0
+            end
+
+            def last_list_id
+              @last_list_id ||= ::SolidCable::Message.where(broadcast_to_list: true).maximum(:id) || 0
             end
 
             def channels
@@ -101,6 +112,14 @@ module ActionCable
                   broadcast(message.channel, message.payload)
                   self.last_id = message.id
                 end
+
+              ::SolidCable::Message.broadcastable_to_list(channels, last_list_id).
+                each do |message|
+                  find_matching_channels(message.channel, channels).each do |channel|
+                    broadcast(channel, message.payload)
+                  end
+                  self.last_list_id = message.id
+                end
             end
 
             def with_polling_volume
@@ -110,6 +129,27 @@ module ActionCable
                 yield
               end
             end
+
+          # Returns a list of channels that match the broadcast_to_list nomenclature
+          # For example, if channel is "posts:1", and channels is ["posts:1-2", "posts:2-3", "posts:1-3"],
+          # this method will return ["posts:1-2", "post:1-3"].
+          # channel attr must have parts separated by ":" and must have at least 2 parts
+          # channels must have parts separated by ":" and must have at least 2 parts, and in the last part
+          # which represents the identifiers, they must be separated by "-"
+          def find_matching_channels(channel, channels)
+            parts = channel.split(":")
+            return [] if parts.length == 1
+
+            id = parts.pop
+            base_channel = parts.join(":")
+
+            channels.filter_map do |ch|
+              if ch.start_with?(base_channel)
+                ids = ch.split(":").last
+                ch if ids != ch && ids.split("-").include?(id)
+              end
+            end
+          end
         end
     end
   end

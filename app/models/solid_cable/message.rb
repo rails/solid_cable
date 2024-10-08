@@ -6,7 +6,12 @@ module SolidCable
       where(created_at: ...::SolidCable.message_retention.ago)
     }
     scope :broadcastable, lambda { |channels, last_id|
-      where(channel_hash: channel_hashes_for(channels)).
+      where(broadcast_to_list: false).
+        where(channel_hash: channel_hashes_for(channels)).
+        where(id: (last_id + 1)..).order(:id)
+    }
+    scope :broadcastable_to_list, lambda { |channels, last_id|
+      where(broadcast_to_list: true).
         where(id: (last_id + 1)..).order(:id)
     }
 
@@ -14,6 +19,11 @@ module SolidCable
       def broadcast(channel, payload)
         insert({ created_at: Time.current, channel:, payload:,
           channel_hash: channel_hash_for(channel) })
+      end
+
+      def broadcast_list(channel, payload)
+        insert({ created_at: Time.current, channel:, payload:,
+          channel_hash: channel_hash_for(channel), broadcast_to_list: true })
       end
 
       def channel_hashes_for(channels)
