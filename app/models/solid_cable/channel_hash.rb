@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ChannelHash
+module SolidCable::ChannelHash
   extend ActiveSupport::Concern
 
   class_methods do
