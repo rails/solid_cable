@@ -27,3 +27,5 @@ Gemfile.lock
 !/bench/.env*.erb
 /bench/k6
 test/dummy/solid_cable_test
+test/dummy/solid_cable_test*
+test/dummy/solid_cable_development*
