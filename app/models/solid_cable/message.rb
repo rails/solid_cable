@@ -2,9 +2,6 @@
 
 module SolidCable
   class Message < SolidCable::Record
-    has_one :channel_record, class_name: "::SolidCable::Channel",
-      foreign_key: :channel_hash, primary_key: :channel_hash
-
     scope :trimmable, lambda {
       where(created_at: ...::SolidCable.message_retention.ago)
     }
@@ -15,10 +12,10 @@ module SolidCable
 
     class << self
       def broadcast(channel, payload)
-        insert({ created_at: Time.current, channel:, payload:,
-          channel_hash: channel_hash_for(channel) })
+        channel_hash = channel_hash_for(channel)
+        insert({ created_at: Time.current, channel:, payload:, channel_hash: })
 
-        channel_record&.subscribers.to_i
+        ::SolidCable::Channel.find_by(channel_hash:)&.subscribers.to_i
       end
     end
   end
