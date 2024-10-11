@@ -2,6 +2,9 @@
 
 module SolidCable
   class Message < SolidCable::Record
+    has_one :channel_record, class_name: "::SolidCable::Channel",
+      foreign_key: :channel_hash, primary_key: :channel_hash
+
     scope :trimmable, lambda {
       where(created_at: ...::SolidCable.message_retention.ago)
     }
@@ -14,16 +17,8 @@ module SolidCable
       def broadcast(channel, payload)
         insert({ created_at: Time.current, channel:, payload:,
           channel_hash: channel_hash_for(channel) })
-      end
 
-      def channel_hashes_for(channels)
-        channels.map { |channel| channel_hash_for(channel) }
-      end
-
-      # Need to unpack this as a signed integer since Postgresql and SQLite
-      # don't support unsigned integers
-      def channel_hash_for(channel)
-        Digest::SHA256.digest(channel.to_s).unpack1("q>")
+        channel_record&.subscribers.to_i
       end
     end
   end

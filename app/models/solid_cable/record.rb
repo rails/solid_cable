@@ -2,6 +2,8 @@
 
 module SolidCable
   class Record < ActiveRecord::Base
+    include ChannelHash
+
     self.abstract_class = true
 
     connects_to(**SolidCable.connects_to) if SolidCable.connects_to.present?

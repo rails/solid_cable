@@ -1,0 +1,5 @@
+Description:
+    Adds Solid Cable channel migration
+
+Example:
+    bin/rails generate solid_cable:add_channels

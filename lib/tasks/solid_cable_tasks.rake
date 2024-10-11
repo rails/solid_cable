@@ -9,4 +9,8 @@ namespace :solid_cable do
   task :update do
     Rails::Command.invoke :generate, [ "solid_cable:update" ]
   end
+
+  task :add_channels do
+    Rails::Command.invoke :generate, [ "solid_cable:add_channels" ]
+  end
 end

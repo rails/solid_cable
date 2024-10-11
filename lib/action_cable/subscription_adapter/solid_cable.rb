@@ -15,9 +15,9 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        ::SolidCable::Message.broadcast(channel, payload)
-
-        ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
+        ::SolidCable::Message.broadcast(channel, payload).tap do
+          ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
+        end
       end
 
       def subscribe(channel, callback, success_callback = nil)
@@ -64,11 +64,13 @@ module ActionCable
 
           def add_channel(channel, on_success)
             channels.add(channel)
+            ::SolidCable::Channel.for(channel).first_or_create.increment_subscribers!
             event_loop.post(&on_success) if on_success
           end
 
           def remove_channel(channel)
             channels.delete(channel)
+            ::SolidCable::Channel.for(channel).first_or_create.decrement_subscribers!
           end
 
           def invoke_callback(*)
