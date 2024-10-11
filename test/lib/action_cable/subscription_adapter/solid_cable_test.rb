@@ -33,6 +33,21 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     [@rx_adapter, @tx_adapter].uniq.compact.each(&:shutdown)
   end
 
+  test "broadcast return value with no subscribers" do
+    subscribers = @tx_adapter.broadcast("channel", "hello world")
+
+    assert_equal 0, subscribers
+  end
+
+  test "broadcast return value with a subscriber" do
+    subscribe_as_queue("channel") do |queue|
+      subscribers = @tx_adapter.broadcast("channel", "hello world")
+
+      assert_equal 1, subscribers
+      queue.clear
+    end
+  end
+
   test "subscribe_and_unsubscribe" do
     subscribe_as_queue("channel") do |queue|
     end

@@ -2,7 +2,7 @@
 
 module SolidCable
   class Record < ActiveRecord::Base
-    include ChannelHash
+    include ChannelHashable
 
     self.abstract_class = true
 
