@@ -1,4 +1,4 @@
-<% def database_name_from(name); ENV["TARGET_DB"]=="sqlite" ? "db/#{name}.sqlite3" : name; end %>
+<% def database_name_from(name); ["mysql", "postgres"].exclude?(ENV["TARGET_DB"]) ? "db/#{name}.sqlite3" : name; end %>
 
 <% if ENV["TARGET_DB"] == "mysql" %>
 default: &default
