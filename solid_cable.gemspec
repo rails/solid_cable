@@ -7,13 +7,13 @@ Gem::Specification.new do |spec|
   spec.version     = SolidCable::VERSION
   spec.authors     = [ "Nick Pezza" ]
   spec.email       = [ "pezza@hey.com" ]
-  spec.homepage    = "http://github.com/npezza93/solid_cable"
+  spec.homepage    = "https://github.com/rails/solid_cable"
   spec.summary     = "Database-backed Action Cable backend."
   spec.description = "Database-backed Action Cable backend."
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "http://github.com/rails/solid_cable"
+  spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
