@@ -12,8 +12,10 @@ module SolidCable
 
     class << self
       def broadcast(channel, payload)
-        insert({ created_at: Time.current, channel:, payload:,
-          channel_hash: channel_hash_for(channel) })
+        using_writing_role do
+          insert({ created_at: Time.current, channel:, payload:,
+            channel_hash: channel_hash_for(channel) })
+        end
       end
 
       def channel_hashes_for(channels)
@@ -24,6 +26,16 @@ module SolidCable
       # don't support unsigned integers
       def channel_hash_for(channel)
         Digest::SHA256.digest(channel.to_s).unpack1("q>")
+      end
+
+      private
+
+      def using_writing_role
+        if SolidCable.connects_to.present?
+          ActiveRecord::Base.connected_to(role: :writing) { yield }
+        else
+          yield
+        end
       end
     end
   end
