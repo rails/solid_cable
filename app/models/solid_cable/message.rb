@@ -12,10 +12,10 @@ module SolidCable
 
     class << self
       def broadcast(channel, payload)
-        using_writing_role do
+        # using_writing_role do
           insert({ created_at: Time.current, channel:, payload:,
             channel_hash: channel_hash_for(channel) })
-        end
+        # end
       end
 
       def channel_hashes_for(channels)

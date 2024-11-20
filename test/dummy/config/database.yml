@@ -24,10 +24,20 @@ default: &default
 <% end %>
 
 development:
-  <<: *default
-  database: <%= database_name_from("solid_cable_development") %>
+  primary:
+    <<: *default
+    database: <%= database_name_from("solid_cable_development") %>
+  other:
+    <<: *default
+    database: <%= database_name_from("solid_cable_development") %>
 
 test:
-  <<: *default
-  pool: 20
-  database: <%= database_name_from("solid_cable_test") %>
+  primary:
+    <<: *default
+    pool: 20
+    database: <%= database_name_from("solid_cable_test") %>
+  other:
+    <<: *default
+    pool: 20
+    database: <%= database_name_from("solid_cable_test") %>
+    replica: true
