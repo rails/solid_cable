@@ -12,6 +12,16 @@ module ConfigStubs
     def config_for(_file)
       @config
     end
+
+    def reloader
+      @reloader ||= ReloaderStub.new
+    end
+
+    class ReloaderStub
+      def wrap(&block)
+        block.call
+      end
+    end
   end
 
   def with_cable_config(**)

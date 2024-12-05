@@ -96,11 +96,13 @@ module ActionCable
             end
 
             def broadcast_messages
-              ::SolidCable::Message.broadcastable(channels, last_id).
-                each do |message|
-                  broadcast(message.channel, message.payload)
-                  self.last_id = message.id
+              Rails.application.reloader.wrap do
+                ::SolidCable::Message.broadcastable(channels, last_id).
+                  each do |message|
+                    broadcast(message.channel, message.payload)
+                    self.last_id = message.id
                 end
+              end
             end
 
             def with_polling_volume
