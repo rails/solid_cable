@@ -96,7 +96,7 @@ module ActionCable
             end
 
             def broadcast_messages
-              Rails.application.reloader.wrap do
+              Rails.application.executor.wrap do
                 ::SolidCable::Message.broadcastable(channels, last_id).
                   each do |message|
                     broadcast(message.channel, message.payload)

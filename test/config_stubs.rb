@@ -13,11 +13,11 @@ module ConfigStubs
       @config
     end
 
-    def reloader
-      @reloader ||= ReloaderStub.new
+    def executor
+      @executor ||= ExectorStub.new
     end
 
-    class ReloaderStub
+    class ExectorStub
       def wrap(&block)
         block.call
       end
