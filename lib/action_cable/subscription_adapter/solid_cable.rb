@@ -59,7 +59,7 @@ module ActionCable
 
           def shutdown
             self.running = false
-            Thread.pass while thread.alive?
+            thread.join
           end
 
           def add_channel(channel, on_success)
