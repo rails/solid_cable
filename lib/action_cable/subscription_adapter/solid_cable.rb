@@ -50,16 +50,22 @@ module ActionCable
           end
 
           def listen
-            while running?
+            loop do
+              break unless running?
+
               with_polling_volume { broadcast_messages }
 
-              sleep ::SolidCable.polling_interval
+              interruptible_sleep ::SolidCable.polling_interval
             end
           end
 
           def shutdown
             self.running = false
-            Thread.pass while thread.alive?
+            wake_up
+
+            ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+              thread&.join
+            end
           end
 
           def add_channel(channel, on_success)
@@ -111,6 +117,37 @@ module ActionCable
               else
                 yield
               end
+            end
+
+            def wake_up
+              interrupt
+            end
+
+            SELF_PIPE_BLOCK_SIZE = 11
+
+            def interrupt
+              self_pipe[:writer].write_nonblock(".")
+            rescue Errno::EAGAIN, Errno::EINTR
+              # Ignore writes that would block and retry
+              # if another signal arrived while writing
+              retry
+            end
+
+            def interruptible_sleep(time)
+              if time > 0 && self_pipe[:reader].wait_readable(time)
+                loop { self_pipe[:reader].read_nonblock(SELF_PIPE_BLOCK_SIZE) }
+              end
+            rescue Errno::EAGAIN, Errno::EINTR
+            end
+
+            # Self-pipe for signal-handling (http://cr.yp.to/docs/selfpipe.html)
+            def self_pipe
+              @self_pipe ||= create_self_pipe
+            end
+
+            def create_self_pipe
+              reader, writer = IO.pipe
+              { reader: reader, writer: writer }
             end
         end
     end
