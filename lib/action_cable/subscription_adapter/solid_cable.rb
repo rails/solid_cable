@@ -62,7 +62,10 @@ module ActionCable
           def shutdown
             self.running = false
             wake_up
-            thread&.join
+
+            ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+              thread&.join
+            end
           end
 
           def add_channel(channel, on_success)
