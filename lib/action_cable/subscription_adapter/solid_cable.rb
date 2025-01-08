@@ -3,6 +3,7 @@
 require "action_cable/subscription_adapter/base"
 require "action_cable/subscription_adapter/channel_prefix"
 require "action_cable/subscription_adapter/subscriber_map"
+require "concurrent/atomic/semaphore"
 
 module ActionCable
   module SubscriptionAdapter
@@ -38,34 +39,53 @@ module ActionCable
         end
 
         class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
+          Stop = Class.new(Exception)
+
           def initialize(event_loop)
             super()
 
             @event_loop = event_loop
 
+            # Critical section begins with 0 permits. It can be understood as
+            # being "normally held" by the listener thread. It is released
+            # for specific sections of code, rather than acquired.
+            @critical = Concurrent::Semaphore.new(0)
+
             @thread = Thread.new do
-              Thread.current.abort_on_exception = true
               listen
             end
           end
 
           def listen
             loop do
-              break unless running?
+              begin
+                instance = interruptible { Rails.application.executor.run! }
+                with_polling_volume { broadcast_messages }
+              ensure
+                instance.complete! if instance
+              end
 
-              with_polling_volume { broadcast_messages }
-
-              interruptible_sleep ::SolidCable.polling_interval
+              interruptible { sleep ::SolidCable.polling_interval }
             end
+          rescue Stop
+          ensure
+            @critical.release
+          end
+
+          def interruptible
+            @critical.release
+            yield
+          ensure
+            @critical.acquire
           end
 
           def shutdown
-            self.running = false
-            wake_up
-
-            ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-              thread&.join
-            end
+            @critical.acquire
+            # We have the critical permit, and so the listen thread must be
+            # safe to interrupt.
+            thread.raise(Stop)
+            @critical.release
+            thread.join
           end
 
           def add_channel(channel, on_success)
@@ -83,15 +103,7 @@ module ActionCable
 
           private
             attr_reader :event_loop, :thread
-            attr_writer :running, :last_id
-
-            def running?
-              if defined?(@running)
-                @running
-              else
-                self.running = true
-              end
-            end
+            attr_writer :last_id
 
             def last_id
               @last_id ||= ::SolidCable::Message.maximum(:id) || 0
@@ -102,12 +114,10 @@ module ActionCable
             end
 
             def broadcast_messages
-              Rails.application.executor.wrap do
-                ::SolidCable::Message.broadcastable(channels, last_id).
-                  each do |message|
-                    broadcast(message.channel, message.payload)
-                    self.last_id = message.id
-                end
+              ::SolidCable::Message.broadcastable(channels, last_id).
+                each do |message|
+                broadcast(message.channel, message.payload)
+                self.last_id = message.id
               end
             end
 
