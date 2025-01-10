@@ -5,6 +5,6 @@ class SolidCable::InstallGenerator < Rails::Generators::Base
 
   def copy_files
     template "db/cable_schema.rb"
-    template "config/cable.yml", force: true
+    template "config/cable.yml"
   end
 end
