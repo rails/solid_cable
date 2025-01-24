@@ -18,8 +18,7 @@ module ConfigStubs
     end
 
     class ExectorStub
-      def wrap(&block)
-        block.call
+      def run!
       end
     end
   end
