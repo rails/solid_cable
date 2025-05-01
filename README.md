@@ -15,7 +15,7 @@ Solid Cable is a database-backed Action Cable adapter that keeps messages in a t
 Solid Cable is configured by default in new Rails 8 applications. But if you're running an earlier version, you can add it manually following these steps:
 
 1. `bundle add solid_cable`
-2. `bin/rails solid_cable:install`
+2. `bin/rails g solid_cable:install`
 
 This will configure Solid Cable as the production cable adapter by overwritting `config/cable.yml` and create `db/cable_schema.rb`.
 
