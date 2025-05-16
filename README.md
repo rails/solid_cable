@@ -1,6 +1,6 @@
 # Solid Cable
 
-Solid Cable is a database-backed Action Cable adapter that keeps messages in a table and continously polls for updates. This makes it possible to drop the common dependency on Redis, if it isn't needed for any other purpose. Despite polling, the performance of Solid Cable is comparable to Redis in most situations. And in all circumstances, it makes it easier to deploy Rails when Redis is no longer a required dependency for Action Cable functionality.
+Solid Cable is a database-backed Action Cable adapter that keeps messages in a table and continuously polls for updates. This makes it possible to drop the common dependency on Redis, if it isn't needed for any other purpose. Despite polling, the performance of Solid Cable is comparable to Redis in most situations. And in all circumstances, it makes it easier to deploy Rails when Redis is no longer a required dependency for Action Cable functionality.
 
 > [!NOTE]
 > Solid Cable is tested to work with MySQL, SQLite, and PostgreSQL.
