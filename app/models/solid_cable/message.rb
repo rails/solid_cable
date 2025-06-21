@@ -7,7 +7,7 @@ module SolidCable
     }
     scope :broadcastable, lambda { |channels, last_id|
       where(channel_hash: channel_hashes_for(channels)).
-        where(id: (last_id + 1)..).order(:id)
+        where(id: (last_id.to_i + 1)..).order(:id)
     }
 
     class << self
