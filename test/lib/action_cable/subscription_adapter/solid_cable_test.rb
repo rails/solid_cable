@@ -148,6 +148,33 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "does not send old messages" do
+    @tx_adapter.broadcast("channel", "channel1")
+    @tx_adapter.broadcast("channel", "channel2")
+
+    subscribe_as_queue("channel") do |queue|
+      assert_empty queue
+
+      @tx_adapter.broadcast("channel", "channel3")
+      @tx_adapter.broadcast("channel", "channel4")
+      @tx_adapter.broadcast("other", "other1")
+      @tx_adapter.broadcast("other", "other2")
+
+      subscribe_as_queue("other") do |other_queue|
+        assert_empty other_queue
+      end
+      assert_equal "channel3", queue.pop
+      assert_equal "channel4", queue.pop
+    end
+
+    @tx_adapter.broadcast("channel", "channel5")
+    @tx_adapter.broadcast("channel", "channel6")
+
+    subscribe_as_queue("channel") do |queue|
+      assert_empty queue
+    end
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",

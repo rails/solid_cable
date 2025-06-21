@@ -89,7 +89,7 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels.add(channel)
+            channels[channel] = last_message_id
             event_loop.post(&on_success) if on_success
           end
 
@@ -103,21 +103,22 @@ module ActionCable
 
           private
             attr_reader :event_loop, :thread
-            attr_writer :last_id
 
-            def last_id
-              @last_id ||= ::SolidCable::Message.maximum(:id) || 0
+            def last_message_id
+              ::SolidCable::Message.maximum(:id)
             end
 
             def channels
-              @channels ||= Set.new
+              @channels ||= Concurrent::Hash.new
             end
 
             def broadcast_messages
-              ::SolidCable::Message.broadcastable(channels, last_id).
+              ::SolidCable::Message.broadcastable(channels.keys, channels.values.min).
                 each do |message|
-                broadcast(message.channel, message.payload)
-                self.last_id = message.id
+                if channels[message.channel].present? && channels[message.channel] < message.id
+                  broadcast(message.channel, message.payload)
+                  channels[message.channel] = message.id
+                end
               end
             end
 
