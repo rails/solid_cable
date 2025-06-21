@@ -42,7 +42,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     subscribe_as_queue("channel") do |queue|
       @tx_adapter.broadcast("channel", "hello world")
 
-      assert_equal "hello world", queue.pop
+      assert_equal "hello world", next_message_in_queue(queue)
     end
   end
 
@@ -53,7 +53,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
       @tx_adapter.broadcast("channel", "hello world")
 
-      assert_equal "hello world", queue.pop
+      assert_equal "hello world", next_message_in_queue(queue)
     end
 
     @tx_adapter.broadcast("channel", "hello void")
@@ -84,7 +84,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       @tx_adapter.broadcast("channel", "apples")
 
       received = []
-      2.times { received << queue.pop }
+      2.times { received << next_message_in_queue(queue) }
       assert_equal %w(apples bananas), received.sort
     end
   end
@@ -94,10 +94,10 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       subscribe_as_queue("channel") do |queue_2|
         @tx_adapter.broadcast("channel", "hello")
 
-        assert_equal "hello", queue_2.pop
+        assert_equal "hello", next_message_in_queue(queue_2)
       end
 
-      assert_equal "hello", queue.pop
+      assert_equal "hello", next_message_in_queue(queue)
     end
   end
 
@@ -107,8 +107,8 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
         @tx_adapter.broadcast("channel", "apples")
         @tx_adapter.broadcast("other channel", "oranges")
 
-        assert_equal "apples", queue.pop
-        assert_equal "oranges", queue_2.pop
+        assert_equal "apples", next_message_in_queue(queue)
+        assert_equal "oranges", next_message_in_queue(queue_2)
       end
     end
   end
@@ -118,7 +118,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       @tx_adapter.broadcast("other channel", "one")
       @tx_adapter.broadcast("channel", "two")
 
-      assert_equal "two", queue.pop
+      assert_equal "two", next_message_in_queue(queue)
     end
   end
 
@@ -130,8 +130,8 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
         @tx_adapter.broadcast(channel_1, "apples")
         @tx_adapter.broadcast(channel_2, "oranges")
 
-        assert_equal "apples", queue.pop
-        assert_equal "oranges", queue_2.pop
+        assert_equal "apples", next_message_in_queue(queue)
+        assert_equal "oranges", next_message_in_queue(queue_2)
       end
     end
   end
@@ -142,7 +142,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
         subscribe_as_queue("channel") do |queue|
           @tx_adapter.broadcast("channel", "hello world")
 
-          assert_equal "hello world", queue.pop
+          assert_equal "hello world", next_message_in_queue(queue)
         end
       end
     end
@@ -163,8 +163,8 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       subscribe_as_queue("other") do |other_queue|
         assert_empty other_queue
       end
-      assert_equal "channel3", queue.pop
-      assert_equal "channel4", queue.pop
+      assert_equal "channel3", next_message_in_queue(queue)
+      assert_equal "channel4", next_message_in_queue(queue)
     end
 
     @tx_adapter.broadcast("channel", "channel5")
@@ -205,5 +205,13 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       yield
     ensure
       ActiveRecord::Base.logger = old_logger
+    end
+
+    def next_message_in_queue(queue)
+      if queue.empty?
+        raise "Queue is empty"
+      else
+        queue.pop
+      end
     end
 end
