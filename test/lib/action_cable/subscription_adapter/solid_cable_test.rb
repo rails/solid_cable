@@ -208,10 +208,6 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
 
     def next_message_in_queue(queue)
-      if queue.empty?
-        raise "Queue is empty"
-      else
-        queue.pop
-      end
+      Timeout.timeout(5, nil, "Failed to get next item in queue") { queue.pop }
     end
 end
