@@ -109,17 +109,22 @@ module ActionCable
             end
 
             def channels
-              @channels ||= Concurrent::Hash.new
+              @channels ||= Concurrent::Map.new
             end
 
             def broadcast_messages
-              ::SolidCable::Message.broadcastable(channels.keys, channels.values.min).
+              current_channels = channels.dup
+
+              ::SolidCable::Message.
+                broadcastable(current_channels.keys, current_channels.values.min).
                 each do |message|
-                if channels[message.channel].present? && channels[message.channel] < message.id
-                  broadcast(message.channel, message.payload)
-                  channels[message.channel] = message.id
+                  channels.compute_if_present(message.channel) do |last_id|
+                    break if last_id >= message.id
+
+                    broadcast(message.channel, message.payload)
+                    message.id
+                  end
                 end
-              end
             end
 
             def with_polling_volume
