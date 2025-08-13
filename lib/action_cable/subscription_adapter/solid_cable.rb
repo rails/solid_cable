@@ -52,6 +52,9 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @thread = Thread.new do
+              Thread.current.name = "solid_cable_listener"
+              Thread.current.report_on_exception = true
+
               listen
             end
           end
@@ -103,6 +106,11 @@ module ActionCable
 
           private
             attr_reader :event_loop, :thread
+            attr_writer :last_id
+
+            def last_id
+              @last_id ||= last_message_id
+            end
 
             def last_message_id
               ::SolidCable::Message.maximum(:id) || 0
@@ -116,14 +124,18 @@ module ActionCable
               current_channels = channels.dup
 
               ::SolidCable::Message.
-                broadcastable(current_channels.keys, current_channels.values.min).
+                broadcastable(current_channels.keys, last_id).
                 each do |message|
-                  channels.compute_if_present(message.channel) do |last_id|
-                    break if last_id >= message.id
+                  should_broadcast_message = false
+                  channels.compute_if_present(message.channel) do |channel_last_id|
+                    break if channel_last_id >= message.id
 
-                    broadcast(message.channel, message.payload)
+                    should_broadcast_message = true
                     message.id
                   end
+
+                  broadcast(message.channel, message.payload) if should_broadcast_message
+                  self.last_id = message.id
                 end
             end
 
