@@ -9,7 +9,8 @@ module SolidCable
     class << self
       def connection
         if SolidCable.connects_to.present?
-          connected_to(role: :writing) { super }
+          role = SolidCable.connects_to.dig(:database)&.keys&.first || :writing
+          connected_to(role: role) { super }
         else
           super
         end
