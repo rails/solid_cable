@@ -46,4 +46,20 @@ class SolidCableTest < ActiveSupport::TestCase
       assert_equal 42, SolidCable.trim_batch_size
     end
   end
+
+  test "reconnect_attempts defaults to a single zero" do
+    assert_equal [ 0 ], SolidCable.reconnect_attempts
+  end
+
+  test "reconnect_attempts accepts an integer" do
+    with_cable_config reconnect_attempts: 3 do
+      assert_equal [ 0, 0, 0 ], SolidCable.reconnect_attempts
+    end
+  end
+
+  test "reconnect_attempts accepts an array" do
+    with_cable_config reconnect_attempts: [ 0, 1, 2 ] do
+      assert_equal [ 0, 1, 2 ], SolidCable.reconnect_attempts
+    end
+  end
 end

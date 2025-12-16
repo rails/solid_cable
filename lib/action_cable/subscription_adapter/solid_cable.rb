@@ -39,6 +39,7 @@ module ActionCable
         end
 
         class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
+          CONNECTION_ERRORS = [ ActiveRecord::ConnectionFailed ]
           Stop = Class.new(Exception)
 
           def initialize(event_loop)
@@ -51,11 +52,17 @@ module ActionCable
             # for specific sections of code, rather than acquired.
             @critical = Concurrent::Semaphore.new(0)
 
+            @reconnect_attempt = 0
+
             @thread = Thread.new do
               Thread.current.name = "solid_cable_listener"
               Thread.current.report_on_exception = true
 
-              listen
+              begin
+                listen
+              rescue *CONNECTION_ERRORS
+                retry if retry_connecting?
+              end
             end
           end
 
@@ -107,6 +114,7 @@ module ActionCable
           private
             attr_reader :event_loop, :thread
             attr_writer :last_id
+            attr_accessor :reconnect_attempt
 
             def last_id
               @last_id ||= last_message_id
@@ -145,6 +153,22 @@ module ActionCable
               else
                 yield
               end
+            end
+
+            def reconnect_attempts
+              @reconnect_attempts ||= ::SolidCable.reconnect_attempts
+            end
+
+            def retry_connecting?
+              self.reconnect_attempt += 1
+
+              return false if reconnect_attempt > reconnect_attempts.size
+
+              sleep_t = reconnect_attempts[reconnect_attempt - 1]
+
+              sleep(sleep_t) if sleep_t > 0
+
+              true
             end
         end
     end

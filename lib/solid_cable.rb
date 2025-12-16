@@ -48,6 +48,12 @@ module SolidCable
       2
     end
 
+    def reconnect_attempts
+      attempts = cable_config.fetch(:reconnect_attempts, 1)
+      attempts = Array.new(attempts, 0) if attempts.is_a?(Integer)
+      attempts
+    end
+
     private
       def cable_config
         Rails.application.config_for("cable")
