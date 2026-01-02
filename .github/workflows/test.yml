@@ -15,6 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         database: [mysql, postgres, sqlite]
+        ruby-version:
+          - 3.1
+          - 3.2
+          - 3.3
+          - 3.4
+          - 4.0
     services:
       mysql:
         image: mysql:8.0.31
@@ -32,15 +38,15 @@ jobs:
     env:
       TARGET_DB: ${{ matrix.database }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
     - name: Install dependencies
       run: bundle install
     - name: Setup db
       run: |
-        cd test/dummy
         bin/rails db:setup
-        cd ../../
     - name: Run tests
       run: bin/test
