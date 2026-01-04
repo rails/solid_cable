@@ -4,9 +4,9 @@ module ConfigStubs
   extend ActiveSupport::Concern
 
   class ConfigStub
-    def initialize(**opts)
+    def initialize(**)
       @config = ActiveSupport::OrderedOptions.new.
-                update({ adapter: :test }.merge(**opts))
+                update({ adapter: :test }.merge(**))
     end
 
     def config_for(_file)
@@ -23,7 +23,7 @@ module ConfigStubs
     end
   end
 
-  def with_cable_config(**opts)
-    Rails.stub(:application, ConfigStub.new(**opts)) { yield }
+  def with_cable_config(**)
+    Rails.stub(:application, ConfigStub.new(**)) { yield }
   end
 end

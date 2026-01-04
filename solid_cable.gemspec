@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   end
 
   rails_version = ">= 7.2"
-  spec.required_ruby_version = ">= 3.1.0"
+  spec.required_ruby_version = ">= 3.2.0"
   spec.add_dependency "activerecord", rails_version
   spec.add_dependency "activejob", rails_version
   spec.add_dependency "actioncable", rails_version
