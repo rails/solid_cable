@@ -175,6 +175,30 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "retries after a connection failure and keeps listening" do
+    with_cable_config reconnect_attempts: [0] do
+      raised = false
+      original = SolidCable::Message.method(:broadcastable)
+
+      SolidCable::Message.stub(:broadcastable, lambda { |channels, last_id|
+        if raised
+          original.call(channels, last_id)
+        else
+          raised = true
+          raise ActiveRecord::ConnectionFailed, "boom"
+        end
+      }) do
+        subscribe_as_queue("reconnect-channel") do |queue|
+          @tx_adapter.broadcast("reconnect-channel", "hello")
+
+          assert_equal "hello", next_message_in_queue(queue)
+        end
+      end
+
+      assert raised
+    end
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
