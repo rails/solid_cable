@@ -53,6 +53,7 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @reconnect_attempt = 0
+            @last_id = last_message_id
 
             @thread = Thread.new do
               Thread.current.name = "solid_cable_listener"
@@ -113,12 +114,7 @@ module ActionCable
 
           private
             attr_reader :event_loop, :thread
-            attr_writer :last_id
-            attr_accessor :reconnect_attempt
-
-            def last_id
-              @last_id ||= last_message_id
-            end
+            attr_accessor :last_id, :reconnect_attempt
 
             def last_message_id
               ::SolidCable::Message.maximum(:id) || 0
