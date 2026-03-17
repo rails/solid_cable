@@ -212,7 +212,6 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       subscribed = Concurrent::Event.new
       adapter.subscribe(channel, callback, proc { subscribed.set })
       subscribed.wait(WAIT_WHEN_EXPECTING_EVENT)
-      sleep WAIT_WHEN_EXPECTING_EVENT
       assert_predicate subscribed, :set?
 
       yield queue
