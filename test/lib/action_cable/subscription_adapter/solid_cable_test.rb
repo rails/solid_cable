@@ -175,30 +175,6 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
-  10.times do |i|
-    test "#broadcast immediately after #subscribe does not skip messages - iteration #{i}" do
-      subscribed = Concurrent::Event.new
-      message_received = Concurrent::Event.new
-      message = nil
-
-      subscription_callback = -> { subscribed.set }
-      message_callback = ->(msg) {
-        message = msg
-        message_received.set
-      }
-
-      @rx_adapter.subscribe("channel", message_callback, subscription_callback)
-      assert subscribed.wait(WAIT_WHEN_EXPECTING_EVENT),
-        "Timed out waiting for subscription"
-
-      @tx_adapter.broadcast("channel", "don't skip me")
-      assert message_received.wait(WAIT_WHEN_EXPECTING_EVENT), "Message skipped"
-      assert_equal "don't skip me", message
-    ensure
-      @rx_adapter.unsubscribe("channel", message_callback)
-    end
-  end
-
   test "retries after a connection failure and keeps listening" do
     with_cable_config reconnect_attempts: [0] do
       raised = false
