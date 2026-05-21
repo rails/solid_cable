@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     name: Linting
     steps:
     - uses: actions/checkout@v6
