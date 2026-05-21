@@ -39,7 +39,11 @@ module ActionCable
         end
 
         class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
-          CONNECTION_ERRORS = [ ActiveRecord::ConnectionFailed ]
+          CONNECTION_ERRORS = [
+            ActiveRecord::ConnectionFailed,
+            ActiveRecord::ConnectionTimeoutError,
+            ActiveRecord::ConnectionNotEstablished
+          ]
           Stop = Class.new(Exception)
 
           def initialize(event_loop)
