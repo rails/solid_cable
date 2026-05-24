@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module SolidCable
-  VERSION = "3.0.12"
+  VERSION = "4.0.0"
 end
