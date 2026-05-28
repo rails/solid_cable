@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         database: [mysql, postgres, sqlite]
+        gemfile: [ rails_7_2, rails_8_0, rails_8_1, rails_main ]
         ruby-version:
           - 3.3
           - 3.4
@@ -37,6 +38,7 @@ jobs:
           - 55432:5432
     env:
       TARGET_DB: ${{ matrix.database }}
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
     - name: Set up Ruby
