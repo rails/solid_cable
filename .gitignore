@@ -9,6 +9,7 @@
 /test/dummy/storage/
 /test/dummy/tmp/
 Gemfile.lock
+/gemfiles/*.lock
 /bench/db/*.sqlite3
 /bench/db/*.sqlite3-*
 /bench/log/*.log

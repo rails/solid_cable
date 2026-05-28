@@ -1,0 +1,13 @@
+source "https://rubygems.org"
+
+gem "railties", "~> 8.1.0"
+
+gem "puma"
+
+gem "pg"
+gem "sqlite3"
+gem "trilogy"
+
+gem "rubocop-rails-omakase"
+
+gemspec path: "../"
