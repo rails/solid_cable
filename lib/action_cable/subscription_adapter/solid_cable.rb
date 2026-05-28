@@ -12,6 +12,13 @@ module ActionCable
 
       def initialize(*)
         super
+        @mutex =
+          if defined?(@server)
+            @server.mutex
+          else
+            Mutex.new
+          end
+
         @listener = nil
       end
 
@@ -33,9 +40,18 @@ module ActionCable
 
       private
         def listener
-          @listener || @server.mutex.synchronize do
-            @listener ||= Listener.new(@server.event_loop)
+          @listener || @mutex.synchronize do
+            @listener ||= Listener.new(self, pubsub_executor)
           end
+        end
+
+        def pubsub_executor
+          @pubsub_executor ||=
+            if respond_to?(:executor, true)
+              executor
+            else
+              @server.event_loop
+            end
         end
 
         class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
@@ -46,10 +62,12 @@ module ActionCable
           ]
           Stop = Class.new(Exception)
 
-          def initialize(event_loop)
-            super()
+          delegate :logger, to: :@adapter
 
-            @event_loop = event_loop
+          def initialize(adapter, executor)
+            super()
+            @adapter = adapter
+            @executor = executor
 
             # Critical section begins with 0 permits. It can be understood as
             # being "normally held" by the listener thread. It is released
@@ -105,7 +123,7 @@ module ActionCable
 
           def add_channel(channel, on_success)
             channels[channel] = last_message_id
-            event_loop.post(&on_success) if on_success
+            on_success.call if on_success
           end
 
           def remove_channel(channel)
@@ -113,11 +131,11 @@ module ActionCable
           end
 
           def invoke_callback(*)
-            event_loop.post { super }
+            executor.post { super }
           end
 
           private
-            attr_reader :event_loop, :thread
+            attr_reader :executor, :thread
             attr_accessor :last_id, :reconnect_attempt
 
             def last_message_id
