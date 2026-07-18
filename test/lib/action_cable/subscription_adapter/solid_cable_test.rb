@@ -199,6 +199,36 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "resets reconnect attempts after a successful empty poll" do
+    with_cable_config reconnect_attempts: [0] do
+      calls = 0
+      empty_poll = Concurrent::Event.new
+      original = SolidCable::Message.method(:broadcastable)
+
+      SolidCable::Message.stub(:broadcastable, lambda { |channels, last_id|
+        calls += 1
+
+        case calls
+        when 1, 3
+          raise ActiveRecord::ConnectionFailed, "boom"
+        when 2
+          original.call(channels, last_id).tap { empty_poll.set }
+        else
+          original.call(channels, last_id)
+        end
+      }) do
+        subscribe_as_queue("quiet-reconnect-channel") do |queue|
+          empty_poll.wait(WAIT_WHEN_EXPECTING_EVENT)
+          assert_predicate empty_poll, :set?
+
+          @tx_adapter.broadcast("quiet-reconnect-channel", "hello")
+
+          assert_equal "hello", next_message_in_queue(queue)
+        end
+      end
+    end
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
