@@ -112,7 +112,7 @@ if you want to deploy the app to your own server and run benchmarks.
 
 To benchmark we use [k6](https://k6.io). Most of the setup was gotten from this
 [article](https://evilmartians.com/chronicles/real-time-stress-anycable-k6-websockets-and-yabeda).
-1. Install k6
+1. Install k6 and xk6
 1. Install xk6-cable by running `xk6 build --with
    github.com/anycable/xk6-cable`. This will output a custom k6 binary.
 1. Run the load test with `./k6 run loadtest.js`

@@ -1,31 +1,48 @@
 service: solidcable
-image: npezza/solid_cable
 asset_path: /rails/public/assets
+retain_containers: 1
+
 servers:
   web:
     - <%= ENV["HOST"] %>
+
+proxy:
+  ssl: false
+  host: solid-cable.dev
+  forward_headers: true
+
 registry:
-  username: npezza
-  password:
-    - KAMAL_REGISTRY_PASSWORD
+  server: localhost:5555
 
 env:
+  clear:
+    HISTFILE: /hist/.bash_history
+    IRB_HISTFILE: /hist/.irb_history
+    WEB_CONCURRENCY: 4
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
     - HOST
     - POSTGRES_PASSWORD
 
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  bash: app exec -i --reuse "bash"
+  rails: app exec -p "bin/rails"
+  logs: app logs -f --roles=web
+
 volumes:
   - "solidcable:/data"
+  - "hist:/hist"
+
 builder:
-  context: "."
-  local:
-    arch: amd64
+  arch: amd64
+  args:
+    RUBY_VERSION: <%= ENV["RBENV_VERSION"] %>
 
 accessories:
   mysql:
-    image: mysql:8.3
+    image: mysql:latest
     host: "<%= ENV['HOST'] %>"
     port: 3306
     env:
@@ -45,7 +62,7 @@ accessories:
     volumes:
       - /var/lib/redis:/data
   postgres:
-    image: postgres:16
+    image: postgres:latest
     host: "<%= ENV['HOST'] %>"
     port: 5432
     env:
