@@ -18,7 +18,7 @@ env:
   clear:
     HISTFILE: /hist/.bash_history
     IRB_HISTFILE: /hist/.irb_history
-    WEB_CONCURRENCY: 4
+    WEB_CONCURRENCY: auto
   secret:
     - RAILS_MASTER_KEY
     - MYSQL_ROOT_PASSWORD
