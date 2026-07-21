@@ -38,3 +38,45 @@ Run 1:
 
 running (1m35.1s), 000/500 VUs, 8651 complete and 0 interrupted iterations
 steady ✓ [======================================] 500 VUs  1m30s
+
+
+RUN 2:
+❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=196.54ms min=55ms     med=174ms    max=786ms  p(90)=319ms    p(95)=394ms
+     cable_connection_duration.....: avg=407.59ms min=141ms    med=232ms    max=4s     p(90)=516ms    p(95)=1.49s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5      p(90)=5        p(95)=5
+     cable_messages_received.......: 43980   462.590229/s
+     cable_messages_sent...........: 43980   462.590229/s
+     cable_receive_duration........: avg=196.45ms min=55ms     med=174ms    max=786ms  p(90)=319ms    p(95)=394ms
+     cable_round_trip_success......: 100.00% ✓ 43980      ✗ 0
+     cable_subscription_duration...: avg=112.45ms min=45ms     med=91ms     max=549ms  p(90)=192ms    p(95)=244ms
+     checks........................: 100.00% ✓ 17592      ✗ 0
+     data_received.................: 50 MB   526 kB/s
+     data_sent.....................: 27 MB   284 kB/s
+     iteration_duration............: avg=5.24s    min=3.84s    med=5.1s     max=10.02s p(90)=5.83s    p(95)=6.61s
+     iterations....................: 8796    92.518046/s
+     vus...........................: 2       min=2        max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=364.1ms  min=140.68ms med=200.32ms max=3.94s  p(90)=379.01ms p(95)=1.35s
+     ws_msgs_received..............: 52776   555.108275/s
+     ws_msgs_sent..................: 52776   555.108275/s
+
+running (1m35.1s), 000/500 VUs, 8796 complete and 0 interrupted iterations
+steady ✓ [======================================] 500 VUs  1m30s
