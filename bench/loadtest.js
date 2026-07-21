@@ -1,6 +1,7 @@
 import { check, fail, sleep } from "k6";
 import cable from "k6/x/cable";
 import { Counter, Rate, Trend } from "k6/metrics";
+import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.4/index.js";
 
 const WS_URL = __ENV.WS_URL || "wss://solid-cable.dev/cable";
 const WS_COOKIE = __ENV.WS_COOKIE || "";
@@ -49,19 +50,6 @@ const messagesReceived = new Counter("cable_messages_received");
 const successfulRoundTrips = new Rate("cable_round_trip_success");
 
 export const options = {
-  summaryTrendStats: ["avg", "min", "med", "p(90)", "p(95)", "p(99)", "max"],
-  systemTags: ["status", "method", "url", "name", "scenario", "group", "check", "error"],
-  thresholds: {
-    checks: ["rate>0.99"],
-    cable_connection_failures: ["count==0"],
-    cable_subscription_failures: ["count==0"],
-    cable_receive_failures: ["count==0"],
-    cable_invalid_messages: ["count==0"],
-    cable_round_trip_success: ["rate>0.99"],
-    cable_connection_duration: ["p(95)<1000"],
-    cable_subscription_duration: ["p(95)<1000"],
-    cable_action_rtt: ["p(95)<500", "p(99)<1000"],
-  },
   scenarios: buildScenarios(),
 };
 
@@ -275,7 +263,7 @@ function buildScenarios() {
 
 export function handleSummary(data) {
   const output = {
-    stdout: summaryText(data),
+    stdout: textSummary(data, { indent: " ", enableColors: true }),
   };
 
   if (__ENV.SUMMARY_PATH) {
@@ -294,49 +282,6 @@ export function handleSummary(data) {
 
 function scenarioStartTime(seconds) {
   return seconds === 0 ? "0s" : `${seconds}s`;
-}
-
-function summaryText(data) {
-  const lines = [
-    "",
-    `adapter=${ADAPTER} test_id=${TEST_ID} url=${WS_URL}`,
-    `scenarios=${SCENARIOS.join(",")} max_vus=${MAX_VUS} messages_per_iteration=${MESSAGES_PER_ITERATION} storm_vus=${STORM_VUS}`,
-    "",
-    "Cable metrics:",
-    metricLine(data, "cable_connection_duration", ["avg", "p(95)", "p(99)", "max"]),
-    metricLine(data, "cable_subscription_duration", ["avg", "p(95)", "p(99)", "max"]),
-    metricLine(data, "cable_action_rtt", ["avg", "p(95)", "p(99)", "max"]),
-    metricLine(data, "cable_receive_duration", ["avg", "p(95)", "p(99)", "max"]),
-    metricLine(data, "cable_round_trip_success", ["rate"]),
-    metricLine(data, "cable_messages_sent", ["count", "rate"]),
-    metricLine(data, "cable_messages_received", ["count", "rate"]),
-    metricLine(data, "cable_connection_failures", ["count"]),
-    metricLine(data, "cable_subscription_failures", ["count"]),
-    metricLine(data, "cable_receive_failures", ["count"]),
-    metricLine(data, "cable_invalid_messages", ["count"]),
-    "",
-  ];
-
-  return `${lines.filter(Boolean).join("\n")}\n`;
-}
-
-function metricLine(data, name, fields) {
-  const metric = data.metrics[name];
-  if (!metric || !metric.values) return `${name}: missing`;
-
-  const values = fields
-    .filter((field) => metric.values[field] !== undefined)
-    .map((field) => `${field}=${formatMetricValue(metric.values[field])}`)
-    .join(" ");
-
-  return `${name}: ${values}`;
-}
-
-function formatMetricValue(value) {
-  if (typeof value !== "number") return `${value}`;
-  if (Number.isInteger(value)) return `${value}`;
-
-  return value.toFixed(2);
 }
 
 function scenarioTags(workload) {
