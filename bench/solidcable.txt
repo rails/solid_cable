@@ -1,0 +1,42 @@
+RUN 1:
+
+❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
+
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=200.13ms min=56ms     med=175ms    max=796ms  p(90)=337ms    p(95)=414ms
+     cable_connection_duration.....: avg=428.76ms min=144ms    med=243ms    max=4.38s  p(90)=490.5ms  p(95)=1.85s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5      p(90)=5        p(95)=5
+     cable_messages_received.......: 43630   460.170289/s
+     cable_messages_sent...........: 43630   460.170289/s
+     cable_receive_duration........: avg=200.06ms min=55ms     med=175ms    max=796ms  p(90)=337ms    p(95)=414ms
+     cable_round_trip_success......: 100.00% ✓ 43630      ✗ 0
+     cable_subscription_duration...: avg=116.94ms min=40ms     med=97ms     max=942ms  p(90)=202ms    p(95)=249ms
+     checks........................: 100.00% ✓ 17452      ✗ 0
+     data_received.................: 50 MB   523 kB/s
+     data_sent.....................: 27 MB   283 kB/s
+     iteration_duration............: avg=5.29s    min=3.8s     med=5.14s    max=10.41s p(90)=5.9s     p(95)=6.8s
+     iterations....................: 8726    92.034058/s
+     vus...........................: 65      min=65       max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=376.65ms min=143.21ms med=201.29ms max=4.33s  p(90)=332.64ms p(95)=1.83s
+     ws_msgs_received..............: 52356   552.204347/s
+     ws_msgs_sent..................: 52356   552.204347/s
+
+running (1m34.8s), 000/500 VUs, 8726 complete and 0 interrupted iterations
+steady ✓ [======================================] 500 VUs  1m30s
