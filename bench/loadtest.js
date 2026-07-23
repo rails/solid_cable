@@ -22,6 +22,12 @@ const STORM_VUS = intEnv("STORM_VUS", MAX_VUS);
 const STORM_TIME_SECONDS = intEnv("STORM_TIME", Math.max(15, Math.floor(TIME_SECONDS / 3)));
 const STORM_ROUNDS = intEnv("STORM_ROUNDS", 5);
 const STORM_SLEEP_MS = intEnv("STORM_SLEEP_MS", 100);
+const FANOUT_VUS = intEnv("FANOUT_VUS", MAX_VUS);
+const FANOUT_RATE = intEnv("FANOUT_RATE", 10);
+const FANOUT_TIME_SECONDS = intEnv("FANOUT_TIME", TIME_SECONDS);
+const FANOUT_WARMUP_SECONDS = intEnv("FANOUT_WARMUP", 15);
+const FANOUT_DRAIN_SECONDS = intEnv("FANOUT_DRAIN", 10);
+const FANOUT_STREAM = __ENV.FANOUT_STREAM || `${TEST_ID}-fanout`;
 const RAMP_UP_SECONDS = Math.max(1, Math.floor(TIME_SECONDS / 3));
 const RAMP_HOLD_SECONDS = Math.max(1, Math.floor((7 * TIME_SECONDS) / 12));
 const RAMP_DOWN_SECONDS = Math.max(1, Math.floor(TIME_SECONDS / 12));
@@ -48,6 +54,12 @@ const invalidMessages = new Counter("cable_invalid_messages");
 const messagesSent = new Counter("cable_messages_sent");
 const messagesReceived = new Counter("cable_messages_received");
 const successfulRoundTrips = new Rate("cable_round_trip_success");
+const fanoutDeliveryLatency = new Trend("cable_fanout_delivery_latency", true);
+const fanoutMessagesPublished = new Counter("cable_fanout_messages_published");
+const fanoutDeliveriesReceived = new Counter("cable_fanout_deliveries_received");
+const fanoutSequenceGaps = new Counter("cable_fanout_sequence_gaps");
+const fanoutDuplicateDeliveries = new Counter("cable_fanout_duplicate_deliveries");
+const fanoutSubscribersCompleted = new Counter("cable_fanout_subscribers_completed");
 
 export const options = {
   scenarios: buildScenarios(),
@@ -118,6 +130,67 @@ export function storm() {
   }
 }
 
+export function fanoutSubscriber() {
+  const tags = scenarioTags("fanout");
+  const client = connectClient("fanout");
+  const channel = subscribeTo(client, "fanout", "FanoutChannel", { stream: FANOUT_STREAM });
+  let lastSequence = null;
+
+  while (true) {
+    const message = channel.receive();
+    if (!message) continue;
+
+    if (message.complete) {
+      fanoutSubscribersCompleted.add(1, tags);
+      break;
+    }
+
+    const sequence = Number(message.sequence);
+    const sentAt = Number(message.sent_at);
+
+    if (!Number.isFinite(sequence) || !Number.isFinite(sentAt)) {
+      invalidMessages.add(1, tags);
+      continue;
+    }
+
+    if (lastSequence === null && sequence > 0) {
+      fanoutSequenceGaps.add(sequence, tags);
+    } else if (lastSequence !== null && sequence <= lastSequence) {
+      fanoutDuplicateDeliveries.add(1, tags);
+    } else if (lastSequence !== null && sequence > lastSequence + 1) {
+      fanoutSequenceGaps.add(sequence - lastSequence - 1, tags);
+    }
+
+    lastSequence = Math.max(lastSequence === null ? -1 : lastSequence, sequence);
+    fanoutDeliveryLatency.add(Date.now() - sentAt, tags);
+    fanoutDeliveriesReceived.add(1, tags);
+  }
+
+  client.disconnect();
+}
+
+export function fanoutPublisher() {
+  const tags = scenarioTags("fanout");
+  const client = connectClient("fanout");
+  const channel = subscribeTo(client, "fanout", "FanoutChannel", { stream: FANOUT_STREAM });
+  const messageCount = FANOUT_RATE * FANOUT_TIME_SECONDS;
+
+  for (let sequence = 0; sequence < messageCount; sequence++) {
+    channel.perform("publish", {
+      sequence,
+      sent_at: Date.now(),
+      message: messageBody("fanout", sequence),
+    });
+    fanoutMessagesPublished.add(1, tags);
+
+    if (sequence < messageCount - 1) sleep(1 / FANOUT_RATE);
+  }
+
+  channel.perform("publish", { complete: true });
+  sleep(1);
+  client.disconnect();
+}
+
 function runPingIteration(workload) {
   const tags = scenarioTags(workload);
   const client = connectClient(workload);
@@ -153,12 +226,12 @@ function runPingIteration(workload) {
   client.disconnect();
 }
 
-function connectClient(workload) {
+function connectClient(workload, receiveTimeoutMs) {
   const tags = scenarioTags(workload);
   const startedAt = Date.now();
   const client = cable.connect(WS_URL, {
     cookies: WS_COOKIE,
-    receiveTimeoutMs: RECEIVE_TIMEOUT_MS,
+    receiveTimeoutMs: receiveTimeoutMs || RECEIVE_TIMEOUT_MS,
     handshakeTimeoutS: HANDSHAKE_TIMEOUT_SECONDS,
     tags,
   });
@@ -174,9 +247,13 @@ function connectClient(workload) {
 }
 
 function subscribe(client, workload) {
+  return subscribeTo(client, workload, "BroadcastChannel", {});
+}
+
+function subscribeTo(client, workload, channelName, params) {
   const tags = scenarioTags(workload);
   const startedAt = Date.now();
-  const channel = client.subscribe("BroadcastChannel", {});
+  const channel = client.subscribe(channelName, params);
 
   subscriptionDuration.add(Date.now() - startedAt, tags);
 
@@ -255,6 +332,31 @@ function buildScenarios() {
       startTime: scenarioStartTime(startAfterSeconds),
       gracefulStop: "0s",
       tags: scenarioTags("storm"),
+    };
+    startAfterSeconds += STORM_TIME_SECONDS;
+  }
+
+  if (SCENARIOS.includes("fanout")) {
+    const fanoutStartTime = startAfterSeconds;
+
+    scenarios.fanout_subscribers = {
+      exec: "fanoutSubscriber",
+      executor: "per-vu-iterations",
+      vus: FANOUT_VUS,
+      iterations: 1,
+      maxDuration: `${FANOUT_WARMUP_SECONDS + FANOUT_TIME_SECONDS + FANOUT_DRAIN_SECONDS}s`,
+      startTime: scenarioStartTime(fanoutStartTime),
+      tags: scenarioTags("fanout"),
+    };
+
+    scenarios.fanout_publisher = {
+      exec: "fanoutPublisher",
+      executor: "per-vu-iterations",
+      vus: 1,
+      iterations: 1,
+      maxDuration: `${FANOUT_TIME_SECONDS + HANDSHAKE_TIMEOUT_SECONDS}s`,
+      startTime: scenarioStartTime(fanoutStartTime + FANOUT_WARMUP_SECONDS),
+      tags: scenarioTags("fanout"),
     };
   }
 

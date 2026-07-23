@@ -1,4 +1,6 @@
-autotrimming disabled, polling interval set to 0.1s
+autotrimming disabled, polling interval set to 0.1s.
+at 500 vus, and a polling interval of 0.25s the rtt was basically the same but
+dropping polling to 0.01s increased the rtt all the way to 288ms.
 
 
 ❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
