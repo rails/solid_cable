@@ -1,4 +1,4 @@
-❯ SCENARIOS=fanout FANOUT_VUS=100 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+❯ SCENARIOS=fanout FANOUT_VUS=250 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
 
           /\      |‾‾| /‾‾/   /‾‾/
      /\  /  \     |  |/  /   /  /
@@ -10,32 +10,31 @@
         script: loadtest.js
         output: -
 
-     scenarios: (100.00%) 2 scenarios, 101 max VUs, 3m15s max duration (incl. graceful stop):
-              * fanout_subscribers: 1 iterations for each of 100 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+     scenarios: (100.00%) 2 scenarios, 251 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 250 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
               * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
 
      ✓ successful connection
      ✓ successful subscription
 
-     cable_connection_duration............: avg=526.05ms min=174ms    med=534ms    max=688ms    p(90)=663ms    p(95)=669ms
-     cable_fanout_deliveries_received.....: 89976   842.531179/s
-     cable_fanout_delivery_latency........: avg=116.73ms min=53ms     med=118ms    max=338ms    p(90)=157ms    p(95)=165ms
-     cable_fanout_duplicate_deliveries....: 1152    10.787276/s
-     cable_fanout_messages_published......: 900     8.427559/s
-     cable_fanout_sequence_gaps...........: 1152    10.787276/s
-     cable_fanout_subscribers_completed...: 100     0.936395/s
-     cable_subscription_duration..........: avg=87.55ms  min=50ms     med=73ms     max=211ms    p(90)=148ms    p(95)=156ms
-     checks...............................: 100.00% ✓ 202        ✗ 0
-     data_received........................: 22 MB   204 kB/s
-     data_sent............................: 463 kB  4.3 kB/s
-     iteration_duration...................: avg=1m45s    min=1m31s    med=1m45s    max=1m45s    p(90)=1m45s    p(95)=1m45s
-     iterations...........................: 101     0.945759/s
-     vus..................................: 1       min=1        max=101
-     vus_max..............................: 101     min=101      max=101
-     ws_connecting........................: avg=499.13ms min=173.84ms med=507.83ms max=687.59ms p(90)=627.97ms p(95)=644.17ms
-     ws_msgs_received.....................: 91078   852.850257/s
-     ws_msgs_sent.........................: 1002    9.382683/s
+     cable_connection_duration..............: avg=1.26s    min=178ms    med=1.32s max=1.84s p(90)=1.78s p(95)=1.81s
+     cable_fanout_deliveries_received.......: 225000  2090.001813/s
+     cable_fanout_delivery_latency..........: avg=129.41ms min=50ms     med=126ms max=512ms p(90)=174ms p(95)=198ms
+     cable_fanout_messages_published........: 900     8.360007/s
+     cable_fanout_out_of_order_deliveries...: 1907    17.713926/s
+     cable_fanout_subscribers_completed.....: 250     2.322224/s
+     cable_subscription_duration............: avg=116.32ms min=46ms     med=89ms  max=360ms p(90)=223ms p(95)=246ms
+     checks.................................: 100.00% ✓ 502         ✗ 0
+     data_received..........................: 54 MB   503 kB/s
+     data_sent..............................: 768 kB  7.1 kB/s
+     iteration_duration.....................: avg=1m46s    min=1m32s    med=1m46s max=1m46s p(90)=1m46s p(95)=1m46s
+     iterations.............................: 251     2.331513/s
+     vus....................................: 1       min=1         max=251
+     vus_max................................: 251     min=251       max=251
+     ws_connecting..........................: avg=1.18s    min=177.24ms med=1.24s max=1.83s p(90)=1.57s p(95)=1.66s
+     ws_msgs_received.......................: 226402  2103.024847/s
+     ws_msgs_sent...........................: 1152    10.700809/s
 
-running (1m46.8s), 000/101 VUs, 101 complete and 0 interrupted iterations
-fanout_subscribers ✓ [======================================] 100 VUs  1m46.0s/1m55s  100/100 iters, 1 per VU
-fanout_publisher   ✓ [======================================] 1 VUs    1m31.8s/2m30s  1/1 iters, 1 per VU
+running (1m47.7s), 000/251 VUs, 251 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 250 VUs  1m46.8s/1m55s  250/250 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m32.7s/2m30s  1/1 iters, 1 per VU
