@@ -1,0 +1,332 @@
+❯ SCENARIOS=fanout FANOUT_VUS=250 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 251 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 250 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration..............: avg=1.14s    min=181ms    med=1.18s max=1.65s p(90)=1.49s p(95)=1.6s
+     cable_fanout_deliveries_received.......: 225000  2083.52604/s
+     cable_fanout_delivery_latency..........: avg=98.82ms  min=44ms     med=82ms  max=1.19s p(90)=166ms p(95)=216ms
+     cable_fanout_messages_published........: 900     8.334104/s
+     cable_fanout_out_of_order_deliveries...: 597     5.528289/s
+     cable_fanout_subscribers_completed.....: 250     2.315029/s
+     cable_subscription_duration............: avg=121.84ms min=48ms     med=96ms  max=477ms p(90)=230ms p(95)=303.49ms
+     checks.................................: 100.00% ✓ 502         ✗ 0
+     data_received..........................: 54 MB   501 kB/s
+     data_sent..............................: 768 kB  7.1 kB/s
+     iteration_duration.....................: avg=1m47s    min=1m32s    med=1m47s max=1m47s p(90)=1m47s p(95)=1m47s
+     iterations.............................: 251     2.324289/s
+     vus....................................: 251     min=250       max=251
+     vus_max................................: 251     min=251       max=251
+     ws_connecting..........................: avg=1.11s    min=181.36ms med=1.14s max=1.65s p(90)=1.47s p(95)=1.53s
+     ws_msgs_received.......................: 226402  2096.508722/s
+     ws_msgs_sent...........................: 1152    10.667653/s
+
+running (1m48.0s), 000/251 VUs, 251 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 250 VUs  1m47.2s/1m55s  250/250 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m33.0s/2m30s  1/1 iters, 1 per VU
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=250 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 251 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 250 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration..............: avg=1.18s    min=175ms   med=1.21s max=1.65s p(90)=1.52s p(95)=1.61s
+     cable_fanout_deliveries_received.......: 225000  2086.265135/s
+     cable_fanout_delivery_latency..........: avg=73.12ms  min=41ms    med=73ms  max=355ms p(90)=89ms  p(95)=93ms
+     cable_fanout_messages_published........: 900     8.345061/s
+     cable_fanout_out_of_order_deliveries...: 239     2.216077/s
+     cable_fanout_subscribers_completed.....: 250     2.318072/s
+     cable_subscription_duration............: avg=129.49ms min=44ms    med=93ms  max=509ms p(90)=251ms p(95)=322ms
+     checks.................................: 100.00% ✓ 502         ✗ 0
+     data_received..........................: 54 MB   502 kB/s
+     data_sent..............................: 768 kB  7.1 kB/s
+     iteration_duration.....................: avg=1m46s    min=1m32s   med=1m46s max=1m47s p(90)=1m46s p(95)=1m46s
+     iterations.............................: 251     2.327345/s
+     vus....................................: 2       min=2         max=251
+     vus_max................................: 251     min=251       max=251
+     ws_connecting..........................: avg=1.15s    min=174.3ms med=1.2s  max=1.65s p(90)=1.48s p(95)=1.56s
+     ws_msgs_received.......................: 226402  2099.264885/s
+     ws_msgs_sent...........................: 1152    10.681677/s
+
+running (1m47.8s), 000/251 VUs, 251 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 250 VUs  1m47.0s/1m55s  250/250 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m32.8s/2m30s  1/1 iters, 1 per VU
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=100 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 101 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 100 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration..............: avg=595.74ms min=214ms    med=629ms    max=797ms    p(90)=765ms    p(95)=776ms
+     cable_fanout_deliveries_received.......: 90000   832.225025/s
+     cable_fanout_delivery_latency..........: avg=65.02ms  min=45ms     med=63ms     max=347ms    p(90)=73ms     p(95)=78ms
+     cable_fanout_messages_published........: 900     8.32225/s
+     cable_fanout_out_of_order_deliveries...: 11      0.101716/s
+     cable_fanout_subscribers_completed.....: 100     0.924694/s
+     cable_subscription_duration............: avg=95.39ms  min=43ms     med=78ms     max=270ms    p(90)=153ms    p(95)=220ms
+     checks.................................: 100.00% ✓ 202        ✗ 0
+     data_received..........................: 22 MB   201 kB/s
+     data_sent..............................: 463 kB  4.3 kB/s
+     iteration_duration.....................: avg=1m47s    min=1m33s    med=1m47s    max=1m47s    p(90)=1m47s    p(95)=1m47s
+     iterations.............................: 101     0.933941/s
+     vus....................................: 1       min=1        max=101
+     vus_max................................: 101     min=101      max=101
+     ws_connecting..........................: avg=572.12ms min=213.26ms med=608.87ms max=797.59ms p(90)=741.52ms p(95)=761.36ms
+     ws_msgs_received.......................: 91102   842.415158/s
+     ws_msgs_sent...........................: 1002    9.265439/s
+
+running (1m48.1s), 000/101 VUs, 101 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 100 VUs  1m47.2s/1m55s  100/100 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m33.1s/2m30s  1/1 iters, 1 per VU
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=100 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 101 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 100 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration............: avg=711.52ms min=167ms    med=760ms    max=955ms    p(90)=892ms    p(95)=897ms
+     cable_fanout_deliveries_received.....: 90000   832.600075/s
+     cable_fanout_delivery_latency........: avg=64.94ms  min=45ms     med=64ms     max=243ms    p(90)=73ms     p(95)=77ms
+     cable_fanout_messages_published......: 900     8.326001/s
+     cable_fanout_subscribers_completed...: 100     0.925111/s
+     cable_subscription_duration..........: avg=99.3ms   min=49ms     med=87ms     max=307ms    p(90)=150ms    p(95)=198ms
+     checks...............................: 100.00% ✓ 202        ✗ 0
+     data_received........................: 22 MB   202 kB/s
+     data_sent............................: 463 kB  4.3 kB/s
+     iteration_duration...................: avg=1m47s    min=1m33s    med=1m47s    max=1m47s    p(90)=1m47s    p(95)=1m47s
+     iterations...........................: 101     0.934362/s
+     vus..................................: 1       min=1        max=101
+     vus_max..............................: 101     min=101      max=101
+     ws_connecting........................: avg=680.58ms min=166.83ms med=723.56ms max=954.94ms p(90)=875.64ms p(95)=889.64ms
+     ws_msgs_received.....................: 91102   842.7948/s
+     ws_msgs_sent.........................: 1002    9.269614/s
+
+running (1m48.1s), 000/101 VUs, 101 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 100 VUs  1m47.2s/1m55s  100/100 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m33.1s/2m30s  1/1 iters, 1 per VU
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=500 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 501 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 500 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration............: avg=2.05s    min=176ms    med=2.11s max=2.72s p(90)=2.64s p(95)=2.68s
+     cable_fanout_deliveries_received.....: 450000  4187.785514/s
+     cable_fanout_delivery_latency........: avg=86.05ms  min=40ms     med=86ms  max=444ms p(90)=114ms p(95)=120ms
+     cable_fanout_messages_published......: 900     8.375571/s
+     cable_fanout_subscribers_completed...: 500     4.653095/s
+     cable_subscription_duration..........: avg=113.77ms min=49ms     med=85ms  max=792ms p(90)=181ms p(95)=289ms
+     checks...............................: 100.00% ✓ 1002        ✗ 0
+     data_received........................: 108 MB  1.0 MB/s
+     data_sent............................: 1.3 MB  12 kB/s
+     iteration_duration...................: avg=1m46s    min=1m32s    med=1m46s max=1m46s p(90)=1m46s p(95)=1m46s
+     iterations...........................: 501     4.662401/s
+     vus..................................: 1       min=1         max=501
+     vus_max..............................: 501     min=501       max=501
+     ws_connecting........................: avg=2.03s    min=175.79ms med=2.09s max=2.71s p(90)=2.62s p(95)=2.66s
+     ws_msgs_received.....................: 451902  4205.485887/s
+     ws_msgs_sent.........................: 1402    13.047278/s
+
+running (1m47.5s), 000/501 VUs, 501 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 500 VUs  1m46.6s/1m55s  500/500 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m32.5s/2m30s  1/1 iters, 1 per VU
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=500 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 501 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 500 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration..............: avg=1.99s    min=175ms   med=2.04s max=2.67s p(90)=2.56s p(95)=2.6s
+     cable_fanout_deliveries_received.......: 450000  4187.93338/s
+     cable_fanout_delivery_latency..........: avg=91.93ms  min=44ms    med=91ms  max=440ms p(90)=120ms p(95)=127ms
+     cable_fanout_messages_published........: 900     8.375867/s
+     cable_fanout_out_of_order_deliveries...: 59      0.549085/s
+     cable_fanout_subscribers_completed.....: 500     4.653259/s
+     cable_subscription_duration............: avg=116.76ms min=47ms    med=87ms  max=476ms p(90)=209ms p(95)=257ms
+     checks.................................: 100.00% ✓ 1002        ✗ 0
+     data_received..........................: 108 MB  1.0 MB/s
+     data_sent..............................: 1.3 MB  12 kB/s
+     iteration_duration.....................: avg=1m46s    min=1m32s   med=1m46s max=1m46s p(90)=1m46s p(95)=1m46s
+     iterations.............................: 501     4.662566/s
+     vus....................................: 1       min=1         max=501
+     vus_max................................: 501     min=501       max=501
+     ws_connecting..........................: avg=1.96s    min=174.3ms med=2.04s max=2.66s p(90)=2.55s p(95)=2.6s
+     ws_msgs_received.......................: 451902  4205.634379/s
+     ws_msgs_sent...........................: 1402    13.047739/s
+
+running (1m47.5s), 000/501 VUs, 501 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 500 VUs  1m46.7s/1m55s  500/500 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs    1m32.5s/2m30s  1/1 iters, 1 per VU
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=10 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 11 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 10 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration............: avg=310.36ms min=196ms    med=319ms    max=327ms    p(90)=327ms    p(95)=327ms
+     cable_fanout_deliveries_received.....: 9000    83.160872/s
+     cable_fanout_delivery_latency........: avg=55.55ms  min=48ms     med=54ms     max=189ms    p(90)=60ms     p(95)=63ms
+     cable_fanout_messages_published......: 900     8.316087/s
+     cable_fanout_subscribers_completed...: 10      0.092401/s
+     cable_subscription_duration..........: avg=61.27ms  min=54ms     med=62ms     max=69ms     p(90)=68ms     p(95)=68.5ms
+     checks...............................: 100.00% ✓ 22        ✗ 0
+     data_received........................: 2.4 MB  22 kB/s
+     data_sent............................: 281 kB  2.6 kB/s
+     iteration_duration...................: avg=1m45s    min=1m33s    med=1m47s    max=1m47s    p(90)=1m47s    p(95)=1m47s
+     iterations...........................: 11      0.101641/s
+     vus..................................: 1       min=1       max=11
+     vus_max..............................: 11      min=11      max=11
+     ws_connecting........................: avg=285.57ms min=195.79ms med=290.47ms max=326.34ms p(90)=319.61ms p(95)=322.98ms
+     ws_msgs_received.....................: 9922    91.680242/s
+     ws_msgs_sent.........................: 912     8.426968/s
+
+running (1m48.2s), 00/11 VUs, 11 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 10 VUs  1m47.3s/1m55s  10/10 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs   1m33.2s/2m30s  1/1 iters, 1 per VU
+
+
+
+❯ SCENARIOS=fanout FANOUT_VUS=10 FANOUT_RATE=10 FANOUT_TIME=90 FANOUT_WARMUP=15 FANOUT_DRAIN=10 PAYLOAD_BYTES=64 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 2 scenarios, 11 max VUs, 3m15s max duration (incl. graceful stop):
+              * fanout_subscribers: 1 iterations for each of 10 VUs (maxDuration: 1m55s, exec: fanoutSubscriber, gracefulStop: 30s)
+              * fanout_publisher: 1 iterations for each of 1 VUs (maxDuration: 2m30s, exec: fanoutPublisher, startTime: 15s, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_connection_duration..............: avg=235.09ms min=177ms    med=246ms    max=253ms    p(90)=253ms    p(95)=253ms
+     cable_fanout_deliveries_received.......: 9000    83.163017/s
+     cable_fanout_delivery_latency..........: avg=53.39ms  min=45ms     med=51ms     max=196ms    p(90)=58ms     p(95)=62ms
+     cable_fanout_messages_published........: 900     8.316302/s
+     cable_fanout_out_of_order_deliveries...: 3       0.027721/s
+     cable_fanout_subscribers_completed.....: 10      0.092403/s
+     cable_subscription_duration............: avg=60.09ms  min=51ms     med=60ms     max=69ms     p(90)=67ms     p(95)=68ms
+     checks.................................: 100.00% ✓ 22        ✗ 0
+     data_received..........................: 2.4 MB  22 kB/s
+     data_sent..............................: 281 kB  2.6 kB/s
+     iteration_duration.....................: avg=1m45s    min=1m33s    med=1m47s    max=1m47s    p(90)=1m47s    p(95)=1m47s
+     iterations.............................: 11      0.101644/s
+     vus....................................: 1       min=1       max=11
+     vus_max................................: 11      min=11      max=11
+     ws_connecting..........................: avg=220.97ms min=177.02ms med=220.44ms max=249.76ms p(90)=244.82ms p(95)=247.29ms
+     ws_msgs_received.......................: 9922    91.682606/s
+     ws_msgs_sent...........................: 912     8.427186/s
+
+running (1m48.2s), 00/11 VUs, 11 complete and 0 interrupted iterations
+fanout_subscribers ✓ [======================================] 10 VUs  1m47.3s/1m55s  10/10 iters, 1 per VU
+fanout_publisher   ✓ [======================================] 1 VUs   1m33.2s/2m30s  1/1 iters, 1 per VU
