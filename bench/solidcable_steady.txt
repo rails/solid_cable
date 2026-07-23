@@ -1,3 +1,6 @@
+autotrimming disabled, polling interval set to 0.1s
+
+
 ❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
 
 
