@@ -1,0 +1,337 @@
+❯ SCENARIOS=storm STORM_VUS=50 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 50 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=143.34ms min=51ms     med=144ms    max=423ms    p(90)=224ms    p(95)=245.05ms
+     cable_connection_duration.....: avg=245.29ms min=151ms    med=201ms    max=734ms    p(90)=349.1ms  p(95)=541.69ms
+     cable_messages_received.......: 500     79.580908/s
+     cable_messages_sent...........: 500     79.580908/s
+     cable_receive_duration........: avg=143.27ms min=51ms     med=144ms    max=423ms    p(90)=224ms    p(95)=245.05ms
+     cable_round_trip_success......: 100.00% ✓ 500        ✗ 0
+     cable_subscription_duration...: avg=76.13ms  min=44ms     med=63ms     max=351ms    p(90)=121.1ms  p(95)=150ms
+     checks........................: 100.00% ✓ 1000       ✗ 0
+     data_received.................: 2.5 MB  391 kB/s
+     data_sent.....................: 1.1 MB  176 kB/s
+     iteration_duration............: avg=5.65s    min=4.92s    med=5.66s    max=6.28s    p(90)=6.07s    p(95)=6.12s
+     iterations....................: 50      7.958091/s
+     vus...........................: 10      min=10       max=50
+     vus_max.......................: 50      min=50       max=50
+     ws_connecting.................: avg=232.11ms min=150.51ms med=198.47ms max=734.05ms p(90)=336.49ms p(95)=373.65ms
+     ws_msgs_received..............: 1000    159.161816/s
+     ws_msgs_sent..................: 1000    159.161816/s
+
+running (0m06.3s), 00/50 VUs, 50 complete and 0 interrupted iterations
+storm ✓ [======================================] 50 VUs  0m06.3s/1m5s  50/50 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=50 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 50 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=130.96ms min=57ms    med=123ms    max=319ms   p(90)=203.1ms  p(95)=235.05ms
+     cable_connection_duration.....: avg=231.7ms  min=148ms   med=196ms    max=746ms   p(90)=332.1ms  p(95)=437.09ms
+     cable_messages_received.......: 500     87.713235/s
+     cable_messages_sent...........: 500     87.713235/s
+     cable_receive_duration........: avg=130.88ms min=57ms    med=122.5ms  max=319ms   p(90)=203.1ms  p(95)=235.05ms
+     cable_round_trip_success......: 100.00% ✓ 500        ✗ 0
+     cable_subscription_duration...: avg=73.41ms  min=42ms    med=61ms     max=368ms   p(90)=117ms    p(95)=144.04ms
+     checks........................: 100.00% ✓ 1000       ✗ 0
+     data_received.................: 2.5 MB  431 kB/s
+     data_sent.....................: 1.1 MB  195 kB/s
+     iteration_duration............: avg=5.36s    min=4.96s   med=5.28s    max=5.7s    p(90)=5.68s    p(95)=5.69s
+     iterations....................: 50      8.771324/s
+     vus...........................: 49      min=49       max=50
+     vus_max.......................: 50      min=50       max=50
+     ws_connecting.................: avg=220.61ms min=147.9ms med=190.93ms max=732.2ms p(90)=302.75ms p(95)=390.19ms
+     ws_msgs_received..............: 1000    175.426471/s
+     ws_msgs_sent..................: 1000    175.426471/s
+
+running (0m05.7s), 00/50 VUs, 50 complete and 0 interrupted iterations
+storm ✓ [======================================] 50 VUs  0m05.7s/1m5s  50/50 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=100 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 100 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=161.36ms min=57ms     med=149ms    max=405ms p(90)=242.1ms  p(95)=292.04ms
+     cable_connection_duration.....: avg=342.86ms min=147ms    med=261ms    max=1.73s p(90)=635.1ms  p(95)=917.54ms
+     cable_messages_received.......: 1000    135.694637/s
+     cable_messages_sent...........: 1000    135.694637/s
+     cable_receive_duration........: avg=161.29ms min=56ms     med=149ms    max=405ms p(90)=242ms    p(95)=292.04ms
+     cable_round_trip_success......: 100.00% ✓ 1000       ✗ 0
+     cable_subscription_duration...: avg=93.01ms  min=48ms     med=80ms     max=485ms p(90)=138ms    p(95)=174.04ms
+     checks........................: 100.00% ✓ 2000       ✗ 0
+     data_received.................: 4.9 MB  666 kB/s
+     data_sent.....................: 2.2 MB  301 kB/s
+     iteration_duration............: avg=6.97s    min=6.49s    med=6.98s    max=7.36s p(90)=7.23s    p(95)=7.33s
+     iterations....................: 100     13.569464/s
+     vus...........................: 50      min=50       max=100
+     vus_max.......................: 100     min=100      max=100
+     ws_connecting.................: avg=325.55ms min=147.28ms med=252.07ms max=1.52s p(90)=589.88ms p(95)=869.92ms
+     ws_msgs_received..............: 2000    271.389274/s
+     ws_msgs_sent..................: 2000    271.389274/s
+
+running (0m07.4s), 000/100 VUs, 100 complete and 0 interrupted iterations
+storm ✓ [======================================] 100 VUs  0m07.4s/1m5s  100/100 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=100 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 100 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=157.82ms min=55ms     med=141.5ms  max=383ms p(90)=248.1ms p(95)=276ms
+     cable_connection_duration.....: avg=338.92ms min=144ms    med=246ms    max=1.57s p(90)=640.2ms p(95)=934.94ms
+     cable_messages_received.......: 1000    136.903409/s
+     cable_messages_sent...........: 1000    136.903409/s
+     cable_receive_duration........: avg=157.77ms min=55ms     med=141.5ms  max=383ms p(90)=248ms   p(95)=276ms
+     cable_round_trip_success......: 100.00% ✓ 1000       ✗ 0
+     cable_subscription_duration...: avg=85.39ms  min=47ms     med=74.5ms   max=469ms p(90)=122.1ms p(95)=165.04ms
+     checks........................: 100.00% ✓ 2000       ✗ 0
+     data_received.................: 4.9 MB  672 kB/s
+     data_sent.....................: 2.2 MB  304 kB/s
+     iteration_duration............: avg=6.82s    min=6.09s    med=6.78s    max=7.3s  p(90)=7.1s    p(95)=7.18s
+     iterations....................: 100     13.690341/s
+     vus...........................: 27      min=27       max=100
+     vus_max.......................: 100     min=100      max=100
+     ws_connecting.................: avg=316.99ms min=144.04ms med=233.26ms max=1.51s p(90)=571.9ms p(95)=888.99ms
+     ws_msgs_received..............: 2000    273.806818/s
+     ws_msgs_sent..................: 2000    273.806818/s
+
+running (0m07.3s), 000/100 VUs, 100 complete and 0 interrupted iterations
+storm ✓ [======================================] 100 VUs  0m07.3s/1m5s  100/100 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=250 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 250 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 250 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=242.49ms min=53ms    med=228ms    max=572ms  p(90)=375.1ms  p(95)=423ms
+     cable_connection_duration.....: avg=661.99ms min=165ms   med=653ms    max=1.71s  p(90)=916ms    p(95)=1.07s
+     cable_messages_received.......: 2500    207.339606/s
+     cable_messages_sent...........: 2500    207.339606/s
+     cable_receive_duration........: avg=242.44ms min=53ms    med=228ms    max=572ms  p(90)=375.1ms  p(95)=423ms
+     cable_round_trip_success......: 100.00% ✓ 2500       ✗ 0
+     cable_subscription_duration...: avg=139.42ms min=48ms    med=131ms    max=523ms  p(90)=209ms    p(95)=230ms
+     checks........................: 100.00% ✓ 5000       ✗ 0
+     data_received.................: 12 MB   1.0 MB/s
+     data_sent.....................: 5.5 MB  460 kB/s
+     iteration_duration............: avg=11.44s   min=10.1s   med=11.52s   max=12.05s p(90)=11.84s   p(95)=11.85s
+     iterations....................: 250     20.733961/s
+     vus...........................: 2       min=2        max=250
+     vus_max.......................: 250     min=250      max=250
+     ws_connecting.................: avg=629.16ms min=164.2ms med=617.87ms max=1.71s  p(90)=876.85ms p(95)=1.06s
+     ws_msgs_received..............: 5000    414.679213/s
+     ws_msgs_sent..................: 5000    414.679213/s
+
+running (0m12.1s), 000/250 VUs, 250 complete and 0 interrupted iterations
+storm ✓ [======================================] 250 VUs  0m12.1s/1m5s  250/250 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=250 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 250 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 250 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=246.89ms min=57ms    med=233.5ms  max=626ms  p(90)=361ms    p(95)=419ms
+     cable_connection_duration.....: avg=635.01ms min=172ms   med=643ms    max=1.42s  p(90)=834.2ms  p(95)=893ms
+     cable_messages_received.......: 2500    212.723648/s
+     cable_messages_sent...........: 2500    212.723648/s
+     cable_receive_duration........: avg=246.84ms min=57ms    med=233ms    max=626ms  p(90)=361ms    p(95)=419ms
+     cable_round_trip_success......: 100.00% ✓ 2500       ✗ 0
+     cable_subscription_duration...: avg=135.41ms min=49ms    med=121ms    max=516ms  p(90)=215ms    p(95)=250.04ms
+     checks........................: 100.00% ✓ 5000       ✗ 0
+     data_received.................: 12 MB   1.0 MB/s
+     data_sent.....................: 5.5 MB  472 kB/s
+     iteration_duration............: avg=11.17s   min=9.99s   med=11.2s    max=11.74s p(90)=11.53s   p(95)=11.54s
+     iterations....................: 250     21.272365/s
+     vus...........................: 190     min=190      max=250
+     vus_max.......................: 250     min=250      max=250
+     ws_connecting.................: avg=599.27ms min=171.7ms med=614.15ms max=1.31s  p(90)=796.82ms p(95)=847.35ms
+     ws_msgs_received..............: 5000    425.447296/s
+     ws_msgs_sent..................: 5000    425.447296/s
+
+running (0m11.8s), 000/250 VUs, 250 complete and 0 interrupted iterations
+storm ✓ [======================================] 250 VUs  0m11.8s/1m5s  250/250 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=500 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 500 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+ERRO[0046] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0046] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+storm   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at storm (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:107:33(18))  executor=per-vu-iterations scenario=storm source=stacktrace
+ERRO[0047] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0047] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+storm   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at storm (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:107:33(18))  executor=per-vu-iterations scenario=storm source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 4994 / ✗ 2
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=424.69ms min=61ms     med=395ms  max=1.19s  p(90)=765ms   p(95)=876ms
+     cable_connection_duration.....: avg=1.4s     min=163ms    med=1.4s   max=30s    p(90)=1.85s   p(95)=2.02s
+     cable_connection_failures.....: 2       0.042749/s
+     cable_messages_received.......: 4994    106.745216/s
+     cable_messages_sent...........: 4994    106.745216/s
+     cable_receive_duration........: avg=424.65ms min=60ms     med=395ms  max=1.19s  p(90)=764.7ms p(95)=876ms
+     cable_round_trip_success......: 100.00% ✓ 4994       ✗ 0
+     cable_subscription_duration...: avg=219.84ms min=54ms     med=198ms  max=880ms  p(90)=384ms   p(95)=450.34ms
+     checks........................: 99.97%  ✓ 9988       ✗ 2
+     data_received.................: 25 MB   525 kB/s
+     data_sent.....................: 11 MB   237 kB/s
+     iteration_duration............: avg=21.43s   min=18.68s   med=21.49s max=46.78s p(90)=22.23s  p(95)=22.24s
+     iterations....................: 500     10.687346/s
+     vus...........................: 2       min=2        max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=1.33s    min=162.59ms med=1.35s  max=30s    p(90)=1.82s   p(95)=1.95s
+     ws_msgs_received..............: 9988    213.490432/s
+     ws_msgs_sent..................: 9988    213.490432/s
+
+running (0m46.8s), 000/500 VUs, 500 complete and 0 interrupted iterations
+storm ✓ [======================================] 500 VUs  0m46.8s/1m5s  500/500 iters, 1 per VU
+
+
+❯ SCENARIOS=storm STORM_VUS=500 STORM_ROUNDS=10 STORM_SLEEP_MS=100 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 1m35s max duration (incl. graceful stop):
+              * storm: 1 iterations for each of 500 VUs (maxDuration: 1m5s, exec: storm, gracefulStop: 30s)
+
+ERRO[0021] failed to connect: websocket: bad handshake   source=cable
+ERRO[0021] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+storm   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at storm (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:107:33(18))  executor=per-vu-iterations scenario=storm source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 4999 / ✗ 1
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=417.61ms min=78ms     med=368ms  max=1.5s   p(90)=709ms p(95)=848.19ms
+     cable_connection_duration.....: avg=1.59s    min=228ms    med=1.49s  max=4.35s  p(90)=2.24s p(95)=3.11s
+     cable_connection_failures.....: 1       0.040901/s
+     cable_messages_received.......: 4999    204.464851/s
+     cable_messages_sent...........: 4999    204.464851/s
+     cable_receive_duration........: avg=417.55ms min=78ms     med=368ms  max=1.5s   p(90)=709ms p(95)=848.09ms
+     cable_round_trip_success......: 100.00% ✓ 4999       ✗ 0
+     cable_subscription_duration...: avg=224.84ms min=51ms     med=197ms  max=1.07s  p(90)=394ms p(95)=457ms
+     checks........................: 99.98%  ✓ 9998       ✗ 1
+     data_received.................: 25 MB   1.0 MB/s
+     data_sent.....................: 11 MB   453 kB/s
+     iteration_duration............: avg=23.39s   min=20.51s   med=23.55s max=24.44s p(90)=24.3s p(95)=24.31s
+     iterations....................: 500     20.450575/s
+     vus...........................: 140     min=140      max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=1.51s    min=168.92ms med=1.44s  max=4.35s  p(90)=2.18s p(95)=3.09s
+     ws_msgs_received..............: 9998    408.929703/s
+     ws_msgs_sent..................: 9998    408.929703/s
+
+running (0m24.4s), 000/500 VUs, 500 complete and 0 interrupted iterations
+storm ✓ [======================================] 500 VUs  0m24.4s/1m5s  500/500 iters, 1 per VU
