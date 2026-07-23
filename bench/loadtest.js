@@ -59,6 +59,7 @@ const fanoutMessagesPublished = new Counter("cable_fanout_messages_published");
 const fanoutDeliveriesReceived = new Counter("cable_fanout_deliveries_received");
 const fanoutSequenceGaps = new Counter("cable_fanout_sequence_gaps");
 const fanoutDuplicateDeliveries = new Counter("cable_fanout_duplicate_deliveries");
+const fanoutOutOfOrderDeliveries = new Counter("cable_fanout_out_of_order_deliveries");
 const fanoutSubscribersCompleted = new Counter("cable_fanout_subscribers_completed");
 
 export const options = {
@@ -134,13 +135,22 @@ export function fanoutSubscriber() {
   const tags = scenarioTags("fanout");
   const client = connectClient("fanout");
   const channel = subscribeTo(client, "fanout", "FanoutChannel", { stream: FANOUT_STREAM });
-  let lastSequence = null;
+  const seenSequences = {};
+  let highestSequence = -1;
 
   while (true) {
     const message = channel.receive();
     if (!message) continue;
 
     if (message.complete) {
+      const expectedMessages = Number(message.expected_messages);
+      let missingMessages = 0;
+
+      for (let sequence = 0; sequence < expectedMessages; sequence++) {
+        if (seenSequences[sequence] !== true) missingMessages += 1;
+      }
+
+      if (missingMessages > 0) fanoutSequenceGaps.add(missingMessages, tags);
       fanoutSubscribersCompleted.add(1, tags);
       break;
     }
@@ -148,20 +158,20 @@ export function fanoutSubscriber() {
     const sequence = Number(message.sequence);
     const sentAt = Number(message.sent_at);
 
-    if (!Number.isFinite(sequence) || !Number.isFinite(sentAt)) {
+    if (!Number.isInteger(sequence) || sequence < 0 || !Number.isFinite(sentAt)) {
       invalidMessages.add(1, tags);
       continue;
     }
 
-    if (lastSequence === null && sequence > 0) {
-      fanoutSequenceGaps.add(sequence, tags);
-    } else if (lastSequence !== null && sequence <= lastSequence) {
+    if (seenSequences[sequence] === true) {
       fanoutDuplicateDeliveries.add(1, tags);
-    } else if (lastSequence !== null && sequence > lastSequence + 1) {
-      fanoutSequenceGaps.add(sequence - lastSequence - 1, tags);
+      continue;
     }
 
-    lastSequence = Math.max(lastSequence === null ? -1 : lastSequence, sequence);
+    if (sequence < highestSequence) fanoutOutOfOrderDeliveries.add(1, tags);
+
+    seenSequences[sequence] = true;
+    highestSequence = Math.max(highestSequence, sequence);
     fanoutDeliveryLatency.add(Date.now() - sentAt, tags);
     fanoutDeliveriesReceived.add(1, tags);
   }
@@ -186,7 +196,8 @@ export function fanoutPublisher() {
     if (sequence < messageCount - 1) sleep(1 / FANOUT_RATE);
   }
 
-  channel.perform("publish", { complete: true });
+  sleep(1);
+  channel.perform("publish", { complete: true, expected_messages: messageCount });
   sleep(1);
   client.disconnect();
 }

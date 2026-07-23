@@ -22,8 +22,11 @@ class FanoutChannelTest < ActionCable::Channel::TestCase
   test "publishes the completion marker" do
     subscribe stream: "presentation"
 
-    assert_broadcast_on("fanout:presentation", { complete: true }) do
-      perform :publish, complete: true
+    assert_broadcast_on(
+      "fanout:presentation",
+      { complete: true, expected_messages: 900 }
+    ) do
+      perform :publish, complete: true, expected_messages: 900
     end
   end
 end

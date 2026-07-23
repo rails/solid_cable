@@ -7,7 +7,7 @@ class FanoutChannel < ApplicationCable::Channel
   def publish(data)
     ActionCable.server.broadcast(
       @stream_name,
-      data.slice("sequence", "sent_at", "message", "complete")
+      data.slice("sequence", "sent_at", "message", "complete", "expected_messages")
     )
   end
 end
