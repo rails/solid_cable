@@ -1,0 +1,229 @@
+❯ SCENARIOS=churn CHURN_VUS=250 CHURN_TIME=90 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 250 max VUs, 2m0s max duration (incl. graceful stop):
+              * churn: 250 looping VUs for 1m30s (exec: churn, gracefulStop: 30s)
+
+ERRO[0069] failed to connect: websocket: bad handshake   source=cable
+ERRO[0069] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0081] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0081] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0082] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0082] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 22513 / ✗ 3
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=196.95ms min=48ms     med=184ms    max=649ms p(90)=312ms    p(95)=351ms
+     cable_connection_duration.....: avg=640.19ms min=207ms    med=591ms    max=30s   p(90)=934ms    p(95)=1.01s
+     cable_connection_failures.....: 3       0.033031/s
+     cable_messages_received.......: 22513   247.876845/s
+     cable_messages_sent...........: 22513   247.876845/s
+     cable_receive_duration........: avg=196.9ms  min=48ms     med=184ms    max=649ms p(90)=312ms    p(95)=351ms
+     cable_round_trip_success......: 100.00% ✓ 22513      ✗ 0
+     cable_subscription_duration...: avg=166.51ms min=52ms     med=160ms    max=780ms p(90)=247ms    p(95)=283ms
+     checks........................: 99.99%  ✓ 45026      ✗ 3
+     data_received.................: 111 MB  1.2 MB/s
+     data_sent.....................: 50 MB   550 kB/s
+     iteration_duration............: avg=1s       min=336.45ms med=974.88ms max=30s   p(90)=1.27s    p(95)=1.37s
+     iterations....................: 22516   247.909876/s
+     vus...........................: 250     min=250      max=250
+     vus_max.......................: 250     min=250      max=250
+     ws_connecting.................: avg=610.05ms min=162.84ms med=562.5ms  max=30s   p(90)=903.94ms p(95)=977.69ms
+     ws_msgs_received..............: 45026   495.75369/s
+     ws_msgs_sent..................: 45026   495.75369/s
+
+running (1m30.8s), 000/250 VUs, 22516 complete and 0 interrupted iterations
+churn ✓ [======================================] 250 VUs  1m30s
+
+❯ SCENARIOS=churn CHURN_VUS=250 CHURN_TIME=90 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 250 max VUs, 2m0s max duration (incl. graceful stop):
+              * churn: 250 looping VUs for 1m30s (exec: churn, gracefulStop: 30s)
+
+ERRO[0027] failed to connect: websocket: bad handshake   source=cable
+ERRO[0027] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0033] failed to connect: websocket: bad handshake   source=cable
+ERRO[0033] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0058] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0058] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0058] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0058] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 22083 / ✗ 4
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=193.72ms min=49ms     med=184ms   max=615ms p(90)=298ms    p(95)=342ms
+     cable_connection_duration.....: avg=663.64ms min=184ms    med=636ms   max=30s   p(90)=935ms    p(95)=1s
+     cable_connection_failures.....: 4       0.044034/s
+     cable_messages_received.......: 22083   243.103345/s
+     cable_messages_sent...........: 22083   243.103345/s
+     cable_receive_duration........: avg=193.67ms min=49ms     med=184ms   max=615ms p(90)=298ms    p(95)=342ms
+     cable_round_trip_success......: 100.00% ✓ 22083      ✗ 0
+     cable_subscription_duration...: avg=166.81ms min=54ms     med=160ms   max=708ms p(90)=248ms    p(95)=283ms
+     checks........................: 99.99%  ✓ 44166      ✗ 4
+     data_received.................: 109 MB  1.2 MB/s
+     data_sent.....................: 49 MB   539 kB/s
+     iteration_duration............: avg=1.02s    min=431.41ms med=1s      max=30s   p(90)=1.27s    p(95)=1.37s
+     iterations....................: 22087   243.147379/s
+     vus...........................: 250     min=250      max=250
+     vus_max.......................: 250     min=250      max=250
+     ws_connecting.................: avg=636ms    min=160.92ms med=610.4ms max=30s   p(90)=906.91ms p(95)=979.33ms
+     ws_msgs_received..............: 44166   486.20669/s
+     ws_msgs_sent..................: 44166   486.20669/s
+
+running (1m30.8s), 000/250 VUs, 22087 complete and 0 interrupted iterations
+churn ✓ [======================================] 250 VUs  1m30s
+
+
+❯ SCENARIOS=churn CHURN_VUS=100 CHURN_TIME=90 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 2m0s max duration (incl. graceful stop):
+              * churn: 100 looping VUs for 1m30s (exec: churn, gracefulStop: 30s)
+
+ERRO[0035] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0035] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0035] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0035] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn   at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0111] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0111] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn ↓ at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0111] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0111] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn ↓ at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 19319 / ✗ 4
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=95.81ms  min=48ms     med=91ms     max=327ms p(90=130ms    p(95)=144ms
+     cable_connection_duration.....: avg=281.58ms min=147ms    med=259ms    max=30s   p(90)=363ms    p(95)=409ms
+     cable_connection_failures.....: 4       0.036161/s
+     cable_messages_received.......: 19319   174.650304/s
+     cable_messages_sent...........: 19319   174.650304/s
+     cable_receive_duration........: avg=95.77ms  min=48ms     med=91ms     max=327ms p(90)=130ms    p(95)=144ms
+     cable_round_trip_success......: 100.00% ✓ 19319      ✗ 0
+     cable_subscription_duration...: avg=91.69ms  min=46ms     med=85ms     max=480ms p(90)=125ms    p(95)=145ms
+     checks........................: 99.98%  ✓ 38638      ✗ 4
+     data_received.................: 95 MB   858 kB/s
+     data_sent.....................: 43 MB   387 kB/s
+     iteration_duration............: avg=469.17ms min=285.27ms med=446.33ms max=30s   p(90)=569.92ms p(95)=617.98ms
+     iterations....................: 19323   174.686466/s
+     vus...........................: 2       min=2        max=100
+     vus_max.......................: 100     min=100      max=100
+     ws_connecting.................: avg=262.54ms min=146.37ms med=241.48ms max=30s   p(90)=335.76ms p(95)=373.26ms
+     ws_msgs_received..............: 38638   349.300609/s
+     ws_msgs_sent..................: 38638   349.300609/s
+
+running (1m50.6s), 000/100 VUs, 19323 complete and 0 interrupted iterations
+churn ✓ [======================================] 100 VUs  1m30s
+
+❯ SCENARIOS=churn CHURN_VUS=100 CHURN_TIME=90 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 2m0s max duration (incl. graceful stop):
+              * churn: 100 looping VUs for 1m30s (exec: churn, gracefulStop: 30s)
+
+ERRO[0095] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0095] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn ↓ at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+ERRO[0096] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0096] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+churn ↓ at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at churn (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:79:31(9))  executor=constant-vus scenario=churn source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 19625 / ✗ 2
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=92.88ms  min=44ms     med=88ms     max=368ms p(90)=126ms    p(95)=140ms
+     cable_connection_duration.....: avg=277.88ms min=144ms    med=260ms    max=30s   p(90)=363ms    p(95)=409ms
+     cable_connection_failures.....: 2       0.020938/s
+     cable_messages_received.......: 19625   205.449894/s
+     cable_messages_sent...........: 19625   205.449894/s
+     cable_receive_duration........: avg=92.83ms  min=44ms     med=88ms     max=368ms p(90)=126ms    p(95)=140ms
+     cable_round_trip_success......: 100.00% ✓ 19625      ✗ 0
+     cable_subscription_duration...: avg=89.41ms  min=47ms     med=83ms     max=511ms p(90)=121ms    p(95)=143ms
+     checks........................: 99.99%  ✓ 39250      ✗ 2
+     data_received.................: 96 MB   1.0 MB/s
+     data_sent.....................: 44 MB   456 kB/s
+     iteration_duration............: avg=460.29ms min=287.18ms med=441.3ms  max=30s   p(90)=568.96ms p(95)=617.69ms
+     iterations....................: 19627   205.470832/s
+     vus...........................: 2       min=2        max=100
+     vus_max.......................: 100     min=100      max=100
+     ws_connecting.................: avg=259.62ms min=144.22ms med=243.57ms max=30s   p(90)=335.52ms p(95)=372.31ms
+     ws_msgs_received..............: 39250   410.899788/s
+     ws_msgs_sent..................: 39250   410.899788/s
+
+running (1m35.5s), 000/100 VUs, 19627 complete and 0 interrupted iterations
+churn ✓ [======================================] 100 VUs  1m30s

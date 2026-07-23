@@ -337,11 +337,11 @@ function buildScenarios() {
   if (SCENARIOS.includes("storm")) {
     scenarios.storm = {
       exec: "storm",
-      executor: "constant-vus",
+      executor: "per-vu-iterations",
       vus: STORM_VUS,
-      duration: `${STORM_TIME_SECONDS}s`,
+      iterations: 1,
+      maxDuration: `${Math.max(STORM_TIME_SECONDS, HANDSHAKE_TIMEOUT_SECONDS + 5)}s`,
       startTime: scenarioStartTime(startAfterSeconds),
-      gracefulStop: "0s",
       tags: scenarioTags("storm"),
     };
     startAfterSeconds += STORM_TIME_SECONDS;
