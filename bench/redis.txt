@@ -1,85 +1,3 @@
-❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
-
-          /\      |‾‾| /‾‾/   /‾‾/
-     /\  /  \     |  |/  /   /  /
-    /  \/    \    |     (   /   ‾‾\
-   /          \   |  |\  \ |  (‾)  |
-  / __________ \  |__| \__\ \_____/ .io
-
-     execution: local
-        script: loadtest.js
-        output: -
-
-     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
-              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
-
-     ✓ successful connection
-     ✓ successful subscription
-
-     cable_action_rtt..............: avg=203.52ms min=54ms    med=167ms    max=1.08s p(90)=371ms    p(95)=480ms
-     cable_connection_duration.....: avg=447.32ms min=138ms   med=246ms    max=4.11s p(90)=658ms    p(95)=1.73s
-     cable_iteration_messages......: avg=5        min=5       med=5        max=5     p(90)=5        p(95)=5
-     cable_messages_received.......: 43255   454.778218/s
-     cable_messages_sent...........: 43255   454.778218/s
-     cable_receive_duration........: avg=203.44ms min=53ms    med=167ms    max=1.08s p(90)=371ms    p(95)=480ms
-     cable_round_trip_success......: 100.00% ✓ 43255      ✗ 0
-     cable_subscription_duration...: avg=135.13ms min=41ms    med=100ms    max=780ms p(90)=262ms    p(95)=319ms
-     checks........................: 100.00% ✓ 17302      ✗ 0
-     data_received.................: 49 MB   517 kB/s
-     data_sent.....................: 27 MB   280 kB/s
-     iteration_duration............: avg=5.34s    min=3.75s   med=5.18s    max=9.99s p(90)=6.03s    p(95)=7.01s
-     iterations....................: 8651    90.955644/s
-     vus...........................: 3       min=3        max=500
-     vus_max.......................: 500     min=500      max=500
-     ws_connecting.................: avg=379.78ms min=138.2ms med=205.47ms max=3.99s p(90)=465.67ms p(95)=1.73s
-     ws_msgs_received..............: 51906   545.733861/s
-     ws_msgs_sent..................: 51906   545.733861/s
-
-running (1m35.1s), 000/500 VUs, 8651 complete and 0 interrupted iterations
-steady ✓ [======================================] 500 VUs  1m30s
-
-
-❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
-
-          /\      |‾‾| /‾‾/   /‾‾/
-     /\  /  \     |  |/  /   /  /
-    /  \/    \    |     (   /   ‾‾\
-   /          \   |  |\  \ |  (‾)  |
-  / __________ \  |__| \__\ \_____/ .io
-
-     execution: local
-        script: loadtest.js
-        output: -
-
-     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
-              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
-
-     ✓ successful connection
-     ✓ successful subscription
-
-     cable_action_rtt..............: avg=196.54ms min=55ms     med=174ms    max=786ms  p(90)=319ms    p(95)=394ms
-     cable_connection_duration.....: avg=407.59ms min=141ms    med=232ms    max=4s     p(90)=516ms    p(95)=1.49s
-     cable_iteration_messages......: avg=5        min=5        med=5        max=5      p(90)=5        p(95)=5
-     cable_messages_received.......: 43980   462.590229/s
-     cable_messages_sent...........: 43980   462.590229/s
-     cable_receive_duration........: avg=196.45ms min=55ms     med=174ms    max=786ms  p(90)=319ms    p(95)=394ms
-     cable_round_trip_success......: 100.00% ✓ 43980      ✗ 0
-     cable_subscription_duration...: avg=112.45ms min=45ms     med=91ms     max=549ms  p(90)=192ms    p(95)=244ms
-     checks........................: 100.00% ✓ 17592      ✗ 0
-     data_received.................: 50 MB   526 kB/s
-     data_sent.....................: 27 MB   284 kB/s
-     iteration_duration............: avg=5.24s    min=3.84s    med=5.1s     max=10.02s p(90)=5.83s    p(95)=6.61s
-     iterations....................: 8796    92.518046/s
-     vus...........................: 2       min=2        max=500
-     vus_max.......................: 500     min=500      max=500
-     ws_connecting.................: avg=364.1ms  min=140.68ms med=200.32ms max=3.94s  p(90)=379.01ms p(95)=1.35s
-     ws_msgs_received..............: 52776   555.108275/s
-     ws_msgs_sent..................: 52776   555.108275/s
-
-running (1m35.1s), 000/500 VUs, 8796 complete and 0 interrupted iterations
-steady ✓ [======================================] 500 VUs  1m30s
-
-
 ❯ SCENARIOS="steady" MAX=100 ./k6 run loadtest.js
 
           /\      |‾‾| /‾‾/   /‾‾/
@@ -98,29 +16,28 @@ steady ✓ [======================================] 500 VUs  1m30s
      ✓ successful connection
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=112.23ms min=48ms     med=111ms    max=362ms p(90)=154ms    p(95)=160ms
-     cable_connection_duration.....: avg=217.79ms min=147ms    med=179ms    max=1.39s p(90)=202ms    p(95)=385.24ms
-     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
-     cable_messages_received.......: 10030   106.337185/s
-     cable_messages_sent...........: 10030   106.337185/s
-     cable_receive_duration........: avg=112.1ms  min=48ms     med=111ms    max=362ms p(90)=154ms    p(95)=160ms
-     cable_round_trip_success......: 100.00% ✓ 10030      ✗ 0
-     cable_subscription_duration...: avg=59.68ms  min=43ms     med=56ms     max=361ms p(90)=65ms     p(95)=76ms
-     checks........................: 100.00% ✓ 4012       ✗ 0
-     data_received.................: 11 MB   121 kB/s
-     data_sent.....................: 6.2 MB  65 kB/s
-     iteration_duration............: avg=4.59s    min=3.54s    med=4.57s    max=6.47s p(90)=5.06s    p(95)=5.25s
-     iterations....................: 2006    21.267437/s
-     vus...........................: 7       min=7        max=100
+     cable_action_rtt..............: avg=62.85ms  min=46ms     med=61ms    max=215ms p(90)=69ms     p(95)=74ms
+     cable_connection_duration.....: avg=218.13ms min=162ms    med=193ms   max=1.01s p(90)=214ms    p(95)=295.79ms
+     cable_iteration_messages......: avg=5        min=5        med=5       max=5     p(90)=5        p(95)=5
+     cable_messages_received.......: 10545   111.539208/s
+     cable_messages_sent...........: 10545   111.539208/s
+     cable_receive_duration........: avg=62.7ms   min=46ms     med=61ms    max=215ms p(90)=68ms     p(95)=74ms
+     cable_round_trip_success......: 100.00% ✓ 10545      ✗ 0
+     cable_subscription_duration...: avg=65.24ms  min=49ms     med=63ms    max=331ms p(90)=72ms     p(95)=82ms
+     checks........................: 100.00% ✓ 4218       ✗ 0
+     data_received.................: 12 MB   127 kB/s
+     data_sent.....................: 6.5 MB  69 kB/s
+     iteration_duration............: avg=4.35s    min=3.41s    med=4.33s   max=5.9s  p(90)=4.8s     p(95)=4.95s
+     iterations....................: 2109    22.307842/s
+     vus...........................: 6       min=6        max=100
      vus_max.......................: 100     min=100      max=100
-     ws_connecting.................: avg=214.7ms  min=147.18ms med=178.17ms max=1.29s p(90)=201.01ms p(95)=348.13ms
-     ws_msgs_received..............: 12036   127.604622/s
-     ws_msgs_sent..................: 12036   127.604622/s
+     ws_connecting.................: avg=216ms    min=161.21ms med=192.3ms max=1.01s p(90)=213.62ms p(95)=284.18ms
+     ws_msgs_received..............: 12654   133.847049/s
+     ws_msgs_sent..................: 12654   133.847049/s
 
-running (1m34.3s), 000/100 VUs, 2006 complete and 0 interrupted iterations
+running (1m34.5s), 000/100 VUs, 2109 complete and 0 interrupted iterations
 steady ✓ [======================================] 100 VUs  1m30s
 
-
 ❯ SCENARIOS="steady" MAX=100 ./k6 run loadtest.js
 
           /\      |‾‾| /‾‾/   /‾‾/
@@ -139,26 +56,26 @@ steady ✓ [======================================] 100 VUs  1m30s
      ✓ successful connection
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=111.97ms min=47ms     med=111ms    max=329ms p(90)=154ms    p(95)=161ms
-     cable_connection_duration.....: avg=211.16ms min=149ms    med=179ms    max=1.3s  p(90)=202ms    p(95)=301.19ms
-     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
-     cable_messages_received.......: 10045   106.300543/s
-     cable_messages_sent...........: 10045   106.300543/s
-     cable_receive_duration........: avg=111.83ms min=47ms     med=111ms    max=329ms p(90)=154ms    p(95)=160ms
-     cable_round_trip_success......: 100.00% ✓ 10045      ✗ 0
-     cable_subscription_duration...: avg=61.11ms  min=42ms     med=57ms     max=451ms p(90)=65ms     p(95)=81ms
-     checks........................: 100.00% ✓ 4018       ✗ 0
-     data_received.................: 11 MB   121 kB/s
-     data_sent.....................: 6.2 MB  65 kB/s
-     iteration_duration............: avg=4.58s    min=3.44s    med=4.55s    max=6.32s p(90)=5.04s    p(95)=5.21s
-     iterations....................: 2009    21.260109/s
+     cable_action_rtt..............: avg=62.31ms  min=47ms     med=61ms    max=223ms p(90)=68ms    p(95)=71ms
+     cable_connection_duration.....: avg=220.09ms min=161ms    med=193ms   max=1.04s p(90)=214ms   p(95)=302.49ms
+     cable_iteration_messages......: avg=5        min=5        med=5       max=5     p(90)=5       p(95)=5
+     cable_messages_received.......: 10555   111.298861/s
+     cable_messages_sent...........: 10555   111.298861/s
+     cable_receive_duration........: avg=62.18ms  min=47ms     med=61ms    max=223ms p(90)=68ms    p(95)=71ms
+     cable_round_trip_success......: 100.00% ✓ 10555      ✗ 0
+     cable_subscription_duration...: avg=65.78ms  min=47ms     med=63ms    max=271ms p(90)=72ms    p(95)=83ms
+     checks........................: 100.00% ✓ 4222       ✗ 0
+     data_received.................: 12 MB   126 kB/s
+     data_sent.....................: 6.5 MB  68 kB/s
+     iteration_duration............: avg=4.35s    min=3.18s    med=4.33s   max=5.96s p(90)=4.82s   p(95)=4.99s
+     iterations....................: 2111    22.259772/s
      vus...........................: 5       min=5        max=100
      vus_max.......................: 100     min=100      max=100
-     ws_connecting.................: avg=207.76ms min=148.43ms med=178.88ms max=1.24s p(90)=201.48ms p(95)=276.58ms
-     ws_msgs_received..............: 12054   127.560651/s
-     ws_msgs_sent..................: 12054   127.560651/s
+     ws_connecting.................: avg=217.69ms min=160.62ms med=192.7ms max=1.04s p(90)=213.7ms p(95)=300.53ms
+     ws_msgs_received..............: 12666   133.558633/s
+     ws_msgs_sent..................: 12666   133.558633/s
 
-running (1m34.5s), 000/100 VUs, 2009 complete and 0 interrupted iterations
+running (1m34.8s), 000/100 VUs, 2111 complete and 0 interrupted iterations
 steady ✓ [======================================] 100 VUs  1m30s
 
 
@@ -177,30 +94,45 @@ steady ✓ [======================================] 100 VUs  1m30s
      scenarios: (100.00%) 1 scenario, 250 max VUs, 2m0s max duration (incl. graceful stop):
               * steady: 250 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
 
-     ✓ successful connection
+ERRO[0118] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0118] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0119] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0119] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 5257 / ✗ 2
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=120.57ms min=48ms     med=118ms    max=1.33s p(90)=163ms    p(95)=173ms
-     cable_connection_duration.....: avg=254.87ms min=144ms    med=176ms    max=5.72s p(90)=203ms    p(95)=417.29ms
+     cable_action_rtt..............: avg=64.1ms   min=46ms     med=62ms     max=302ms p(90)=70ms     p(95)=75ms
+     cable_connection_duration.....: avg=257.93ms min=157ms    med=191ms    max=30s   p(90)=217ms    p(95)=273ms
+     cable_connection_failures.....: 2       0.016792/s
      cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
-     cable_messages_received.......: 24715   260.522736/s
-     cable_messages_sent...........: 24715   260.522736/s
-     cable_receive_duration........: avg=120.46ms min=48ms     med=118ms    max=1.33s p(90)=163ms    p(95)=172ms
-     cable_round_trip_success......: 100.00% ✓ 24715      ✗ 0
-     cable_subscription_duration...: avg=64.25ms  min=42ms     med=58ms     max=1.18s p(90)=75ms     p(95)=91ms
-     checks........................: 100.00% ✓ 9886       ✗ 0
-     data_received.................: 28 MB   296 kB/s
-     data_sent.....................: 15 MB   160 kB/s
-     iteration_duration............: avg=4.67s    min=3.56s    med=4.6s     max=13.5s p(90)=5.11s    p(95)=5.38s
-     iterations....................: 4943    52.104547/s
-     vus...........................: 37      min=37       max=250
+     cable_messages_received.......: 26285   220.688805/s
+     cable_messages_sent...........: 26285   220.688805/s
+     cable_receive_duration........: avg=63.99ms  min=46ms     med=62ms     max=302ms p(90)=70ms     p(95)=75ms
+     cable_round_trip_success......: 100.00% ✓ 26285      ✗ 0
+     cable_subscription_duration...: avg=68.07ms  min=48ms     med=64ms     max=333ms p(90)=76ms     p(95)=87ms
+     checks........................: 99.98%  ✓ 10514      ✗ 2
+     data_received.................: 30 MB   250 kB/s
+     data_sent.....................: 16 MB   136 kB/s
+     iteration_duration............: avg=4.38s    min=3.3s     med=4.33s    max=30s   p(90)=4.83s    p(95)=5.04s
+     iterations....................: 5259    44.154553/s
+     vus...........................: 1       min=1        max=250
      vus_max.......................: 250     min=250      max=250
-     ws_connecting.................: avg=250.34ms min=144.16ms med=175.09ms max=5.72s p(90)=199.66ms p(95)=408.3ms
-     ws_msgs_received..............: 29658   312.627284/s
-     ws_msgs_sent..................: 29658   312.627284/s
+     ws_connecting.................: avg=255.53ms min=155.62ms med=190.78ms max=30s   p(90)=214.84ms p(95)=267.15ms
+     ws_msgs_received..............: 31542   264.826566/s
+     ws_msgs_sent..................: 31542   264.826566/s
 
-running (1m34.9s), 000/250 VUs, 4943 complete and 0 interrupted iterations
+running (1m59.1s), 000/250 VUs, 5259 complete and 0 interrupted iterations
 steady ✓ [======================================] 250 VUs  1m30s
+
 
 ❯ SCENARIOS="steady" MAX=250 ./k6 run loadtest.js
 
@@ -220,27 +152,132 @@ steady ✓ [======================================] 250 VUs  1m30s
      ✓ successful connection
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=128.63ms min=55ms     med=126ms    max=447ms p(90)=173ms    p(95)=186ms
-     cable_connection_duration.....: avg=276.37ms min=159ms    med=194ms    max=2.64s p(90)=234ms    p(95)=604ms
+     cable_action_rtt..............: avg=65.22ms  min=46ms     med=63ms     max=363ms p(90)=72ms     p(95)=78ms
+     cable_connection_duration.....: avg=247.42ms min=159ms    med=193ms    max=2.06s p(90)=221ms    p(95)=327ms
      cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
-     cable_messages_received.......: 24305   255.256434/s
-     cable_messages_sent...........: 24305   255.256434/s
-     cable_receive_duration........: avg=128.52ms min=55ms     med=126ms    max=447ms p(90)=173ms    p(95)=186ms
-     cable_round_trip_success......: 100.00% ✓ 24305      ✗ 0
-     cable_subscription_duration...: avg=70.31ms  min=47ms     med=64ms     max=568ms p(90)=84ms     p(95)=105ms
-     checks........................: 100.00% ✓ 9722       ✗ 0
-     data_received.................: 28 MB   290 kB/s
-     data_sent.....................: 15 MB   157 kB/s
-     iteration_duration............: avg=4.75s    min=3.57s    med=4.68s    max=7.95s p(90)=5.21s    p(95)=5.52s
-     iterations....................: 4861    51.051287/s
-     vus...........................: 4       min=4        max=250
+     cable_messages_received.......: 26215   275.756406/s
+     cable_messages_sent...........: 26215   275.756406/s
+     cable_receive_duration........: avg=65.11ms  min=46ms     med=63ms     max=363ms p(90)=72ms     p(95)=78ms
+     cable_round_trip_success......: 100.00% ✓ 26215      ✗ 0
+     cable_subscription_duration...: avg=68.32ms  min=48ms     med=64ms     max=424ms p(90)=77ms     p(95)=88ms
+     checks........................: 100.00% ✓ 10486      ✗ 0
+     data_received.................: 30 MB   313 kB/s
+     data_sent.....................: 16 MB   170 kB/s
+     iteration_duration............: avg=4.4s     min=3.13s    med=4.35s    max=6.7s  p(90)=4.85s    p(95)=5.07s
+     iterations....................: 5243    55.151281/s
+     vus...........................: 1       min=1        max=250
      vus_max.......................: 250     min=250      max=250
-     ws_connecting.................: avg=272.58ms min=158.48ms med=193.02ms max=2.63s p(90)=232.01ms p(95)=599.46ms
-     ws_msgs_received..............: 29166   306.307721/s
-     ws_msgs_sent..................: 29166   306.307721/s
+     ws_connecting.................: avg=245.01ms min=158.03ms med=192.24ms max=2.07s p(90)=219.97ms p(95)=326.6ms
+     ws_msgs_received..............: 31458   330.907687/s
+     ws_msgs_sent..................: 31458   330.907687/s
 
-running (1m35.2s), 000/250 VUs, 4861 complete and 0 interrupted iterations
+running (1m35.1s), 000/250 VUs, 5243 complete and 0 interrupted iterations
 steady ✓ [======================================] 250 VUs  1m30s
+
+
+❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+ERRO[0027] failed to connect: websocket: bad handshake   source=cable
+ERRO[0027] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 10012 / ✗ 1
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=81.36ms  min=46ms     med=66ms     max=713ms p(90)=113ms    p(95)=173ms
+     cable_connection_duration.....: avg=354.81ms min=158ms    med=203ms    max=3.4s  p(90)=534ms    p(95)=971.59ms
+     cable_connection_failures.....: 1       0.01054/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
+     cable_messages_received.......: 50060   527.641428/s
+     cable_messages_sent...........: 50060   527.641428/s
+     cable_receive_duration........: avg=81.28ms  min=46ms     med=66ms     max=713ms p(90)=112ms    p(95)=173ms
+     cable_round_trip_success......: 100.00% ✓ 50060      ✗ 0
+     cable_subscription_duration...: avg=92.38ms  min=49ms     med=72ms     max=673ms p(90)=160ms    p(95)=204ms
+     checks........................: 99.99%  ✓ 20024      ✗ 1
+     data_received.................: 57 MB   599 kB/s
+     data_sent.....................: 31 MB   324 kB/s
+     iteration_duration............: avg=4.6s     min=324.04ms med=4.49s    max=8.57s p(90)=5.14s    p(95)=5.68s
+     iterations....................: 10013   105.538826/s
+     vus...........................: 47      min=47       max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=338.12ms min=157.44ms med=198.67ms max=3.36s p(90)=479.92ms p(95)=933.97ms
+     ws_msgs_received..............: 60072   633.169714/s
+     ws_msgs_sent..................: 60072   633.169714/s
+
+running (1m34.9s), 000/500 VUs, 10013 complete and 0 interrupted iterations
+steady ✓ [======================================] 500 VUs  1m30s
+
+
+❯ SCENARIOS="steady" MAX=500 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+ERRO[0038] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0038] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0040] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0040] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 9921 / ✗ 2
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=86.05ms  min=45ms     med=67ms     max=765ms p(90)=133ms    p(95)=195ms
+     cable_connection_duration.....: avg=365.02ms min=157ms    med=205ms    max=30s   p(90)=555ms    p(95)=998.09ms
+     cable_connection_failures.....: 2       0.021054/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
+     cable_messages_received.......: 49605   522.201056/s
+     cable_messages_sent...........: 49605   522.201056/s
+     cable_receive_duration........: avg=85.98ms  min=45ms     med=67ms     max=765ms p(90)=133ms    p(95)=195ms
+     cable_round_trip_success......: 100.00% ✓ 49605      ✗ 0
+     cable_subscription_duration...: avg=94.15ms  min=45ms     med=75ms     max=750ms p(90)=155ms    p(95)=205ms
+     checks........................: 99.98%  ✓ 19842      ✗ 2
+     data_received.................: 56 MB   593 kB/s
+     data_sent.....................: 31 MB   321 kB/s
+     iteration_duration............: avg=4.64s    min=3.33s    med=4.52s    max=30s   p(90)=5.16s    p(95)=5.7s
+     iterations....................: 9923    104.461266/s
+     vus...........................: 1       min=1        max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=343.37ms min=157.25ms med=199.35ms max=30s   p(90)=476.21ms p(95)=899.25ms
+     ws_msgs_received..............: 59526   626.641267/s
+     ws_msgs_sent..................: 59526   626.641267/s
+
+running (1m35.0s), 000/500 VUs, 9923 complete and 0 interrupted iterations
+steady ✓ [======================================] 500 VUs  1m30s
+
 
 ❯ SCENARIOS="steady" MAX=750 ./k6 run loadtest.js
 
@@ -257,29 +294,43 @@ steady ✓ [======================================] 250 VUs  1m30s
      scenarios: (100.00%) 1 scenario, 750 max VUs, 2m0s max duration (incl. graceful stop):
               * steady: 750 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
 
-     ✓ successful connection
+ERRO[0084] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0084] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0084] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0084] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 12116 / ✗ 2
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=499.65ms min=63ms     med=472ms    max=1.52s  p(90)=851ms    p(95)=950ms
-     cable_connection_duration.....: avg=842.13ms min=165ms    med=570ms    max=5.71s  p(90)=1.14s    p(95)=3.59s
-     cable_iteration_messages......: avg=5        min=5        med=5        max=5      p(90)=5        p(95)=5
-     cable_messages_received.......: 47125   490.998137/s
-     cable_messages_sent...........: 47125   490.998137/s
-     cable_receive_duration........: avg=499.57ms min=63ms     med=472ms    max=1.52s  p(90)=851ms    p(95)=950ms
-     cable_round_trip_success......: 100.00% ✓ 47125      ✗ 0
-     cable_subscription_duration...: avg=290.44ms min=49ms     med=279ms    max=980ms  p(90)=460ms    p(95)=520ms
-     checks........................: 100.00% ✓ 18850      ✗ 0
-     data_received.................: 54 MB   562 kB/s
-     data_sent.....................: 29 MB   302 kB/s
-     iteration_duration............: avg=7.38s    min=4.57s    med=7.19s    max=13.73s p(90)=8.44s    p(95)=9.93s
-     iterations....................: 9425    98.199627/s
-     vus...........................: 1       min=1        max=750
+     cable_action_rtt..............: avg=227.19ms min=46ms     med=173ms    max=850ms p(90)=484ms   p(95)=570ms
+     cable_connection_duration.....: avg=618.39ms min=157ms    med=423ms    max=30s   p(90)=962.3ms p(95)=1.9s
+     cable_connection_failures.....: 2       0.020974/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5       p(95)=5
+     cable_messages_received.......: 60580   635.307352/s
+     cable_messages_sent...........: 60580   635.307352/s
+     cable_receive_duration........: avg=227.14ms min=46ms     med=173ms    max=850ms p(90)=484ms   p(95)=570ms
+     cable_round_trip_success......: 100.00% ✓ 60580      ✗ 0
+     cable_subscription_duration...: avg=179.47ms min=50ms     med=162ms    max=791ms p(90)=312ms   p(95)=363ms
+     checks........................: 99.99%  ✓ 24232      ✗ 2
+     data_received.................: 69 MB   723 kB/s
+     data_sent.....................: 37 MB   391 kB/s
+     iteration_duration............: avg=5.68s    min=3.49s    med=5.6s     max=30s   p(90)=6.4s    p(95)=6.85s
+     iterations....................: 12118   127.082445/s
+     vus...........................: 2       min=2        max=750
      vus_max.......................: 750     min=750      max=750
-     ws_connecting.................: avg=601.14ms min=162.39ms med=287.45ms max=5.48s  p(90)=706.69ms p(95)=3.49s
-     ws_msgs_received..............: 56550   589.197764/s
-     ws_msgs_sent..................: 56550   589.197764/s
+     ws_connecting.................: avg=516.93ms min=157.06ms med=306.48ms max=30s   p(90)=797.8ms p(95)=1.88s
+     ws_msgs_received..............: 72696   762.368822/s
+     ws_msgs_sent..................: 72696   762.368822/s
 
-running (1m36.0s), 000/750 VUs, 9425 complete and 0 interrupted iterations
+running (1m35.4s), 000/750 VUs, 12118 complete and 0 interrupted iterations
 steady ✓ [======================================] 750 VUs  1m30s
 
 
@@ -298,43 +349,29 @@ steady ✓ [======================================] 750 VUs  1m30s
      scenarios: (100.00%) 1 scenario, 750 max VUs, 2m0s max duration (incl. graceful stop):
               * steady: 750 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
 
-ERRO[0040] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
-ERRO[0040] GoError: connection failed
-running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
-steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
-	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
-	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
-ERRO[0041] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
-ERRO[0041] GoError: connection failed
-running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
-steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
-	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
-	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
-     ✗ successful connection
-      ↳  99% — ✓ 9437 / ✗ 2
+     ✓ successful connection
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=490.71ms min=63ms     med=458ms    max=1.34s p(90)=860ms    p(95)=958ms
-     cable_connection_duration.....: avg=872.77ms min=164ms    med=576ms    max=30s   p(90)=1.11s    p(95)=3.84s
-     cable_connection_failures.....: 2       0.02087/s
-     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
-     cable_messages_received.......: 47185   492.385437/s
-     cable_messages_sent...........: 47185   492.385437/s
-     cable_receive_duration........: avg=490.63ms min=63ms     med=458ms    max=1.34s p(90)=860ms    p(95)=958ms
-     cable_round_trip_success......: 100.00% ✓ 47185      ✗ 0
-     cable_subscription_duration...: avg=293ms    min=51ms     med=290ms    max=940ms p(90)=464ms    p(95)=520ms
-     checks........................: 99.98%  ✓ 18874      ✗ 2
-     data_received.................: 54 MB   563 kB/s
-     data_sent.....................: 29 MB   303 kB/s
-     iteration_duration............: avg=7.37s    min=4.38s    med=7.21s    max=30s   p(90)=8.25s    p(95)=9.52s
-     iterations....................: 9439    98.497958/s
-     vus...........................: 42      min=42       max=750
+     cable_action_rtt..............: avg=286.47ms min=47ms     med=216ms    max=4.69s p(90)=568ms p(95)=628ms
+     cable_connection_duration.....: avg=769.01ms min=161ms    med=527ms    max=4.98s p(90)=1.23s p(95)=2.59s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5     p(95)=5
+     cable_messages_received.......: 57355   567.654544/s
+     cable_messages_sent...........: 57355   567.654544/s
+     cable_receive_duration........: avg=286.4ms  min=7ms      med=216ms    max=4.69s p(90)=568ms p(95)=628ms
+     cable_round_trip_success......: 100.00% ✓ 57355      ✗ 0
+     cable_subscription_duration...: avg=233.37ms min=51ms     med=183ms    max=3.58s p(90)=454ms p(95)=549ms
+     checks........................: 100.00% ✓ 22942      ✗ 0
+     data_received.................: 65 MB   647 kB/s
+     data_sent.....................: 35 MB   349 kB/s
+     iteration_duration............: avg=6.18s    min=3.63s    med=5.84s    max=15.3s p(90)=8.15s p(95)=9s
+     iterations....................: 11471   113.530909/s
+     vus...........................: 1       min=1        max=750
      vus_max.......................: 750     min=750      max=750
-     ws_connecting.................: avg=633.37ms min=161.01ms med=288.21ms max=30s   p(90)=733.85ms p(95)=3.77s
-     ws_msgs_received..............: 56622   590.862524/s
-     ws_msgs_sent..................: 56622   590.862524/s
+     ws_connecting.................: avg=670.61ms min=158.29ms med=366.82ms max=4.98s p(90)=1.21s p(95)=2.59s
+     ws_msgs_received..............: 68826   681.185453/s
+     ws_msgs_sent..................: 68826   681.185453/s
 
-running (1m35.8s), 000/750 VUs, 9439 complete and 0 interrupted iterations
+running (1m41.0s), 000/750 VUs, 11471 complete and 0 interrupted iterations
 steady ✓ [======================================] 750 VUs  1m30s
 
 
@@ -353,49 +390,55 @@ steady ✓ [======================================] 750 VUs  1m30s
      scenarios: (100.00%) 1 scenario, 1000 max VUs, 2m0s max duration (incl. graceful stop):
               * steady: 1000 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
 
-ERRO[0003] failed to connect: websocket: bad handshake   source=cable
-ERRO[0003] GoError: connection failed
+ERRO[0030] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0030] GoError: connection failed
 running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
 steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
 	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
 	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
-ERRO[0103] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
-ERRO[0103] GoError: connection failed
+ERRO[0030] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0030] GoError: connection failed
 running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
-steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
 	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
 	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
-ERRO[0103] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
-ERRO[0103] GoError: connection failed
+ERRO[0069] failed to connect: websocket: bad handshake   source=cable
+ERRO[0069] GoError: connection failed
 running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
-steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0090] failed to connect: websocket: bad handshake   source=cable
+ERRO[0090] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
 	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
 	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
      ✗ successful connection
-      ↳  99% — ✓ 9694 / ✗ 3
+      ↳  99% — ✓ 13014 / ✗ 4
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=823.04ms min=56ms     med=829ms    max=2.09s p(90)=1.36s p(95)=1.48s
-     cable_connection_duration.....: avg=1.22s    min=171ms    med=879ms    max=30s   p(90)=2.15s p(95)=4.65s
-     cable_connection_failures.....: 3       0.029081/s
+     cable_action_rtt..............: avg=418.1ms  min=46ms     med=391ms    max=1.34s p(90)=791ms p(95)=899ms
+     cable_connection_duration.....: avg=1.01s    min=161ms    med=719.5ms  max=30s   p(90)=1.55s p(95)=3.61s
+     cable_connection_failures.....: 4       0.041572/s
      cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5     p(95)=5
-     cable_messages_received.......: 48470   469.850534/s
-     cable_messages_sent...........: 48470   469.850534/s
-     cable_receive_duration........: avg=822.95ms min=56ms     med=829ms    max=2.09s p(90)=1.36s p(95)=1.48s
-     cable_round_trip_success......: 100.00% ✓ 48470      ✗ 0
-     cable_subscription_duration...: avg=504.36ms min=62ms     med=485ms    max=1.41s p(90)=753ms p(95)=821ms
-     checks........................: 99.98%  ✓ 19388      ✗ 3
-     data_received.................: 56 MB   541 kB/s
-     data_sent.....................: 30 MB   289 kB/s
-     iteration_duration............: avg=9.6s     min=2.84s    med=9.45s    max=30s   p(90)=11.2s p(95)=12.84s
-     iterations....................: 9697    93.999188/s
-     vus...........................: 1       min=1        max=1000
+     cable_messages_received.......: 65070   676.26543/s
+     cable_messages_sent...........: 65070   676.26543/s
+     cable_receive_duration........: avg=418.02ms min=46ms     med=391ms    max=1.34s p(90)=791ms p(95)=899ms
+     cable_round_trip_success......: 100.00% ✓ 65070      ✗ 0
+     cable_subscription_duration...: avg=304.24ms min=53ms     med=297ms    max=924ms p(90)=473ms p(95)=533ms
+     checks........................: 99.98%  ✓ 26028      ✗ 4
+     data_received.................: 74 MB   773 kB/s
+     data_sent.....................: 40 MB   416 kB/s
+     iteration_duration............: avg=7.16s    min=172.8ms  med=7.01s    max=30s   p(90)=8.07s p(95)=8.88s
+     iterations....................: 13018   135.294658/s
+     vus...........................: 9       min=9        max=1000
      vus_max.......................: 1000    min=1000     max=1000
-     ws_connecting.................: avg=778.22ms min=167.05ms med=344.17ms max=30s   p(90)=1.83s p(95)=4.65s
-     ws_msgs_received..............: 58164   563.82064/s
-     ws_msgs_sent..................: 58164   563.82064/s
+     ws_connecting.................: avg=801.48ms min=161.56ms med=493.55ms max=30s   p(90)=1.37s p(95)=3.6s
+     ws_msgs_received..............: 78084   811.518516/s
+     ws_msgs_sent..................: 78084   811.518516/s
 
-running (1m43.2s), 0000/1000 VUs, 9697 complete and 0 interrupted iterations
+running (1m36.2s), 0000/1000 VUs, 13018 complete and 0 interrupted iterations
 steady ✓ [======================================] 1000 VUs  1m30s
 
 
@@ -414,27 +457,41 @@ steady ✓ [======================================] 1000 VUs  1m30s
      scenarios: (100.00%) 1 scenario, 1000 max VUs, 2m0s max duration (incl. graceful stop):
               * steady: 1000 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
 
-     ✓ successful connection
+ERRO[0051] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0051] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0051] failed to connect: dial tcp 172.67.190.40:443: i/o timeout  source=cable
+ERRO[0051] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:170:9(56))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:123:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:61:19(4))  executor=constant-vus scenario=steady source=stacktrace
+     ✗ successful connection
+      ↳  99% — ✓ 12870 / ✗ 2
      ✓ successful subscription
 
-     cable_action_rtt..............: avg=868.45ms min=64ms     med=886ms    max=1.8s   p(90)=1.28s  p(95)=1.36s
-     cable_connection_duration.....: avg=1.2s     min=177ms    med=794ms    max=7.83s  p(90)=2.11s  p(95)=5.13s
-     cable_iteration_messages......: avg=5        min=5        med=5        max=5      p(90)=5      p(95)=5
-     cable_messages_received.......: 47755   494.48441/s
-     cable_messages_sent...........: 47755   494.48441/s
-     cable_receive_duration........: avg=868.38ms min=64ms     med=886ms    max=1.8s   p(90)=1.28s  p(95)=1.36s
-     cable_round_trip_success......: 100.00% ✓ 47755      ✗ 0
-     cable_subscription_duration...: avg=441.96ms min=55ms     med=431ms    max=1.1s   p(90)=658ms  p(95)=722ms
-     checks........................: 100.00% ✓ 19102      ✗ 0
-     data_received.................: 55 MB   570 kB/s
-     data_sent.....................: 29 MB   304 kB/s
-     iteration_duration............: avg=9.73s    min=4.93s    med=9.65s    max=18.01s p(90)=11.31s p(95)=13.16s
-     iterations....................: 9551    98.896882/s
-     vus...........................: 11      min=11       max=1000
+     cable_action_rtt..............: avg=435.44ms min=39ms     med=404ms    max=1.4s  p(90)=804ms p(95)=934ms
+     cable_connection_duration.....: avg=947.01ms min=150ms    med=713ms    max=30s   p(90)=1.76s p(95)=3.34s
+     cable_connection_failures.....: 2       0.021029/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5     p(95)=5
+     cable_messages_received.......: 64350   676.604584/s
+     cable_messages_sent...........: 64350   676.604584/s
+     cable_receive_duration........: avg=435.38ms min=39ms     med=404ms    max=1.4s  p(90)=804ms p(95)=934ms
+     cable_round_trip_success......: 100.00% ✓ 64350      ✗ 0
+     cable_subscription_duration...: avg=315.42ms min=46ms     med=299ms    max=1.09s p(90)=498ms p(95)=571ms
+     checks........................: 99.99%  ✓ 25740      ✗ 2
+     data_received.................: 74 MB   773 kB/s
+     data_sent.....................: 40 MB   416 kB/s
+     iteration_duration............: avg=7.19s    min=4.18s    med=7.08s    max=30s   p(90)=8.3s  p(95)=9.02s
+     iterations....................: 12872   135.341946/s
+     vus...........................: 9       min=9        max=1000
      vus_max.......................: 1000    min=1000     max=1000
-     ws_connecting.................: avg=787.25ms min=165.78ms med=293.54ms max=7.39s  p(90)=2.08s  p(95)=5.02s
-     ws_msgs_received..............: 57306   593.381292/s
-     ws_msgs_sent..................: 57306   593.381292/s
+     ws_connecting.................: avg=739.01ms min=145.69ms med=430.14ms max=30s   p(90)=1.55s p(95)=3.28s
+     ws_msgs_received..............: 77220   811.925501/s
+     ws_msgs_sent..................: 77220   811.925501/s
 
-running (1m36.6s), 0000/1000 VUs, 9551 complete and 0 interrupted iterations
+running (1m35.1s), 0000/1000 VUs, 12872 complete and 0 interrupted iterations
 steady ✓ [======================================] 1000 VUs  1m30s
