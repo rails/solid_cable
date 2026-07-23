@@ -20,7 +20,7 @@ production:
   # host: <%= ENV["HOST"] %>
 
   adapter: solid_cable
-  polling_interval: 0.1.seconds
+  polling_interval: 0.05.seconds
   message_retention: 30.minutes
   autotrim: false
   trim_batch_size: 10000
