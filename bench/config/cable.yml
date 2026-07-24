@@ -24,3 +24,5 @@ production:
   message_retention: 30.minutes
   autotrim: false
   trim_batch_size: 10000
+  writer_batch_size: 8
+  writer_batch_delay: 0.005.seconds
