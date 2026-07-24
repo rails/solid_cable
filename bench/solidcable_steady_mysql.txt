@@ -181,3 +181,230 @@ steady ↓at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/lo
 
 running (1m35.0s), 000/250 VUs, 4794 complete and 0 interrupted iterations
 steady ✓ [======================================] 250 VUs  1m30s
+
+❯ SCENARIOS=steady MAX=500 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+ERRO[0106] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0106] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:207:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0107] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0107] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:207:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+WARN[0130] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0132] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0147] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0147] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+     ✗ successful connection
+      ↳  99% — ✓ 7531 / ✗ 2
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=311.99ms min=50ms     med=198ms    max=1.52s p(90)=720ms   p(95)=864ms
+     cable_connection_duration.....: avg=587.71ms min=143ms    med=434ms    max=30s   p(90)=887.8ms p(95)=2.22s
+     cable_connection_failures.....: 2       0.013656/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5       p(95)=5
+     cable_messages_received.......: 37640   257.010568/s
+     cable_messages_sent...........: 37644   257.03788/s
+     cable_receive_duration........: avg=311.88ms min=50ms     med=198ms    max=1.52s p(90)=720ms   p(95)=864ms
+     cable_round_trip_success......: 100.00% ✓ 37640      ✗ 0
+     cable_subscription_duration...: avg=287.94ms min=42ms     med=285ms    max=1.04s p(90)=522ms   p(95)=588ms
+     checks........................: 99.98%  ✓ 15062      ✗ 2
+     data_received.................: 43 MB   293 kB/s
+     data_sent.....................: 23 MB   158 kB/s
+     iteration_duration............: avg=6.18s    min=4.02s    med=6.01s    max=30s   p(90)=7.23s   p(95)=8.2s
+     iterations....................: 7529    51.408942/s
+     vus...........................: 2       min=2        max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=340.78ms min=140.72ms med=194.51ms max=30s   p(90)=362.4ms p(95)=1.63s
+     ws_msgs_received..............: 45171   308.433165/s
+     ws_msgs_sent..................: 45175   308.460478/s
+
+running (2m26.5s), 000/500 VUs, 7529 complete and 4 interrupted iterations
+steady ✓ [======================================] 500 VUs  1m30s
+
+
+❯ SCENARIOS=steady MAX=500 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 500 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 500 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+WARN[0075] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+ERRO[0075] GoError: expected pong response for unknown:steady:vu-219:iter-1:msg-4:xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:228:12(108))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+WARN[0084] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+ERRO[0084] GoError: expected pong response for unknown:steady:vu-254:iter-3:msg-1:xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:228:12(108))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+WARN[0123] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0141] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0149] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=316.5ms  min=54ms     med=186ms    max=1m0s  p(90)=770ms    p(95)=941.49ms
+     cable_connection_duration.....: avg=630.75ms min=144ms    med=467ms    max=3.53s p(90)=986ms    p(95)=2.44s
+     cable_invalid_messages........: 2       0.013441/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5        p(95)=5
+     cable_messages_received.......: 36889   247.921086/s
+     cable_messages_sent...........: 36894   247.95469/s
+     cable_receive_duration........: avg=316.4ms  min=54ms     med=186ms    max=1m0s  p(90)=770ms    p(95)=941.49ms
+     cable_receive_failures........: 2       0.013441/s
+     cable_round_trip_success......: 99.99%  ✓ 36889      ✗ 2
+     cable_subscription_duration...: avg=299.17ms min=44ms     med=296ms    max=1.09s p(90)=539.1ms  p(95)=611.04ms
+     checks........................: 100.00% ✓ 14760      ✗ 0
+     data_received.................: 42 MB   283 kB/s
+     data_sent.....................: 23 MB   152 kB/s
+     iteration_duration............: avg=6.25s    min=3.96s    med=6.07s    max=1m6s  p(90)=7.38s    p(95)=8.37s
+     iterations....................: 7377    49.578841/s
+     vus...........................: 1       min=1        max=500
+     vus_max.......................: 500     min=500      max=500
+     ws_connecting.................: avg=350.69ms min=143.48ms med=198.17ms max=3.14s p(90)=363.98ms p(95)=1.76s
+     ws_msgs_received..............: 44269   297.520089/s
+     ws_msgs_sent..................: 44274   297.553692/s
+
+running (2m28.8s), 000/500 VUs, 7377 complete and 3 interrupted iterations
+steady ✓ [======================================] 500 VUs  1m30s
+
+❯ SCENARIOS=steady MAX=1000 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 1000 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 1000 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+WARN[0089] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+ERRO[0089] GoError: expected pong response for unknown:steady:vu-942:iter-2:msg-2:xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady  at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:228:12(108))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0115] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0115] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:207:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+ERRO[0115] failed to connect: dial tcp 104.21.10.127:443: i/o timeout  source=cable
+ERRO[0115] GoError: connection failed
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at connectClient (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:254:9(58))
+	at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:207:31(9))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+WARN[0140] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0149] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+     ✗ successful connection
+      ↳  99% — ✓ 8058 / ✗ 2
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=1.18s    min=57ms     med=1.23s    max=1m0s  p(90)=1.81s  p(95)=2.01s
+     cable_connection_duration.....: avg=1.23s    min=165ms    med=959.5ms  max=30s   p(90)=2.42s  p(95)=3.65s
+     cable_connection_failures.....: 2      0.013474/s
+     cable_invalid_messages........: 1      0.006737/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5      p(95)=5
+     cable_messages_received.......: 40282  271.374082/s
+     cable_messages_sent...........: 40285  271.394293/s
+     cable_receive_duration........: avg=1.18s    min=57ms     med=1.23s    max=1m0s  p(90)=1.81s  p(95)=2.01s
+     cable_receive_failures........: 1      0.006737/s
+     cable_round_trip_success......: 99.99% ✓ 40282      ✗ 1
+     cable_subscription_duration...: avg=747.49ms min=52ms     med=721ms    max=1.65s p(90)=1.03s  p(95)=1.16s
+     checks........................: 99.98% ✓ 16116      ✗ 2
+     data_received.................: 47 MB  315 kB/s
+     data_sent.....................: 25 MB  167 kB/s
+     iteration_duration............: avg=11.64s   min=5.88s    med=11.59s   max=1m5s  p(90)=13.62s p(95)=14.17s
+     iterations....................: 8058   54.285595/s
+     vus...........................: 1      min=1        max=1000
+     vus_max.......................: 1000   min=1000     max=1000
+     ws_connecting.................: avg=534.58ms min=137.97ms med=199.52ms max=30s   p(90)=2.13s  p(95)=2.86s
+     ws_msgs_received..............: 48340  325.659678/s
+     ws_msgs_sent..................: 48343  325.679889/s
+
+running (2m28.4s), 0000/1000 VUs, 8058 complete and 2 interrupted iterations
+steady ✓ [======================================] 1000 VUs  1m30s
+
+❯ SCENARIOS=steady MAX=1000 ./k6 run loadtest.js
+
+          /\      |‾‾| /‾‾/   /‾‾/
+     /\  /  \     |  |/  /   /  /
+    /  \/    \    |     (   /   ‾‾\
+   /          \   |  |\  \ |  (‾)  |
+  / __________ \  |__| \__\ \_____/ .io
+
+     execution: local
+        script: loadtest.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 1000 max VUs, 2m0s max duration (incl. graceful stop):
+              * steady: 1000 looping VUs for 1m30s (exec: steady, gracefulStop: 30s)
+
+WARN[0119] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+ERRO[0119] GoError: expected pong response for unknown:steady:vu-796:iter-5:msg-0:xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+running at go.k6.io/k6/js/modules/k6.(*K6).Fail-fm (native)
+steady ↓at runPingIteration (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:228:12(108))
+	at steady (file:///Users/nick/Documents/solid_cable/bench/loadtest.js:74:19(4))  executor=constant-vus scenario=steady source=stacktrace
+WARN[0124] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0126] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+WARN[0138] receive timeout exceeded; consider increasing receiveTimeoutMs configuration option  source=cable
+     ✓ successful connection
+     ✓ successful subscription
+
+     cable_action_rtt..............: avg=1.12s    min=56ms     med=1.04s    max=1m0s  p(90)=1.96s p(95)=2.17s
+     cable_connection_duration.....: avg=1.39s    min=176ms    med=1.06s    max=5.1s  p(90)=3.29s p(95)=4.64s
+     cable_invalid_messages........: 1       0.007243/s
+     cable_iteration_messages......: avg=5        min=5        med=5        max=5     p(90)=5     p(95)=5
+     cable_messages_received.......: 40325   292.074804/s
+     cable_messages_sent...........: 40329   292.103776/s
+     cable_receive_duration........: avg=1.12s    min=56ms     med=1.04s    max=1m0s  p(90)=1.96s p(95)=2.17s
+     cable_receive_failures........: 1       0.007243/s
+     cable_round_trip_success......: 99.99%  ✓ 40325      ✗ 1
+     cable_subscription_duration...: avg=795.95ms min=65ms     med=813ms    max=1.41s p(90)=1.12s p(95)=1.18s
+     checks........................: 100.00% ✓ 16136      ✗ 0
+     data_received.................: 47 MB   338 kB/s
+     data_sent.....................: 25 MB   180 kB/s
+     iteration_duration............: avg=11.53s   min=4.95s    med=11.54s   max=1m1s  p(90)=13.8s p(95)=14.62s
+     iterations....................: 8065    58.414961/s
+     vus...........................: 1       min=1        max=1000
+     vus_max.......................: 1000    min=1000     max=1000
+     ws_connecting.................: avg=617.39ms min=142.87ms med=199.78ms max=4.35s p(90)=2.7s  p(95)=3.82s
+     ws_msgs_received..............: 48393   350.511494/s
+     ws_msgs_sent..................: 48397   350.540466/s
+
+running (2m18.1s), 0000/1000 VUs, 8065 complete and 3 interrupted iterations
+steady ✓ [======================================] 1000 VUs  1m30s
