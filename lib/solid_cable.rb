@@ -62,6 +62,10 @@ module SolidCable
       parse_duration(cable_config.writer_batch_delay, default: 0.001.seconds)
     end
 
+    def use_batch_writer?
+      cable_config.fetch(:use_batch_writer, true)
+    end
+
     private
       def cable_config
         Rails.application.config_for("cable")

@@ -144,7 +144,11 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        writer.write(channel, payload)
+        if ::SolidCable.use_batch_writer?
+          writer.write(channel, payload)
+        else
+          ::SolidCable::Message.broadcast(channel, payload)
+        end
 
         ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
