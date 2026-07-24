@@ -102,8 +102,8 @@ module ActionCable
 
             begin
               Rails.application.executor.wrap do
-                SolidCable::Message.connection_pool.with_connection do
-                  SolidCable::Message.broadcast_batch(
+                ::SolidCable::Message.connection_pool.with_connection do
+                  ::SolidCable::Message.broadcast_batch(
                     batch.map { |request| [request.channel, request.payload] }
                   )
                 end
@@ -288,7 +288,7 @@ module ActionCable
                 messages = ::SolidCable::Message.
                   where(id: (last_id.to_i + 1)..).
                   order(:id).
-                  limit(SolidCable.broadcast_list).
+                  limit(::SolidCable.broadcast_limit).
                   select(:id, :channel, :payload).
                   to_a
 
@@ -307,7 +307,7 @@ module ActionCable
 
                 self.reconnect_attempt = 0
 
-                break if messages.count < SolidCable.broadcast_list
+                break if messages.count < ::SolidCable.broadcast_limit
               end
             end
 
