@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_07_24_205904) do
+ActiveRecord::Schema[8.0].define(version: 2024_09_12_235943) do
   create_table "active_error_faults", force: :cascade do |t|
     t.integer "cause_id"
     t.binary "backtrace", limit: 536870912
@@ -43,18 +43,12 @@ ActiveRecord::Schema[8.2].define(version: 2026_07_24_205904) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "solid_cable_channels", force: :cascade do |t|
-    t.bigint "current_id", default: 0, null: false
-  end
-
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", limit: 1024, null: false
     t.binary "payload", limit: 536870912, null: false
     t.datetime "created_at", null: false
     t.integer "channel_hash", limit: 8, null: false
-    t.bigint "channel_id"
     t.index ["channel"], name: "index_solid_cable_messages_on_channel"
-    t.index ["channel_hash", "channel_id"], name: "index_solid_cable_messages_on_channel_hash_and_channel_id", unique: true
     t.index ["channel_hash"], name: "index_solid_cable_messages_on_channel_hash"
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
