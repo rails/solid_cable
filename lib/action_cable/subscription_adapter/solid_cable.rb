@@ -214,6 +214,7 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @reconnect_attempt = 0
+            @last_id = last_message_id
 
             @thread = Thread.new do
               Thread.current.name = "solid_cable_listener"
@@ -260,7 +261,7 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels[channel] = ::SolidCable::Channel.for(channel).current_id
+            channels[channel] = last_message_id
             on_success.call if on_success
           end
 
@@ -274,34 +275,31 @@ module ActionCable
 
           private
             attr_reader :executor, :thread
-            attr_accessor :reconnect_attempt
+            attr_accessor :last_id, :reconnect_attempt
+
+            def last_message_id
+              ::SolidCable::Message.maximum(:id) || 0
+            end
 
             def channels
               @channels ||= Concurrent::Map.new
             end
 
             def broadcast_messages
-              cursors = channels.each_pair.map do |channel, channel_id|
-                [ ::SolidCable::Message.channel_hash_for(channel), channel_id ]
-              end.to_h
-
-              broadcast_messages_for(cursors) if cursors.any?
-
-              self.reconnect_attempt = 0
-            end
-
-            def broadcast_messages_for(cursors)
-              ::SolidCable::Message.broadcastable(cursors).
-                pluck(:channel, :channel_id, :payload).each do |channel, channel_id, payload|
+              ::SolidCable::Message.
+                where(id: (last_id.to_i + 1)..).
+                order(:id).
+                pluck(:id, :channel, :payload).each do |id, channel, payload|
                   should_broadcast_message = false
                   channels.compute_if_present(channel) do |channel_last_id|
-                    break if channel_last_id >= channel_id
+                    break if channel_last_id >= id
 
                     should_broadcast_message = true
-                    channel_id
+                    id
                   end
 
                   broadcast(channel, payload) if should_broadcast_message
+                  self.last_id = id
                 end
             end
 
