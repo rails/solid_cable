@@ -10,6 +10,7 @@ const TEST_ID = __ENV.TEST_ID || ADAPTER;
 
 const MAX_VUS = intEnv("MAX", 20);
 const TIME_SECONDS = intEnv("TIME", 90);
+const STEADY_RAMP_UP_SECONDS = intEnv("STEADY_RAMP_UP", 20);
 const MESSAGES_PER_ITERATION = intEnv("NUM", 5);
 const PAYLOAD_BYTES = intEnv("PAYLOAD_BYTES", 64);
 const RECEIVE_TIMEOUT_MS = intEnv("RECEIVE_TIMEOUT_MS", 60000);
@@ -313,13 +314,16 @@ function buildScenarios() {
   if (SCENARIOS.includes("steady")) {
     scenarios.steady = {
       exec: "steady",
-      executor: "constant-vus",
-      vus: MAX_VUS,
-      duration: `${TIME_SECONDS}s`,
+      executor: "ramping-vus",
+      startVUs: 0,
+      stages: [
+        { duration: `${STEADY_RAMP_UP_SECONDS}s`, target: MAX_VUS },
+        { duration: `${TIME_SECONDS}s`, target: MAX_VUS },
+      ],
       startTime: scenarioStartTime(startAfterSeconds),
       tags: scenarioTags("steady"),
     };
-    startAfterSeconds += TIME_SECONDS;
+    startAfterSeconds += STEADY_RAMP_UP_SECONDS + TIME_SECONDS;
   }
 
   if (SCENARIOS.includes("churn")) {
