@@ -63,7 +63,7 @@ module SolidCable
     end
 
     def use_batch_writer?
-      cable_config.fetch(:use_batch_writer, true)
+      cable_config.use_batch_writer != false
     end
 
     private
