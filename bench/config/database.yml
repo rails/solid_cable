@@ -25,7 +25,7 @@ production:
   # database: /data/production.sqlite3
 
   adapter: trilogy
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
   database: solid_cable
   user: root
