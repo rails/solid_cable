@@ -18,20 +18,20 @@ test:
 # Store production database in the storage/ directory, which by default
 # is mounted as a persistent Docker volume in config/deploy.yml.
 production:
-  <<: *default
-  adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
-  database: /data/production.sqlite3
-
-  # adapter: trilogy
-  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
+  # <<: *default
+  # adapter: sqlite3
+  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   # timeout: 5000
-  # database: solid_cable
-  # user: root
-  # password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
-  # host: <%= ENV["HOST"] %>
-  # ssl: true
+  # database: /data/production.sqlite3
+
+  adapter: trilogy
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
+  timeout: 5000
+  database: solid_cable
+  user: root
+  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
+  host: <%= ENV["HOST"] %>
+  ssl: true
 
   # adapter: postgresql
   # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 50 } %>
