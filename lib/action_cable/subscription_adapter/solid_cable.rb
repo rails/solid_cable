@@ -102,11 +102,9 @@ module ActionCable
 
             begin
               Rails.application.executor.wrap do
-                ::SolidCable::Message.connection_pool.with_connection do
-                  ::SolidCable::Message.broadcast_batch(
-                    batch.map { |request| [request.channel, request.payload] }
-                  )
-                end
+                ::SolidCable::Message.broadcast_batch(
+                  batch.map { |request| [request.channel, request.payload] }
+                )
               end
             rescue StandardError => caught
               error = caught
@@ -176,8 +174,8 @@ module ActionCable
         def writer
           @writer || @mutex.synchronize do
             @writer ||= Writer.new(
-              batch_size: 4,
-              batch_delay: 0.001.seconds
+              batch_size: ::SolidCable.writer_batch_size,
+              batch_delay: ::SolidCable.writer_batch_delay
             )
           end
         end
