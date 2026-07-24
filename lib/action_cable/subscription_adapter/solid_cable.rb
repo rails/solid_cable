@@ -281,29 +281,17 @@ module ActionCable
             end
 
             def broadcast_messages
-              broadcast_messages_for(unread_message_ids)
-
-              self.reconnect_attempt = 0
-            end
-
-            def unread_message_ids
               cursors = channels.each_pair.map do |channel, channel_id|
                 [ ::SolidCable::Message.channel_hash_for(channel), channel_id ]
               end.to_h
 
-              ::SolidCable::Channel.heads_for(cursors.keys).
-                select { |channel_hash, current_id| current_id > cursors.fetch(channel_hash) }.
-                flat_map do |channel_hash, current_id|
-                  ((cursors.fetch(channel_hash) + 1)..current_id).map do |channel_id|
-                    [ channel_hash, channel_id ]
-                  end
-                end
+              broadcast_messages_for(cursors) if cursors.any?
+
+              self.reconnect_attempt = 0
             end
 
-            def broadcast_messages_for(ids)
-              return if ids.empty?
-
-              ::SolidCable::Message.broadcastable(ids).
+            def broadcast_messages_for(cursors)
+              ::SolidCable::Message.broadcastable(cursors).
                 pluck(:channel, :channel_id, :payload).each do |channel, channel_id, payload|
                   should_broadcast_message = false
                   channels.compute_if_present(channel) do |channel_last_id|

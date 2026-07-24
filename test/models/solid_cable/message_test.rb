@@ -32,19 +32,20 @@ class SolidCable::MessageTest < ActiveSupport::TestCase
     assert_nil channel_for("one")
   end
 
-  test "finds messages by their channel hash and channel id" do
+  test "finds messages after each channel cursor" do
     SolidCable::Message.broadcast_batch([
       [ "one", "first" ],
       [ "one", "second" ],
-      [ "two", "other" ]
+      [ "two", "other" ],
+      [ "three", "ignored" ]
     ])
 
-    ids = [
-      [ SolidCable::Message.channel_hash_for("one"), 2 ],
-      [ SolidCable::Message.channel_hash_for("two"), 1 ]
-    ]
+    cursors = {
+      SolidCable::Message.channel_hash_for("one") => 1,
+      SolidCable::Message.channel_hash_for("two") => 0
+    }
 
-    assert_equal %w[other second], SolidCable::Message.broadcastable(ids).pluck(:payload).sort
+    assert_equal %w[other second], SolidCable::Message.broadcastable(cursors).pluck(:payload).sort
   end
 
   private
