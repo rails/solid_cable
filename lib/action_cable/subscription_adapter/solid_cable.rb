@@ -282,22 +282,20 @@ module ActionCable
             end
 
             def broadcast_messages
-              messages = ::SolidCable::Message.
+              ::SolidCable::Message.
                 where(id: (last_id.to_i + 1)..).
                 order(:id).
-                select(:id, :channel, :payload)
-
-              messages.each do |message|
+                pluck(:id, :channel, :payload).each do |id, channel, payload|
                   should_broadcast_message = false
-                  channels.compute_if_present(message.channel) do |channel_last_id|
-                    break if channel_last_id >= message.id
+                  channels.compute_if_present(channel) do |channel_last_id|
+                    break if channel_last_id >= id
 
                     should_broadcast_message = true
-                    message.id
+                    id
                   end
 
-                  broadcast(message.channel, message.payload) if should_broadcast_message
-                  self.last_id = message.id
+                  broadcast(channel, payload) if should_broadcast_message
+                  self.last_id = id
                 end
 
               self.reconnect_attempt = 0
