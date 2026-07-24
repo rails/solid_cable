@@ -103,7 +103,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/solid_cable.git
-  revision: 74da8358450bf9cbad7077ef0699bff856ee75c1
+  revision: 94cfbb1c08cee41d60ab7f9b78b70c9b9bb78a96
   branch: bench
   specs:
     solid_cable (4.0.2)
