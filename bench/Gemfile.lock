@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 160577bb9acc2f6d17e66b2d4aeb1392fcd690cf
+  revision: fbd03fc7fa1e5e131fc24531003e186af9e0e16a
   branch: main
   specs:
     actioncable (8.2.0.alpha)
@@ -103,7 +103,7 @@ GIT
 
 GIT
   remote: https://github.com/rails/solid_cable.git
-  revision: 64b3f66952608d39ad4e0059596518296945ab7c
+  revision: 74da8358450bf9cbad7077ef0699bff856ee75c1
   branch: bench
   specs:
     solid_cable (4.0.2)
@@ -133,7 +133,7 @@ GEM
     dotenv (3.2.0)
     drb (2.2.3)
     ed25519 (1.4.0)
-    erb (6.0.5)
+    erb (6.0.6)
     erubi (1.13.1)
     globalid (1.4.0)
       activesupport (>= 6.1)
@@ -178,7 +178,7 @@ GEM
       drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.3)
-    net-imap (0.6.4.1)
+    net-imap (0.6.6)
       date
       net-protocol
     net-pop (0.1.2)
@@ -262,7 +262,7 @@ GEM
       tsort
     redis (5.4.1)
       redis-client (>= 0.22.0)
-    redis-client (0.30.0)
+    redis-client (0.30.1)
       connection_pool
     reline (0.6.3)
       io-console (~> 0.5)
