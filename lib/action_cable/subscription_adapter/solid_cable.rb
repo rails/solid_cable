@@ -214,7 +214,6 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @reconnect_attempt = 0
-            @last_id = last_message_id
 
             @thread = Thread.new do
               Thread.current.name = "solid_cable_listener"
@@ -261,7 +260,7 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels[channel] = last_message_id
+            channels[channel] = SolidCable::Channel.for(channel).id
             on_success.call if on_success
           end
 
@@ -275,11 +274,7 @@ module ActionCable
 
           private
             attr_reader :executor, :thread
-            attr_accessor :last_id, :reconnect_attempt
-
-            def last_message_id
-              ::SolidCable::Message.maximum(:id) || 0
-            end
+            attr_accessor :reconnect_attempt
 
             def channels
               @channels ||= Concurrent::Map.new
@@ -287,19 +282,18 @@ module ActionCable
 
             def broadcast_messages
               ::SolidCable::Message.
-                where(id: (last_id.to_i + 1)..).
+                where(id: (channels.values.min.to_i + 1)..).
                 order(:id).
-                pluck(:id, :channel, :payload).each do |id, channel, payload|
+                pluck(:id, :channel, :channel_id, :payload).each do |id, channel, channel_id, payload|
                   should_broadcast_message = false
                   channels.compute_if_present(channel) do |channel_last_id|
-                    break if channel_last_id >= id
+                    break if channel_last_id >= channel_id
 
                     should_broadcast_message = true
-                    id
+                    channel_id
                   end
 
                   broadcast(channel, payload) if should_broadcast_message
-                  self.last_id = id
                 end
 
               self.reconnect_attempt = 0
