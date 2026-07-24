@@ -26,10 +26,6 @@ module SolidCable
       cable_config.autotrim != false
     end
 
-    def broadcast_limit
-      250
-    end
-
     def trim_batch_size
       if (size = cable_config.trim_batch_size.to_i) < 2
         100

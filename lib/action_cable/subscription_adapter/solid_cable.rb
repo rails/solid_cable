@@ -284,15 +284,11 @@ module ActionCable
             end
 
             def broadcast_messages
-              loop do
-                messages = ::SolidCable::Message.
-                  where(id: (last_id.to_i + 1)..).
-                  order(:id).
-                  limit(::SolidCable.broadcast_limit).
-                  select(:id, :channel, :payload).
-                  to_a
+              current_channels = channels.dup
 
-                messages.each do |message|
+              ::SolidCable::Message.
+                broadcastable(current_channels.keys, last_id).select(:id, :channel, :payload).
+                each do |message|
                   should_broadcast_message = false
                   channels.compute_if_present(message.channel) do |channel_last_id|
                     break if channel_last_id >= message.id
@@ -305,10 +301,7 @@ module ActionCable
                   self.last_id = message.id
                 end
 
-                self.reconnect_attempt = 0
-
-                break if messages.count < ::SolidCable.broadcast_limit
-              end
+              self.reconnect_attempt = 0
             end
 
             def with_polling_volume
