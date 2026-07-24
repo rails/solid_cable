@@ -54,7 +54,7 @@ accessories:
       - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/mysql
-    cmd: mysqld --innodb-autoinc-lock-mode=1
+    cmd: mysqld --innodb-autoinc-lock-mode=0
   redis:
     image: redis:latest
     host: "<%= ENV['HOST'] %>"
