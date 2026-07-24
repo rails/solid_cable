@@ -5,9 +5,9 @@ module SolidCable
     scope :trimmable, lambda {
       where(created_at: ...::SolidCable.message_retention.ago)
     }
-    scope :broadcastable, lambda { |channels, last_id|
-      where(channel_hash: channel_hashes_for(channels)).
-        where(id: (last_id.to_i + 1)..).order(:id)
+    scope :broadcastable, lambda { |channel_ids|
+      where([ :channel_hash, :channel_id ] => channel_ids).
+        order(:channel_hash, :channel_id)
     }
 
     class << self
@@ -17,13 +17,12 @@ module SolidCable
 
       def broadcast_batch(messages)
         messages_by_channel = messages.group_by { |channel, _| channel_hash_for(channel) }
-
-        channel_ids = messages_by_channel.keys.sort
+        channel_ids = messages_by_channel.keys
 
         ::SolidCable::Channel.transaction do
-          ::SolidCable::Channel.insert_all(messages_by_channel.keys.map { |id| { id: id } })
+          ::SolidCable::Channel.insert_all(channel_ids.map { |id| { id: id } })
 
-          channels = ::SolidCable::Channel.where(id: messages_by_channel.keys).lock.index_by(&:id)
+          channels = ::SolidCable::Channel.where(id: channel_ids).lock.index_by(&:id)
 
           created_at = Time.current
           attributes = channel_ids.flat_map do |channel_id|

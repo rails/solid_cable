@@ -260,7 +260,7 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels[channel] = SolidCable::Channel.for(channel).id
+            channels[channel] = ::SolidCable::Channel.for(channel).current_id
             on_success.call if on_success
           end
 
@@ -281,10 +281,30 @@ module ActionCable
             end
 
             def broadcast_messages
-              ::SolidCable::Message.
-                where(id: (channels.values.min.to_i + 1)..).
-                order(:id).
-                pluck(:id, :channel, :channel_id, :payload).each do |id, channel, channel_id, payload|
+              broadcast_messages_for(unread_message_ids)
+
+              self.reconnect_attempt = 0
+            end
+
+            def unread_message_ids
+              cursors = channels.each_pair.map do |channel, channel_id|
+                [ ::SolidCable::Message.channel_hash_for(channel), channel_id ]
+              end.to_h
+
+              ::SolidCable::Channel.heads_for(cursors.keys).
+                select { |channel_hash, current_id| current_id > cursors.fetch(channel_hash) }.
+                flat_map do |channel_hash, current_id|
+                  ((cursors.fetch(channel_hash) + 1)..current_id).map do |channel_id|
+                    [ channel_hash, channel_id ]
+                  end
+                end
+            end
+
+            def broadcast_messages_for(ids)
+              return if ids.empty?
+
+              ::SolidCable::Message.broadcastable(ids).
+                pluck(:channel, :channel_id, :payload).each do |channel, channel_id, payload|
                   should_broadcast_message = false
                   channels.compute_if_present(channel) do |channel_last_id|
                     break if channel_last_id >= channel_id
@@ -295,8 +315,6 @@ module ActionCable
 
                   broadcast(channel, payload) if should_broadcast_message
                 end
-
-              self.reconnect_attempt = 0
             end
 
             def with_polling_volume

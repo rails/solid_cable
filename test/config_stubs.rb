@@ -20,6 +20,10 @@ module ConfigStubs
     class ExectorStub
       def run!
       end
+
+      def wrap
+        yield
+      end
     end
   end
 

@@ -178,11 +178,11 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   test "retries after a connection failure and keeps listening" do
     with_cable_config reconnect_attempts: [0] do
       raised = false
-      original = SolidCable::Message.method(:broadcastable)
+      original = SolidCable::Channel.method(:heads_for)
 
-      SolidCable::Message.stub(:broadcastable, lambda { |channels, last_id|
+      SolidCable::Channel.stub(:heads_for, lambda { |ids|
         if raised
-          original.call(channels, last_id)
+          original.call(ids)
         else
           raised = true
           raise ActiveRecord::ConnectionFailed, "boom"
@@ -203,14 +203,14 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     with_cable_config reconnect_attempts: [ 0 ] do
       poll_outcomes = %i[ failure empty failure ]
       empty_poll = Concurrent::Event.new
-      original = SolidCable::Message.method(:broadcastable)
+      original = SolidCable::Channel.method(:heads_for)
 
-      SolidCable::Message.stub(:broadcastable, lambda { |channels, last_id|
+      SolidCable::Channel.stub(:heads_for, lambda { |ids|
         outcome = poll_outcomes.shift
 
         raise ActiveRecord::ConnectionFailed if outcome == :failure
 
-        original.call(channels, last_id).tap { empty_poll.set if outcome == :empty }
+        original.call(ids).tap { empty_poll.set if outcome == :empty }
       }) do
         subscribe_as_queue("quiet-reconnect-channel") do |queue|
           empty_poll.wait(WAIT_WHEN_EXPECTING_EVENT)

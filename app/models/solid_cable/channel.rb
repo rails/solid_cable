@@ -2,8 +2,14 @@
 
 module SolidCable
   class Channel < SolidCable::Record
-    def self.for(channel)
-      create_or_find_by(id: ::SolidCable::Message.channel_hash_for(channel))
+    class << self
+      def for(channel)
+        find_or_initialize_by(id: ::SolidCable::Message.channel_hash_for(channel))
+      end
+
+      def heads_for(ids)
+        where(id: ids).pluck(:id, :current_id).to_h
+      end
     end
   end
 end

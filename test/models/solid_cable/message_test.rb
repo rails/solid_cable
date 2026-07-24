@@ -32,6 +32,21 @@ class SolidCable::MessageTest < ActiveSupport::TestCase
     assert_nil channel_for("one")
   end
 
+  test "finds messages by their channel hash and channel id" do
+    SolidCable::Message.broadcast_batch([
+      [ "one", "first" ],
+      [ "one", "second" ],
+      [ "two", "other" ]
+    ])
+
+    ids = [
+      [ SolidCable::Message.channel_hash_for("one"), 2 ],
+      [ SolidCable::Message.channel_hash_for("two"), 1 ]
+    ]
+
+    assert_equal %w[other second], SolidCable::Message.broadcastable(ids).pluck(:payload).sort
+  end
+
   private
     def channel_for(channel)
       SolidCable::Channel.find_by(id: SolidCable::Message.channel_hash_for(channel))
