@@ -146,7 +146,7 @@ module ActionCable
 
           private
             attr_reader :executor, :thread
-            attr_accessor :last_id, :reconnect_attempt
+            attr_accessor :reconnect_attempt
 
             def last_message_id
               ActiveSupport::Notifications.instrument("subscription_cursor.solid_cable") do
@@ -171,7 +171,7 @@ module ActionCable
                 columns << :created_at if ActiveSupport::Notifications.notifier.listening?("poll.solid_cable")
 
                 ::SolidCable::Message.
-                  broadcastable(current_channels.keys, last_id).
+                  broadcastable(current_channels.keys, current_channels.values.min).
                   pluck(*columns).tap do |records|
                     payload[:rows] = records.size
                     payload[:lags_ms] =
@@ -195,7 +195,6 @@ module ActionCable
                 end
 
                 broadcast(channel, message_payload) if should_broadcast_message
-                self.last_id = id
               end
 
               self.reconnect_attempt = 0
