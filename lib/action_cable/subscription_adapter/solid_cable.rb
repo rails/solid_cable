@@ -3,6 +3,7 @@
 require "action_cable/subscription_adapter/base"
 require "action_cable/subscription_adapter/channel_prefix"
 require "action_cable/subscription_adapter/subscriber_map"
+require "active_support/notifications"
 require "concurrent/atomic/semaphore"
 
 module ActionCable
@@ -23,7 +24,9 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        ::SolidCable::Message.broadcast(channel, payload)
+        ActiveSupport::Notifications.instrument("broadcast.solid_cable") do
+          ::SolidCable::Message.broadcast(channel, payload)
+        end
 
         ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
@@ -76,6 +79,7 @@ module ActionCable
 
             @reconnect_attempt = 0
             @last_id = last_message_id
+            @last_poll_started_at = nil
 
             @thread = Thread.new do
               Thread.current.name = "solid_cable_listener"
@@ -131,7 +135,14 @@ module ActionCable
           end
 
           def invoke_callback(*)
-            executor.post { super }
+            queued_at = monotonic_time
+
+            executor.post do
+              ActiveSupport::Notifications.instrument(
+                "callback.solid_cable",
+                queue_ms: milliseconds_since(queued_at)
+              ) { super }
+            end
           end
 
           private
@@ -139,7 +150,9 @@ module ActionCable
             attr_accessor :last_id, :reconnect_attempt
 
             def last_message_id
-              ::SolidCable::Message.maximum(:id) || 0
+              ActiveSupport::Notifications.instrument("subscription_cursor.solid_cable") do
+                ::SolidCable::Message.maximum(:id) || 0
+              end
             end
 
             def channels
@@ -148,23 +161,53 @@ module ActionCable
 
             def broadcast_messages
               current_channels = channels.dup
+              poll_started_at = monotonic_time
+              payload = {
+                interval_ms: @last_poll_started_at && milliseconds_since(@last_poll_started_at)
+              }
+              @last_poll_started_at = poll_started_at
 
-              ::SolidCable::Message.
-                broadcastable(current_channels.keys, last_id).
-                pluck(:id, :channel, :payload).each do |id, channel, payload|
-                  should_broadcast_message = false
-                  channels.compute_if_present(channel) do |channel_last_id|
-                    break if channel_last_id >= id
+              messages = ActiveSupport::Notifications.instrument("poll.solid_cable", payload) do
+                columns = [ :id, :channel, :payload ]
+                columns << :created_at if ActiveSupport::Notifications.notifier.listening?("poll.solid_cable")
 
-                    should_broadcast_message = true
-                    id
+                ::SolidCable::Message.
+                  broadcastable(current_channels.keys, last_id).
+                  pluck(*columns).tap do |records|
+                    payload[:rows] = records.size
+                    payload[:lags_ms] =
+                      if columns.include?(:created_at)
+                        now = Time.current
+                        records.filter_map do |_, _, _, created_at|
+                          (now - created_at) * 1_000 if created_at
+                        end
+                      end
+                    payload[:pool] = ::SolidCable::Message.connection_pool.stat
                   end
+              end
 
-                  broadcast(channel, payload) if should_broadcast_message
-                  self.last_id = id
+              messages.each do |id, channel, message_payload, _created_at|
+                should_broadcast_message = false
+                channels.compute_if_present(channel) do |channel_last_id|
+                  break if channel_last_id >= id
+
+                  should_broadcast_message = true
+                  id
                 end
 
+                broadcast(channel, message_payload) if should_broadcast_message
+                self.last_id = id
+              end
+
               self.reconnect_attempt = 0
+            end
+
+            def monotonic_time
+              Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            end
+
+            def milliseconds_since(started_at)
+              (monotonic_time - started_at) * 1_000
             end
 
             def with_polling_volume
