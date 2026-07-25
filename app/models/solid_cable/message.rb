@@ -6,7 +6,7 @@ module SolidCable
       where(created_at: ...::SolidCable.message_retention.ago)
     }
     scope :broadcastable, lambda { |channels, last_id|
-      where(channel_hash: channel_hashes_for(channels)).
+      where(channel_hash: channels).
         where(id: (last_id.to_i + 1)..).order(:id)
     }
 

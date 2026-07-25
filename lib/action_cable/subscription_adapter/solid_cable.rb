@@ -126,12 +126,12 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels[channel] = last_message_id
+            channels[SolidCable::Message.channel_hash_for(channel)] = last_message_id
             on_success.call if on_success
           end
 
           def remove_channel(channel)
-            channels.delete(channel)
+            channels.delete(SolidCable::Message.channel_hash_for(channel))
           end
 
           def invoke_callback(*)
@@ -168,7 +168,7 @@ module ActionCable
               @last_poll_started_at = poll_started_at
 
               messages = ActiveSupport::Notifications.instrument("poll.solid_cable", payload) do
-                columns = [ :id, :channel, :payload ]
+                columns = [ :id, :channel, :channel_hash, :payload ]
                 columns << :created_at if ActiveSupport::Notifications.notifier.listening?("poll.solid_cable")
 
                 ::SolidCable::Message.
@@ -186,9 +186,9 @@ module ActionCable
                   end
               end
 
-              messages.each do |id, channel, message_payload, _created_at|
+              messages.each do |id, channel, channel_hash, message_payload, _created_at|
                 should_broadcast_message = false
-                channels.compute_if_present(channel) do |channel_last_id|
+                channels.compute_if_present(channel_hash) do |channel_last_id|
                   break if channel_last_id >= id
 
                   should_broadcast_message = true
