@@ -15,7 +15,8 @@ module SolidCable
     end
 
     def polling_interval
-      parse_duration(cable_config.polling_interval, default: 0.1.seconds)
+      @polling_interval ||=
+        parse_duration(cable_config.polling_interval, default: 0.1.seconds)
     end
 
     def message_retention
@@ -56,7 +57,7 @@ module SolidCable
 
     private
       def cable_config
-        Rails.application.config_for("cable")
+        @cable_config ||= Rails.application.config_for("cable")
       end
 
       def parse_duration(duration, default:)
