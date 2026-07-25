@@ -20,9 +20,9 @@ test:
 production:
   <<: *default
   adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
   database: /data/production.sqlite3
-  min_connections: 1
 
   # adapter: trilogy
   # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
