@@ -78,7 +78,6 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @reconnect_attempt = 0
-            @last_id = last_message_id
             @last_poll_started_at = nil
 
             @thread = Thread.new do
@@ -125,31 +124,9 @@ module ActionCable
             thread.join
           end
 
-          def add_subscriber(channel, subscriber, on_success)
-            needs_channel = @sync.synchronize do
-              if @subscribers.key?(channel)
-                @subscribers[channel] << subscriber
-                false
-              else
-                true
-              end
-            end
-
-            if needs_channel
-              channel_last_id = last_message_id
-
-              @sync.synchronize do
-                new_channel = !@subscribers.key?(channel)
-                @subscribers[channel] << subscriber
-                add_channel(channel, channel_last_id) if new_channel
-              end
-            end
-
-            on_success&.call
-          end
-
-          def add_channel(channel, channel_last_id)
-            channels[::SolidCable::Message.channel_hash_for(channel)] = channel_last_id
+          def add_channel(channel, on_success)
+            channels[::SolidCable::Message.channel_hash_for(channel)] = last_message_id
+            on_success.call if on_success
           end
 
           def remove_channel(channel)
@@ -208,8 +185,6 @@ module ActionCable
                   end
               end
 
-              messages_to_broadcast = []
-
               messages.each do |id, channel, channel_hash, message_payload, _created_at|
                 should_broadcast_message = false
                 channels.compute_if_present(channel_hash) do |channel_last_id|
@@ -219,28 +194,11 @@ module ActionCable
                   id
                 end
 
-                messages_to_broadcast << [ channel, message_payload ] if should_broadcast_message
+                broadcast(channel, message_payload) if should_broadcast_message
                 self.last_id = id
               end
 
-              broadcast_messages_to_subscribers(messages_to_broadcast)
               self.reconnect_attempt = 0
-            end
-
-            def broadcast_messages_to_subscribers(messages)
-              return if messages.empty?
-
-              subscribers_by_channel = @sync.synchronize do
-                messages.each_with_object({}) do |(channel, _), subscribers|
-                  subscribers[channel] ||= @subscribers[channel].dup if @subscribers.key?(channel)
-                end
-              end
-
-              messages.each do |channel, message|
-                subscribers_by_channel[channel]&.each do |subscriber|
-                  invoke_callback(subscriber, message)
-                end
-              end
             end
 
             def monotonic_time
