@@ -150,7 +150,7 @@ module ActionCable
               current_channels = channels.dup
 
               ::SolidCable::Message.
-                broadcastable(current_channels.keys, last_id).
+                broadcastable(current_channels.keys, last_id).sort_by(&:id).
                 each do |message|
                   should_broadcast_message = false
                   channels.compute_if_present(message.channel) do |channel_last_id|
