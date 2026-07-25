@@ -24,3 +24,4 @@ production:
   message_retention: 30.minutes
   autotrim: false
   trim_batch_size: 10000
+  silence_polling: false

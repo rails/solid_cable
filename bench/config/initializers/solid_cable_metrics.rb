@@ -49,11 +49,13 @@ require "json"
           metrics = snapshot.transform_values { |values| summarize(values) }
           return if metrics.empty?
 
-          Rails.logger.info(JSON.generate(
+          message = JSON.generate(
             event: "solid_cable_metrics",
             pid: Process.pid,
             metrics:
-          ))
+          )
+
+          Rails.logger.log_at(Logger::INFO) { Rails.logger.info(message) }
         end
 
         def summarize(values)
