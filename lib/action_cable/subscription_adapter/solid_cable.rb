@@ -20,12 +20,12 @@ module ActionCable
           end
 
         @listener = nil
-        @autotrim = ::SolidCable.autotrim?
       end
 
       def broadcast(channel, payload)
         ::SolidCable::Message.broadcast(channel, payload)
-        ::SolidCable::TrimJob.perform_now if @autotrim
+
+        ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
 
       def subscribe(channel, callback, success_callback = nil)
@@ -75,7 +75,6 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @reconnect_attempt = 0
-            @silence_polling = ::SolidCable.silence_polling?
 
             @thread = Thread.new do
               Thread.current.name = "solid_cable_listener"
@@ -168,7 +167,7 @@ module ActionCable
             end
 
             def with_polling_volume
-              if @silence_polling && ActiveRecord::Base.logger
+              if ::SolidCable.silence_polling? && ActiveRecord::Base.logger
                 ActiveRecord::Base.logger.silence { yield }
               else
                 yield
