@@ -150,18 +150,18 @@ module ActionCable
               current_channels = channels.dup
 
               ::SolidCable::Message.
-                broadcastable(current_channels.keys, last_id).sort_by(&:id).
-                each do |message|
+                broadcastable(current_channels.keys, last_id).
+                pluck(:id, :channel, :payload).each do |id, channel, payload|
                   should_broadcast_message = false
-                  channels.compute_if_present(message.channel) do |channel_last_id|
-                    break if channel_last_id >= message.id
+                  channels.compute_if_present(channel) do |channel_last_id|
+                    break if channel_last_id >= id
 
                     should_broadcast_message = true
-                    message.id
+                    id
                   end
 
-                  broadcast(message.channel, message.payload) if should_broadcast_message
-                  self.last_id = message.id
+                  broadcast(channel, payload) if should_broadcast_message
+                  self.last_id = id
                 end
 
               self.reconnect_attempt = 0
