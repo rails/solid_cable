@@ -175,39 +175,6 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
-  test "instruments the delivery path" do
-    events = []
-    mutex = Mutex.new
-    subscriber = ActiveSupport::Notifications.subscribe(/\.solid_cable\z/) do |*arguments|
-      event = ActiveSupport::Notifications::Event.new(*arguments)
-      mutex.synchronize { events << event }
-    end
-
-    subscribe_as_queue("instrumented-channel") do |queue|
-      @tx_adapter.broadcast("instrumented-channel", "hello")
-
-      assert_equal "hello", next_message_in_queue(queue)
-    end
-
-    recorded_events = mutex.synchronize { events.dup }
-    event_names = recorded_events.map(&:name)
-
-    assert_includes event_names, "broadcast.solid_cable"
-    assert_includes event_names, "subscription_cursor.solid_cable"
-    assert_includes event_names, "poll.solid_cable"
-    assert_includes event_names, "callback.solid_cable"
-
-    poll = recorded_events.find { |event| event.name == "poll.solid_cable" && event.payload[:rows].to_i > 0 }
-    assert_not_nil poll
-    assert_operator poll.payload[:lags_ms].first, :>=, 0
-    assert_includes poll.payload[:pool], :waiting
-
-    callback = recorded_events.find { |event| event.name == "callback.solid_cable" }
-    assert_operator callback.payload[:queue_ms], :>=, 0
-  ensure
-    ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
-  end
-
   test "retries after a connection failure and keeps listening" do
     with_cable_config reconnect_attempts: [0] do
       raised = false

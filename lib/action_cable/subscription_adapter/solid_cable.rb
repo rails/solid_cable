@@ -3,7 +3,6 @@
 require "action_cable/subscription_adapter/base"
 require "action_cable/subscription_adapter/channel_prefix"
 require "action_cable/subscription_adapter/subscriber_map"
-require "active_support/notifications"
 require "concurrent/atomic/semaphore"
 
 module ActionCable
@@ -25,10 +24,7 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        ActiveSupport::Notifications.instrument("broadcast.solid_cable") do
-          ::SolidCable::Message.broadcast(channel, payload)
-        end
-
+        ::SolidCable::Message.broadcast(channel, payload)
         ::SolidCable::TrimJob.perform_now if @autotrim
       end
 
@@ -79,7 +75,6 @@ module ActionCable
             @critical = Concurrent::Semaphore.new(0)
 
             @reconnect_attempt = 0
-            @last_poll_started_at = nil
             @silence_polling = ::SolidCable.silence_polling?
 
             @thread = Thread.new do
@@ -136,14 +131,7 @@ module ActionCable
           end
 
           def invoke_callback(*)
-            queued_at = monotonic_time
-
-            executor.post do
-              ActiveSupport::Notifications.instrument(
-                "callback.solid_cable",
-                queue_ms: milliseconds_since(queued_at)
-              ) { super }
-            end
+            executor.post { super }
           end
 
           private
@@ -151,9 +139,7 @@ module ActionCable
             attr_accessor :last_id, :reconnect_attempt
 
             def last_message_id
-              ActiveSupport::Notifications.instrument("subscription_cursor.solid_cable") do
-                ::SolidCable::Message.maximum(:id) || 0
-              end
+              ::SolidCable::Message.maximum(:id) || 0
             end
 
             def channels
@@ -162,32 +148,10 @@ module ActionCable
 
             def broadcast_messages
               current_channels = channels.dup
-              poll_started_at = monotonic_time
-              payload = {
-                interval_ms: @last_poll_started_at && milliseconds_since(@last_poll_started_at)
-              }
-              @last_poll_started_at = poll_started_at
 
-              messages = ActiveSupport::Notifications.instrument("poll.solid_cable", payload) do
-                columns = [ :id, :channel, :channel_hash, :payload ]
-                columns << :created_at if ActiveSupport::Notifications.notifier.listening?("poll.solid_cable")
-
-                ::SolidCable::Message.
-                  broadcastable(current_channels.keys, last_id).
-                  pluck(*columns).tap do |records|
-                    payload[:rows] = records.size
-                    payload[:lags_ms] =
-                      if columns.include?(:created_at)
-                        now = Time.current
-                        records.filter_map do |_, _, _, _, created_at|
-                          (now - created_at) * 1_000 if created_at
-                        end
-                      end
-                    payload[:pool] = ::SolidCable::Message.connection_pool.stat
-                  end
-              end
-
-              messages.each do |id, channel, channel_hash, message_payload, _created_at|
+              ::SolidCable::Message.
+                broadcastable(current_channels.keys, last_id).
+                pluck(:id, :channel, :channel_hash, :payload).each do |id, channel, channel_hash, payload|
                 should_broadcast_message = false
                 channels.compute_if_present(channel_hash) do |channel_last_id|
                   break if channel_last_id >= id
@@ -196,19 +160,11 @@ module ActionCable
                   id
                 end
 
-                broadcast(channel, message_payload) if should_broadcast_message
+                broadcast(channel, payload) if should_broadcast_message
                 self.last_id = id
               end
 
               self.reconnect_attempt = 0
-            end
-
-            def monotonic_time
-              Process.clock_gettime(Process::CLOCK_MONOTONIC)
-            end
-
-            def milliseconds_since(started_at)
-              (monotonic_time - started_at) * 1_000
             end
 
             def with_polling_volume
