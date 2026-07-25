@@ -178,7 +178,7 @@ module ActionCable
                     payload[:lags_ms] =
                       if columns.include?(:created_at)
                         now = Time.current
-                        records.filter_map do |_, _, _, created_at|
+                        records.filter_map do |_, _, _, _, created_at|
                           (now - created_at) * 1_000 if created_at
                         end
                       end
