@@ -126,12 +126,12 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels[SolidCable::Message.channel_hash_for(channel)] = last_message_id
+            channels[::SolidCable::Message.channel_hash_for(channel)] = last_message_id
             on_success.call if on_success
           end
 
           def remove_channel(channel)
-            channels.delete(SolidCable::Message.channel_hash_for(channel))
+            channels.delete(::SolidCable::Message.channel_hash_for(channel))
           end
 
           def invoke_callback(*)
