@@ -7,24 +7,31 @@ module SolidCableBenchmarkMetrics
 
   class << self
     def record(measurements)
-      report_data = synchronize do
-        reset_after_fork
-
-        measurements.each do |name, values|
-          observed_values = Array(values).compact
-          samples[name].concat(observed_values) if observed_values.any?
-        end
-
-        now = monotonic_time
-        next unless now - @last_report_at >= REPORT_INTERVAL
-
-        elapsed = now - @last_report_at
-        @last_report_at = now
-        samples_to_report = @samples
-        @samples = new_samples
-
-        [ samples_to_report, process_metrics(elapsed) ]
+      unless mutex.try_lock
+        @dropped_metric_records = @dropped_metric_records.to_i + 1
+        return
       end
+
+      report_data =
+        begin
+          reset_after_fork
+
+          measurements.each do |name, values|
+            record_samples(name, values)
+          end
+
+          now = monotonic_time
+          if now - @last_report_at >= REPORT_INTERVAL
+            elapsed = now - @last_report_at
+            @last_report_at = now
+            samples_to_report = @samples
+            @samples = new_samples
+
+            [ samples_to_report, process_metrics(elapsed) ]
+          end
+        ensure
+          mutex.unlock
+        end
 
       report(*report_data) if report_data
     end
@@ -38,8 +45,12 @@ module SolidCableBenchmarkMetrics
         Hash.new { |hash, key| hash[key] = [] }
       end
 
-      def synchronize(&block)
-        mutex.synchronize(&block)
+      def record_samples(name, values)
+        if values.is_a?(Array)
+          values.each { |value| samples[name] << value if value }
+        elsif values
+          samples[name] << values
+        end
       end
 
       def mutex
@@ -62,6 +73,7 @@ module SolidCableBenchmarkMetrics
         @last_process_cpu_at = process_cpu_time
         @last_gc_stat = GC.stat
         @samples = new_samples
+        @dropped_metric_records = 0
       end
 
       def process_metrics(elapsed)
@@ -81,11 +93,13 @@ module SolidCableBenchmarkMetrics
           heap_live_slots: gc_stat[:heap_live_slots],
           heap_free_slots: gc_stat[:heap_free_slots],
           old_objects: gc_stat[:old_objects],
-          threads: Thread.list.count
+          threads: Thread.list.count,
+          dropped_metric_records: @dropped_metric_records.to_i
         }
 
         @last_process_cpu_at = cpu_at
         @last_gc_stat = gc_stat
+        @dropped_metric_records = 0
         metrics
       end
 
