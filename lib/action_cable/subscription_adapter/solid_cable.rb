@@ -301,6 +301,8 @@ module ActionCable
                   broadcast(channel, payload) if should_broadcast_message
                   self.last_id = id
                 end
+
+              self.reconnect_attempt = 0
             end
 
             def with_polling_volume
