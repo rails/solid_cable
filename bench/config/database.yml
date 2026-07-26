@@ -25,19 +25,19 @@ production:
   # pragmas:
   #   auto_vacuum: incremental
 
-  # adapter: trilogy
-  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  # timeout: 5000
-  # database: solid_cable
-  # user: root
-  # password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
-  # host: <%= ENV["HOST"] %>
-  # ssl: true
-
-  adapter: postgresql
+  adapter: trilogy
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-  database: cablebench
-  user: cablebench
-  password: <%= ENV["POSTGRES_PASSWORD"] %>
+  database: solid_cable
+  user: root
+  password: <%= ENV["MYSQL_ROOT_PASSWORD"] %>
   host: <%= ENV["HOST"] %>
+  ssl: true
+
+  # adapter: postgresql
+  # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # timeout: 5000
+  # database: cablebench
+  # user: cablebench
+  # password: <%= ENV["POSTGRES_PASSWORD"] %>
+  # host: <%= ENV["HOST"] %>
