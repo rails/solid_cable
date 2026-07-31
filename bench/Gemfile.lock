@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/npezza93/rails.git
-  revision: bed550bace0642b35f93da539a929632d3742aaa
-  branch: actioncable-pool
+  revision: eec9da9c6bc5fd5c7b783904b01618723e5a17e0
+  branch: actioncable-perf
   specs:
     actioncable (8.2.0.alpha)
       actionpack (= 8.2.0.alpha)
