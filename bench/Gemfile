@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "rails", github: "npezza93/rails", branch: "actioncable-perf"
+gem "rails", github: "npezza93/rails", branch: "actioncable-wip"
 gem "activeerror"
 gem "propshaft"
 gem "solid_cable", github: "rails/solid_cable", branch: "bench"
