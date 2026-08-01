@@ -9,7 +9,8 @@ module SolidCable
   class << self
     delegate :connects_to, :silence_polling?, :polling_interval,
       :message_retention, :autotrim?, :trim_batch_size, :use_skip_locked,
-      :trim_chance, :reconnect_attempts, to: :configuration
+      :trim_chance, :reconnect_attempts, :use_batch_writer?,
+      :writer_batch_size, :writer_batch_delay, to: :configuration
 
     def configuration
       @configuration ||= Configuration.new(**Rails.application.config_for("cable"))

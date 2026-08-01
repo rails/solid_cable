@@ -6,7 +6,8 @@ module SolidCable
 
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
-      :trim_chance, :reconnect_attempts
+      :trim_chance, :reconnect_attempts, :use_batch_writer,
+      :writer_batch_size, :writer_batch_delay
 
     def connects_to
       @connects_to ||= options.connects_to.to_h.deep_transform_values(&:to_sym)
@@ -64,6 +65,21 @@ module SolidCable
         attempts = Array.new(attempts, 0) if attempts.is_a?(Integer)
         attempts
       end
+    end
+
+    def use_batch_writer?
+      return @use_batch_writer if defined?(@use_batch_writer)
+
+      @use_batch_writer = options.use_batch_writer != false
+    end
+
+    def writer_batch_size
+      @writer_batch_size ||= [ (options.writer_batch_size || 4).to_i, 1 ].max
+    end
+
+    def writer_batch_delay
+      @writer_batch_delay ||=
+        [ parse_duration(options.writer_batch_delay, default: 0.001.seconds), 0 ].max
     end
 
     private

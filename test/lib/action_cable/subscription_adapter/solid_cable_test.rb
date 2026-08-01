@@ -89,6 +89,46 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "batches concurrent broadcasts" do
+    batches = Queue.new
+
+    with_cable_config use_batch_writer: true, autotrim: false,
+      writer_batch_size: 2, writer_batch_delay: "1.second" do
+      SolidCable::Message.stub(:broadcast_batch, ->(messages) { batches << messages }) do
+        broadcasts = [
+          Thread.new { @tx_adapter.broadcast("channel", "one") },
+          Thread.new { @tx_adapter.broadcast("channel", "two") }
+        ]
+
+        broadcasts.each(&:join)
+      end
+    end
+
+    assert_equal [ [ "channel", "one" ], [ "channel", "two" ] ].sort, batches.pop.sort
+    assert_empty batches
+  end
+
+  test "propagates batch failures to every broadcast" do
+    failures = Queue.new
+
+    with_cable_config use_batch_writer: true, autotrim: false,
+      writer_batch_size: 2, writer_batch_delay: "1.second" do
+      SolidCable::Message.stub(:broadcast_batch, ->(*) { raise ActiveRecord::StatementInvalid, "boom" }) do
+        broadcasts = 2.times.map do
+          Thread.new do
+            @tx_adapter.broadcast("channel", "message")
+          rescue ActiveRecord::StatementInvalid => error
+            failures << error.message
+          end
+        end
+
+        broadcasts.each(&:join)
+      end
+    end
+
+    assert_equal [ "boom", "boom" ], 2.times.map { failures.pop }
+  end
+
   test "identical_subscriptions" do
     subscribe_as_queue("channel") do |queue|
       subscribe_as_queue("channel") do |queue_2|

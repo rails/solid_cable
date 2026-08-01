@@ -12,8 +12,15 @@ module SolidCable
 
     class << self
       def broadcast(channel, payload)
-        insert({ created_at: Time.current, channel:, payload:,
-          channel_hash: channel_hash_for(channel) })
+        broadcast_batch([ [ channel, payload ] ])
+      end
+
+      def broadcast_batch(messages)
+        created_at = Time.current
+
+        insert_all!(messages.map do |channel, payload|
+          { created_at:, channel:, payload:, channel_hash: channel_hash_for(channel) }
+        end)
       end
 
       def channel_hashes_for(channels)

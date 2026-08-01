@@ -25,3 +25,6 @@ production:
   autotrim: false
   trim_batch_size: 10000
   silence_polling: false
+  use_batch_writer: true
+  writer_batch_size: 4
+  writer_batch_delay: 0.001.seconds

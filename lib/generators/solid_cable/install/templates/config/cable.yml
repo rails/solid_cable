@@ -15,3 +15,6 @@ production:
       writing: cable
   polling_interval: 0.1.seconds
   message_retention: 1.day
+  use_batch_writer: true
+  writer_batch_size: 4
+  writer_batch_delay: 0.001.seconds

@@ -62,4 +62,31 @@ class SolidCableTest < ActiveSupport::TestCase
       assert_equal [ 0, 1, 2 ], SolidCable.reconnect_attempts
     end
   end
+
+  test "batch writer defaults" do
+    assert SolidCable.use_batch_writer?
+    assert_equal 4, SolidCable.writer_batch_size
+    assert_equal 0.001.seconds, SolidCable.writer_batch_delay
+  end
+
+  test "batch writer configuration" do
+    with_cable_config use_batch_writer: false,
+      writer_batch_size: 8, writer_batch_delay: "0.5.seconds" do
+      assert_not SolidCable.use_batch_writer?
+      assert_equal 8, SolidCable.writer_batch_size
+      assert_equal 0.5.seconds, SolidCable.writer_batch_delay
+    end
+  end
+
+  test "broadcasting a batch inserts every message" do
+    assert_difference -> { SolidCable::Message.count }, 2 do
+      SolidCable::Message.broadcast_batch([
+        [ "one", "first" ],
+        [ "two", "second" ]
+      ])
+    end
+
+    assert_equal [ "first", "second" ],
+      SolidCable::Message.order(:id).last(2).map(&:payload)
+  end
 end

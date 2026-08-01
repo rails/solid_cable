@@ -3,12 +3,139 @@
 require "action_cable/subscription_adapter/base"
 require "action_cable/subscription_adapter/channel_prefix"
 require "action_cable/subscription_adapter/subscriber_map"
+require "concurrent/atomic/event"
 require "concurrent/atomic/semaphore"
 
 module ActionCable
   module SubscriptionAdapter
     class SolidCable < ::ActionCable::SubscriptionAdapter::Base
       prepend ::ActionCable::SubscriptionAdapter::ChannelPrefix
+
+      class Writer
+        Stopped = Class.new(StandardError)
+
+        Request = Struct.new(:channel, :payload, :enqueued_at, :completed, :error, keyword_init: true)
+
+        attr_reader :pid
+
+        def initialize(batch_size:, batch_delay:)
+          @batch_size = batch_size
+          @batch_delay = batch_delay
+          @pid = Process.pid
+          @mutex = Mutex.new
+          @ready = ConditionVariable.new
+          @queue = []
+          @stopping = false
+
+          @thread = Thread.new do
+            Thread.current.name = "solid_cable_writer"
+            Thread.current.report_on_exception = true
+            run
+          end
+        end
+
+        def write(channel, payload)
+          request = Request.new(
+            channel:,
+            payload:,
+            enqueued_at: monotonic_time,
+            completed: Concurrent::Event.new
+          )
+
+          @mutex.synchronize do
+            raise Stopped, "Solid Cable writer has stopped" if @stopping
+
+            @queue << request
+            @ready.signal
+          end
+
+          request.completed.wait
+          raise request.error if request.error
+        end
+
+        def shutdown
+          return if Process.pid != pid
+
+          thread = @mutex.synchronize do
+            unless @stopping
+              @stopping = true
+              @ready.broadcast
+            end
+
+            @thread
+          end
+
+          thread.join
+        end
+
+        private
+          def run
+            while batch = take_batch
+              flush(batch)
+            end
+          ensure
+            stop_and_fail_pending_requests
+          end
+
+          def take_batch
+            @mutex.synchronize do
+              @ready.wait(@mutex) while @queue.empty? && !@stopping
+
+              return if @queue.empty?
+
+              wait_for_batch unless @stopping
+              @queue.shift(@batch_size)
+            end
+          end
+
+          def wait_for_batch
+            deadline = @queue.first.enqueued_at + @batch_delay
+
+            while @queue.size < @batch_size
+              remaining = deadline - monotonic_time
+              break unless remaining.positive?
+
+              @ready.wait(@mutex, remaining)
+            end
+          end
+
+          def flush(batch)
+            error = nil
+
+            begin
+              Rails.application.executor.wrap do
+                ::SolidCable::Message.connection_pool.with_connection do
+                  ::SolidCable::Message.broadcast_batch(
+                    batch.map { |request| [ request.channel, request.payload ] }
+                  )
+                end
+              end
+            rescue StandardError => caught
+              error = caught
+            ensure
+              batch.each do |request|
+                request.error = error
+                request.completed.set
+              end
+            end
+          end
+
+          def stop_and_fail_pending_requests
+            requests = @mutex.synchronize do
+              @stopping = true
+              @queue.shift(@queue.length)
+            end
+
+            requests.each do |request|
+              request.error = Stopped.new("Solid Cable writer stopped before committing")
+              request.completed.set
+            end
+          end
+
+          def monotonic_time
+            Process.clock_gettime(Process::CLOCK_MONOTONIC)
+          end
+      end
 
       def initialize(*)
         super
@@ -20,10 +147,15 @@ module ActionCable
           end
 
         @listener = nil
+        @writer = nil
       end
 
       def broadcast(channel, payload)
-        ::SolidCable::Message.broadcast(channel, payload)
+        if ::SolidCable.use_batch_writer?
+          writer.write(channel, payload)
+        else
+          ::SolidCable::Message.broadcast(channel, payload)
+        end
 
         ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
@@ -36,12 +168,30 @@ module ActionCable
         listener.remove_subscriber(channel, callback)
       end
 
-      delegate :shutdown, to: :listener
+      def shutdown
+        @writer&.shutdown
+        @listener&.shutdown
+      end
 
       private
         def listener
           @listener || @mutex.synchronize do
             @listener ||= Listener.new(self, pubsub_executor)
+          end
+        end
+
+        def writer
+          return @writer if @writer&.pid == Process.pid
+
+          @mutex.synchronize do
+            if !@writer || @writer.pid != Process.pid
+              @writer = Writer.new(
+                batch_size: ::SolidCable.writer_batch_size,
+                batch_delay: ::SolidCable.writer_batch_delay
+              )
+            end
+
+            @writer
           end
         end
 
