@@ -122,12 +122,12 @@ module ActionCable
           end
 
           def add_channel(channel, on_success)
-            channels[channel] = last_message_id
+            channels[::SolidCable::Message.channel_hash_for(channel)] = last_message_id
             on_success.call if on_success
           end
 
           def remove_channel(channel)
-            channels.delete(channel)
+            channels.delete(::SolidCable::Message.channel_hash_for(channel))
           end
 
           def invoke_callback(*)
@@ -151,17 +151,17 @@ module ActionCable
 
               ::SolidCable::Message.
                 broadcastable(current_channels.keys, last_id).
-                each do |message|
+                pluck(:id, :channel, :channel_hash, :payload).each do |id, channel, channel_hash, payload|
                   should_broadcast_message = false
-                  channels.compute_if_present(message.channel) do |channel_last_id|
-                    break if channel_last_id >= message.id
+                  channels.compute_if_present(channel_hash) do |channel_last_id|
+                    break if channel_last_id >= id
 
                     should_broadcast_message = true
-                    message.id
+                    id
                   end
 
-                  broadcast(message.channel, message.payload) if should_broadcast_message
-                  self.last_id = message.id
+                  broadcast(channel, payload) if should_broadcast_message
+                  self.last_id = id
                 end
 
               self.reconnect_attempt = 0
