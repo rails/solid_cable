@@ -15,6 +15,13 @@ module SolidCable
           channel_hash: channel_hash_for(channel) })
       end
 
+      def broadcast_batch(broadcasts)
+        created_at = Time.current
+        insert_all broadcasts.map { |channel, payload|
+          { created_at:, channel:, payload:, channel_hash: channel_hash_for(channel) }
+        }
+      end
+
       # Need to unpack this as a signed integer since Postgresql and SQLite
       # don't support unsigned integers
       def channel_hash_for(channel)

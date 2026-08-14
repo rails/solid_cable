@@ -151,6 +151,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
   test "does not send old messages" do
     @tx_adapter.broadcast("channel", "channel1")
     @tx_adapter.broadcast("channel", "channel2")
+    wait_for_messages("channel1", "channel2")
 
     subscribe_as_queue("channel") do |queue|
       assert_empty queue
@@ -159,6 +160,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       @tx_adapter.broadcast("channel", "channel4")
       @tx_adapter.broadcast("other", "other1")
       @tx_adapter.broadcast("other", "other2")
+      wait_for_messages("channel3", "channel4", "other1", "other2")
 
       subscribe_as_queue("other") do |other_queue|
         assert_empty other_queue
@@ -169,6 +171,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
     @tx_adapter.broadcast("channel", "channel5")
     @tx_adapter.broadcast("channel", "channel6")
+    wait_for_messages("channel5", "channel6")
 
     subscribe_as_queue("channel") do |queue|
       assert_empty queue
@@ -257,5 +260,11 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
     def next_message_in_queue(queue)
       Timeout.timeout(5, nil, "Failed to get next item in queue") { queue.pop }
+    end
+
+    def wait_for_messages(*payloads)
+      Timeout.timeout(5, nil, "Failed to persist broadcasts") do
+        sleep 0.001 until SolidCable::Message.where(payload: payloads).count == payloads.size
+      end
     end
 end

@@ -20,10 +20,11 @@ module ActionCable
           end
 
         @listener = nil
+        @broadcaster = nil
       end
 
       def broadcast(channel, payload)
-        ::SolidCable::Message.broadcast(channel, payload)
+        broadcaster.broadcast(channel, payload)
 
         ::SolidCable::TrimJob.perform_now if ::SolidCable.autotrim?
       end
@@ -36,12 +37,21 @@ module ActionCable
         listener.remove_subscriber(channel, callback)
       end
 
-      delegate :shutdown, to: :listener
+      def shutdown
+        @broadcaster&.shutdown
+        @listener&.shutdown
+      end
 
       private
         def listener
           @listener || @mutex.synchronize do
             @listener ||= Listener.new(self, pubsub_executor)
+          end
+        end
+
+        def broadcaster
+          @broadcaster || @mutex.synchronize do
+            @broadcaster ||= ::SolidCable::BatchedBroadcaster.new
           end
         end
 
