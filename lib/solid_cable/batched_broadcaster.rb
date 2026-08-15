@@ -47,18 +47,25 @@ module SolidCable
         batch = [ first_message ]
         deadline = monotonic_time + batch_delay
 
+        drain_queue_into(batch)
+        wait_for_messages_until(batch, deadline)
+
+        flush(batch)
+      end
+
+      def drain_queue_into(batch)
         while batch.size < batch_size && (message = queue.pop(timeout: 0))
           batch << message
         end
+      end
 
+      def wait_for_messages_until(batch, deadline)
         while batch.size < batch_size && (remaining = deadline - monotonic_time).positive?
           message = queue.pop(timeout: remaining)
           break if message.nil?
 
           batch << message
         end
-
-        flush(batch)
       end
 
       def flush(batch)
