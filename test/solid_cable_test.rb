@@ -62,4 +62,29 @@ class SolidCableTest < ActiveSupport::TestCase
       assert_equal [ 0, 1, 2 ], SolidCable.reconnect_attempts
     end
   end
+
+  test "encryption is disabled by default" do
+    configuration = SolidCable::Configuration.new
+
+    assert_not configuration.encrypt?
+  end
+
+  test "encryption is enabled when configured" do
+    configuration = SolidCable::Configuration.new(encrypt: true)
+
+    assert configuration.encrypt?
+    properties = configuration.encryption_context_properties
+    assert_instance_of ActiveRecord::Encryption::MessagePackMessageSerializer,
+      properties[:message_serializer]
+  end
+
+  test "custom encryption context properties" do
+    encryptor = ActiveRecord::Encryption::Encryptor.new
+    configuration = SolidCable::Configuration.new(
+      encrypt: true,
+      encryption_context_properties: { "encryptor" => encryptor }
+    )
+
+    assert_same encryptor, configuration.encryption_context_properties[:encryptor]
+  end
 end

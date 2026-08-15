@@ -2,6 +2,8 @@
 
 module SolidCable
   class Message < SolidCable::Record
+    include Encryption
+
     scope :trimmable, lambda {
       where(created_at: ...::SolidCable.message_retention.ago)
     }

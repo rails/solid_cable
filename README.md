@@ -88,6 +88,40 @@ The options are:
 - `trim_batch_size` - the batch size to use when deleting old records (default: `100`)
 - `reconnect_attempts` - Supports a number of connection attempts or an array of
   durations to wait between attempts. (Defaults to 1 retry attempt)
+- `encrypt` - whether to encrypt message payloads with Active Record Encryption.
+  (Defaults to false)
+
+### Enabling encryption
+
+Solid Cable can encrypt stored message payloads with Active Record Encryption. Add
+`encrypt: true` to the Solid Cable environment in `config/cable.yml`:
+
+```yaml
+production:
+  adapter: solid_cable
+  encrypt: true
+  connects_to:
+    database:
+      writing: cable
+```
+
+Your application must also be [configured to use Active Record Encryption](https://guides.rubyonrails.org/active_record_encryption.html#setup).
+Solid Cable uses the binary MessagePack serializer by default, so your application
+must include the `msgpack` gem.
+
+Since encryption context properties contain Ruby objects, they cannot be set in
+`config/cable.yml`. Set them in an initializer instead:
+
+```ruby
+# config/initializers/solid_cable.rb
+SolidCable.configuration.encryption_context_properties = {
+  encryptor: ActiveRecord::Encryption::Encryptor.new,
+  message_serializer: ActiveRecord::Encryption::MessageSerializer.new
+}
+```
+
+Active Record Encryption does not support encrypted binary columns on PostgreSQL
+with Rails 7. Solid Cable raises during boot for that unsupported combination.
 
 
 ## Trimming

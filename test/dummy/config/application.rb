@@ -13,6 +13,10 @@ module Dummy
     # For compatibility with applications that use this config
     config.action_controller.include_all_helpers = false
 
+    config.active_record.encryption.primary_key = "test-primary-key-for-solid-cable"
+    config.active_record.encryption.deterministic_key = "test-deterministic-key-solid-cable"
+    config.active_record.encryption.key_derivation_salt = "test-key-derivation-salt-solid-cable"
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

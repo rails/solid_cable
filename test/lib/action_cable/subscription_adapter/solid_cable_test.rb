@@ -46,6 +46,35 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "reads existing unencrypted payloads" do
+    skip "Encrypted binary columns are unsupported on PostgreSQL with Rails 7" unless SolidCable.encrypt?
+
+    legacy_channel = "legacy channel"
+    legacy_payload = "unencrypted payload"
+    legacy_channel_hash = SolidCable::Message.channel_hash_for(legacy_channel)
+
+    ActiveRecord::Encryption.without_encryption do
+      SolidCable::Message.insert({
+        channel: legacy_channel, payload: legacy_payload,
+        channel_hash: legacy_channel_hash, created_at: Time.current
+      })
+    end
+
+    assert_equal legacy_payload, SolidCable::Message.find_by!(channel_hash: legacy_channel_hash).payload
+  end
+
+  test "broadcast inserts encrypted payloads" do
+    skip "Encrypted binary columns are unsupported on PostgreSQL with Rails 7" unless SolidCable.encrypt?
+
+    @tx_adapter.broadcast("channel", "sensitive payload")
+    wait_for_messages("sensitive payload")
+
+    message = SolidCable::Message.order(:id).last
+
+    assert_equal "sensitive payload", message.payload
+    assert_not_includes message.payload_before_type_cast, "sensitive payload"
+  end
+
   test "broadcast_after_unsubscribe" do
     keep_queue = nil
     subscribe_as_queue("channel") do |queue|
@@ -264,7 +293,7 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
 
     def wait_for_messages(*payloads)
       Timeout.timeout(5, nil, "Failed to persist broadcasts") do
-        sleep 0.001 until SolidCable::Message.where(payload: payloads).count == payloads.size
+        sleep 0.001 until SolidCable::Message.order(id: :desc).limit(payloads.size).pluck(:payload).sort == payloads.sort
       end
     end
 end

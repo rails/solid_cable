@@ -6,7 +6,8 @@ module SolidCable
 
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
-      :trim_chance, :reconnect_attempts, :writer_batch_size, :writer_batch_delay
+      :trim_chance, :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
+      :encrypt, :encryption_context_properties
 
     def connects_to
       @connects_to ||= options.connects_to.to_h.deep_transform_values(&:to_sym)
@@ -75,8 +76,32 @@ module SolidCable
         [ parse_duration(options.writer_batch_delay, default: 0.001.seconds), 0 ].max
     end
 
+    def encrypt?
+      return @encrypt if defined?(@encrypt)
+
+      @encrypt = options.encrypt.present?
+    end
+
+    def encryption_context_properties
+      return @encryption_context_properties if defined?(@encryption_context_properties)
+
+      @encryption_context_properties = options.encryption_context_properties&.deep_symbolize_keys
+      @encryption_context_properties ||= default_encryption_context_properties if encrypt?
+    end
+
     private
       attr_reader :options
+
+      def default_encryption_context_properties
+        require "active_record/encryption/message_pack_message_serializer"
+
+        {
+          # No need to compress, the cache does that already
+          encryptor: ActiveRecord::Encryption::Encryptor.new(compress: false),
+          # Binary column only serializer that is 40% more efficient than the default MessageSerializer
+          message_serializer: ActiveRecord::Encryption::MessagePackMessageSerializer.new
+        }
+      end
 
       def parse_duration(duration, default:)
         if duration.present?
