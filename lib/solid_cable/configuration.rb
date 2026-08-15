@@ -75,6 +75,10 @@ module SolidCable
         [ parse_duration(options.writer_batch_delay, default: 0.001.seconds), 0 ].max
     end
 
+    def writer_queue_size
+      @writer_queue_size ||= options.writer_queue_size.to_i
+    end
+
     private
       attr_reader :options
 

@@ -5,10 +5,10 @@ module SolidCable
     Stopped = Class.new(StandardError)
     Message = Struct.new(:channel, :payload, :enqueued_at, keyword_init: true)
 
-    def initialize(batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay)
+    def initialize(queue_size: SolidCable.writer_queue_size, batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay)
       @batch_size = batch_size
       @batch_delay = batch_delay
-      @queue = Queue.new
+      @queue = SizedQueue.new(queue_size)
 
       @thread = Thread.new do
         Thread.current.name = "solid_cable_writer"
