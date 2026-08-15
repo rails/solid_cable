@@ -31,7 +31,7 @@ module SolidCable
     end
 
     private
-      attr_reader :batch_size, :batch_delay, :queue, :thread, :queue_size
+      attr_reader :batch_size, :batch_delay, :queue, :thread
 
       def listen_for_initial_messages
         loop do
