@@ -3,12 +3,11 @@
 module SolidCable
   class BatchedBroadcaster
     Stopped = Class.new(StandardError)
-    Message = Struct.new(:channel, :payload, :enqueued_at, :completed, keyword_init: true)
+    Message = Struct.new(:channel, :payload, keyword_init: true)
 
-    def initialize(queue_size: SolidCable.writer_queue_size, batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay)
+    def initialize(batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay)
       @batch_size = batch_size
       @batch_delay = batch_delay
-      @queue_size = queue_size
       @queue = Queue.new
 
       @thread = Thread.new do
@@ -19,13 +18,9 @@ module SolidCable
     end
 
     def broadcast(channel, payload)
-      message = Message.new(channel:, payload:, enqueued_at: monotonic_time)
-      wait_for_commit = queue.size + 1 > queue_size
-      message.completed = Concurrent::Event.new if wait_for_commit
+      message = Message.new(channel:, payload:)
 
       queue.enq message
-
-      message.completed.wait if wait_for_commit
     rescue ClosedQueueError
       raise Stopped, "Solid Cable writer has stopped"
     end
@@ -50,7 +45,11 @@ module SolidCable
 
       def collect_batch(first_message)
         batch = [ first_message ]
-        deadline = first_message.enqueued_at + batch_delay
+        deadline = monotonic_time + batch_delay
+
+        while batch.size < batch_size && (message = queue.pop(timeout: 0))
+          batch << message
+        end
 
         while batch.size < batch_size && (remaining = deadline - monotonic_time).positive?
           message = queue.pop(timeout: remaining)
@@ -69,10 +68,6 @@ module SolidCable
         end
       rescue StandardError => error
         Rails.error.report(error)
-      ensure
-        batch.each do |message|
-          message.completed&.set
-        end
       end
 
       def monotonic_time
