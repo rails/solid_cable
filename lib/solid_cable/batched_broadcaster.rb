@@ -3,12 +3,13 @@
 module SolidCable
   class BatchedBroadcaster
     Stopped = Class.new(StandardError)
-    Message = Struct.new(:channel, :payload, :enqueued_at, keyword_init: true)
+    Message = Struct.new(:channel, :payload, :enqueued_at, :completed, keyword_init: true)
 
     def initialize(queue_size: SolidCable.writer_queue_size, batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay)
       @batch_size = batch_size
       @batch_delay = batch_delay
-      @queue = SizedQueue.new(queue_size)
+      @queue_size = queue_size
+      @queue = Queue.new
 
       @thread = Thread.new do
         Thread.current.name = "solid_cable_writer"
@@ -19,8 +20,12 @@ module SolidCable
 
     def broadcast(channel, payload)
       message = Message.new(channel:, payload:, enqueued_at: monotonic_time)
+      wait_for_commit = queue.size + 1 > queue_size
+      message.completed = Concurrent::Event.new if wait_for_commit
 
       queue.enq message
+
+      message.completed.wait if wait_for_commit
     rescue ClosedQueueError
       raise Stopped, "Solid Cable writer has stopped"
     end
@@ -31,7 +36,7 @@ module SolidCable
     end
 
     private
-      attr_reader :batch_size, :batch_delay, :queue, :thread
+      attr_reader :batch_size, :batch_delay, :queue, :thread, :queue_size
 
       def listen_for_initial_messages
         loop do
@@ -64,6 +69,10 @@ module SolidCable
         end
       rescue StandardError => error
         Rails.error.report(error)
+      ensure
+        batch.each do |message|
+          message.completed&.set
+        end
       end
 
       def monotonic_time
