@@ -3,6 +3,7 @@ development:
 
 test:
   adapter: test
+  encrypt: <%= ENV["TARGET_DB"] != "postgres" || Rails::VERSION::MAJOR >= 8 %>
 
 production:
   adapter: redis

@@ -27,5 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "actioncable", rails_version
   spec.add_dependency "railties", rails_version
 
+  spec.add_development_dependency "msgpack"
   spec.add_development_dependency "minitest", "~> 5.0"
 end
