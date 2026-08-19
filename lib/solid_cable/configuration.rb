@@ -6,7 +6,7 @@ module SolidCable
 
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
-      :trim_chance, :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
+      :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
       :encrypt, :encryption_context_properties
 
     def connects_to
@@ -47,16 +47,6 @@ module SolidCable
       return @use_skip_locked if defined?(@use_skip_locked)
 
       @use_skip_locked = options.use_skip_locked != false
-    end
-
-    # For every write that we do, we attempt to delete trim_chance times as
-    # many records. This ensures there is downward pressure on the cache size
-    # while there is valid data to delete. Read this as 'every time the trim job
-    # runs theres a trim_multiplier chance this trims'. Adjust number to make it
-    # more or less likely to trim. Only works like this if trim_batch_size is
-    # 100
-    def trim_chance
-      2
     end
 
     def reconnect_attempts

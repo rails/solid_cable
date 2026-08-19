@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require "concurrent"
+
 module SolidCable
   class BatchedBroadcaster
+    include Trimming
+
     Stopped = Class.new(StandardError)
     Message = Struct.new(:channel, :payload, keyword_init: true)
 
@@ -9,6 +13,7 @@ module SolidCable
       @batch_size = batch_size
       @batch_delay = batch_delay
       @queue = Queue.new
+      @background = Concurrent::FixedThreadPool.new(1, max_queue: 100, fallback_policy: :discard)
 
       @thread = Thread.new do
         Thread.current.name = "solid_cable_writer"
@@ -28,10 +33,12 @@ module SolidCable
     def shutdown
       queue.close
       thread.join
+      background.shutdown
+      background.wait_for_termination
     end
 
     private
-      attr_reader :batch_size, :batch_delay, :queue, :thread
+      attr_reader :batch_size, :batch_delay, :queue, :thread, :background
 
       def listen_for_initial_messages
         loop do
@@ -72,9 +79,18 @@ module SolidCable
         Rails.application.executor.wrap do
           SolidCable::Message.
             broadcast_batch(batch.map { |message| [ message.channel, message.payload ] })
+          track_writes(batch.size) if SolidCable.autotrim?
         end
       rescue StandardError => error
         Rails.error.report(error)
+      end
+
+      def async(&block)
+        background << -> do
+          Rails.application.executor.wrap(&block)
+        rescue Exception => error # rubocop:disable Lint/RescueException
+          Rails.error.report(error)
+        end
       end
 
       def monotonic_time
