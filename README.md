@@ -126,7 +126,7 @@ with Rails 7. Solid Cable raises during boot for that unsupported combination.
 
 ## Trimming
 
-Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. Messages are trimmed when a messsage is broadcast.
+Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. For every message written, Solid Cable attempts to trim twice as many expired messages.
 
 Autotrimming can negatively impact performance slightly depending on your workload because it is potentially doing a delete on broadcast. If
 you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::TrimJob.perform_later`, or run it on a recurring interval out of band.
