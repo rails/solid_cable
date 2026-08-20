@@ -12,4 +12,4 @@ gem "importmap-rails"
 gem "redis"
 gem "bootsnap", require: false
 gem "kamal", require: false
-gem "tailwindcss-rails"
+gem "thruster"
