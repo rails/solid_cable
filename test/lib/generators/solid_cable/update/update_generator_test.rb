@@ -8,7 +8,11 @@ class SolidCable::UpdateGeneratorTest < Rails::Generators::TestCase
   setup :prepare_destination
   setup :run_generator
 
-  test "cable_schema exists" do
+  test "compact_channel migration exists" do
     assert_migration "db/cable_migrate/create_compact_channel.rb"
+  end
+
+  test "channel index removal migration exists" do
+    assert_migration "db/cable_migrate/remove_channel_index.rb"
   end
 end

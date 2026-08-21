@@ -11,5 +11,7 @@ class SolidCable::UpdateGenerator < Rails::Generators::Base
   def copy_files
     migration_template "db/migrate/create_compact_channel.rb",
                        "db/cable_migrate/create_compact_channel.rb"
+    migration_template "db/migrate/remove_channel_index.rb",
+                       "db/cable_migrate/remove_channel_index.rb"
   end
 end
