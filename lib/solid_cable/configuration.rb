@@ -86,8 +86,7 @@ module SolidCable
         require "active_record/encryption/message_pack_message_serializer"
 
         {
-          # No need to compress, the cache does that already
-          encryptor: ActiveRecord::Encryption::Encryptor.new(compress: false),
+          encryptor: ActiveRecord::Encryption::Encryptor.new(compress: true),
           # Binary column only serializer that is 40% more efficient than the default MessageSerializer
           message_serializer: ActiveRecord::Encryption::MessagePackMessageSerializer.new
         }
