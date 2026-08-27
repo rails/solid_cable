@@ -77,8 +77,7 @@ module SolidCable
 
       def flush(batch)
         Rails.application.executor.wrap do
-          SolidCable::Message.
-            broadcast_batch(batch.map { |message| [ message.channel, message.payload ] })
+          SolidCable::Message.broadcast_batch(batch)
           track_writes(batch.size) if SolidCable.autotrim?
         end
       rescue StandardError => error
