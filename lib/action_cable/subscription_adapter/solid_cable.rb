@@ -27,12 +27,12 @@ module ActionCable
         broadcaster.broadcast(channel, payload)
       end
 
-      def subscribe(channel, callback, success_callback = nil)
-        listener.add_subscriber(channel, callback, success_callback)
+      def subscribe(channel, subscriber, success_callback = nil)
+        listener.add_subscriber(channel, subscriber, success_callback)
       end
 
-      def unsubscribe(channel, callback)
-        listener.remove_subscriber(channel, callback)
+      def unsubscribe(channel, subscriber)
+        listener.remove_subscriber(channel, subscriber)
       end
 
       def shutdown
