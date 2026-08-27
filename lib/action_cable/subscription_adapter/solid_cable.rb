@@ -156,21 +156,24 @@ module ActionCable
 
             def broadcast_messages
               ::SolidCable::Message.
-                broadcastable(channels.keys, last_id).
-                pluck(:id, :channel, :channel_hash, :payload).each do |id, channel, channel_hash, payload|
+                broadcastable(channels.keys, last_id).each do |message|
                   should_broadcast_message = false
-                  channels.compute_if_present(channel_hash) do |channel_last_id|
-                    break if channel_last_id >= id
+                  channels.compute_if_present(message.channel_hash) do |channel_last_id|
+                    break if channel_last_id >= message.id
 
                     should_broadcast_message = true
-                    id
+                    message.id
                   end
 
-                  broadcast(channel, payload) if should_broadcast_message
-                  self.last_id = id
+                  broadcast(message) if should_broadcast_message
+                  self.last_id = message.id
                 end
 
               self.reconnect_attempt = 0
+            end
+
+            def broadcast(message)
+              super(message.channel, message.payload)
             end
 
             def with_polling_volume

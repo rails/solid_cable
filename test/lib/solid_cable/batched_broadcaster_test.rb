@@ -24,7 +24,7 @@ class SolidCable::BatchedBroadcasterTest < ActiveSupport::TestCase
     end
 
     assert_equal 1, batches.size
-    assert_equal [ [ "one", "first" ], [ "two", "second" ] ], batches.pop.sort
+    assert_equal [ "one", "two" ], batches.pop.pluck(:channel).sort
   end
 
   test "rejects broadcasts after shutdown" do

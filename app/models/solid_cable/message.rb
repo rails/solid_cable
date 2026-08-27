@@ -8,7 +8,8 @@ module SolidCable
       where(created_at: ...::SolidCable.message_retention.ago)
     }
     scope :broadcastable, lambda { |channel_hashes, last_id|
-      where(channel_hash: channel_hashes).where(id: (last_id.to_i + 1)..).order(:id)
+      select(column_names.excluding("created_at", "updated_at")).
+        where(channel_hash: channel_hashes).where(id: (last_id.to_i + 1)..).order(:id)
     }
 
     class << self
