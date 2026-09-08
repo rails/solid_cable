@@ -22,7 +22,7 @@ production:
   adapter: solid_cable
   polling_interval: 0.1.seconds
   message_retention: 30.seconds
-  autotrim: true
+  autotrim: false
   trim_batch_size: 100
   silence_polling: false
   writer_batch_size: 4
