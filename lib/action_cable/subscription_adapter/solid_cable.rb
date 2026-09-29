@@ -154,22 +154,46 @@ module ActionCable
               @channels ||= Concurrent::Map.new
             end
 
+            # Ids are assigned when an INSERT runs but become visible when it
+            # commits, so a row can appear after a higher id was already read.
+            # last_id therefore only moves past rows that have been read for
+            # longer than late_commit_window; newer rows are excluded by id
+            # instead, so a row that commits late is still read.
             def broadcast_messages
-              ::SolidCable::Message.
-                broadcastable(channels.keys, last_id).each do |message|
-                  should_broadcast_message = false
-                  channels.compute_if_present(message.channel_hash) do |channel_last_id|
-                    break if channel_last_id >= message.id
+              messages = ::SolidCable::Message.broadcastable(channels.keys, last_id)
+              messages = messages.where.not(id: recent_ids.keys) if recent_ids.any?
 
-                    should_broadcast_message = true
-                    message.id
-                  end
+              read_at = monotonic_time
+              messages.each do |message|
+                recent_ids[message.id] = read_at
+                broadcast(message) if subscribed_before?(message)
+              end
 
-                  broadcast(message) if should_broadcast_message
-                  self.last_id = message.id
-                end
-
+              advance_last_id(read_at)
               self.reconnect_attempt = 0
+            end
+
+            # A channel only receives rows above the last id when it subscribed.
+            def subscribed_before?(message)
+              subscribed_at_id = channels[message.channel_hash]
+              subscribed_at_id && subscribed_at_id < message.id
+            end
+
+            def advance_last_id(now)
+              window = ::SolidCable.late_commit_window
+              settled_id = recent_ids.filter_map { |id, read_at| id if now - read_at >= window }.max
+              return unless settled_id
+
+              self.last_id = settled_id
+              recent_ids.delete_if { |id, _| id <= settled_id }
+            end
+
+            def recent_ids
+              @recent_ids ||= {}
+            end
+
+            def monotonic_time
+              Process.clock_gettime(Process::CLOCK_MONOTONIC)
             end
 
             def broadcast(message)

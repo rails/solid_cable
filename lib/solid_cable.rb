@@ -12,7 +12,7 @@ module SolidCable
     delegate :connects_to, :silence_polling?, :polling_interval,
       :message_retention, :autotrim?, :trim_batch_size, :use_skip_locked,
       :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
-      :encrypt?, :encryption_context_properties,
+      :encrypt?, :encryption_context_properties, :late_commit_window,
       to: :configuration
 
     def configuration

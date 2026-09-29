@@ -81,6 +81,9 @@ The options are:
 - `connects_to` - set the Active Record database configuration for the Solid Cable models. All options available in Active Record can be used here.
 - `polling_interval` - sets the frequency of the polling interval. (Defaults to
   0.1.seconds)
+- `late_commit_window` - how long after reading a message the listener keeps
+  looking for lower ids that commit later. A message that commits more than
+  this after a higher id was read is not delivered. (Defaults to 1.second)
 - `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed. (Defaults to 1.day)
 - `autotrim` - sets wether you want Solid Cable to handle autotrimming messages. (Defaults to true)
 - `silence_polling` - whether to silence Active Record logs emitted when polling (Defaults to true)
