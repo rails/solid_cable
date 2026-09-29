@@ -69,6 +69,22 @@ class SolidCableTest < ActiveSupport::TestCase
     assert_not configuration.encrypt?
   end
 
+  test "inline broadcasts are disabled by default" do
+    assert_not SolidCable::Configuration.new.inline_broadcasts?
+  end
+
+  test "inline broadcasts can be enabled and disabled" do
+    with_cable_config inline_broadcasts: true do
+      assert SolidCable.inline_broadcasts?
+      SolidCable.configuration.inline_broadcasts = false
+      assert_not SolidCable.inline_broadcasts?
+    end
+
+    with_cable_config inline_broadcasts: false do
+      assert_not SolidCable.inline_broadcasts?
+    end
+  end
+
   test "encryption is enabled when configured" do
     configuration = SolidCable::Configuration.new(encrypt: true)
 

@@ -6,7 +6,7 @@ module SolidCable
 
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
-      :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
+      :reconnect_attempts, :writer_batch_size, :writer_batch_delay, :inline_broadcasts,
       :encrypt, :encryption_context_properties
 
     def connects_to
@@ -59,6 +59,12 @@ module SolidCable
 
     def writer_batch_size
       @writer_batch_size ||= [ (options.writer_batch_size || 4).to_i, 1 ].max
+    end
+
+    def inline_broadcasts?
+      return @inline_broadcasts if defined?(@inline_broadcasts)
+
+      @inline_broadcasts = options.inline_broadcasts == true
     end
 
     def writer_batch_delay

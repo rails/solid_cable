@@ -88,6 +88,9 @@ The options are:
 - `trim_batch_size` - the batch size to use when deleting old records (default: `100`)
 - `reconnect_attempts` - Supports a number of connection attempts or an array of
   durations to wait between attempts. (Defaults to 1 retry attempt)
+- `inline_broadcasts` - write messages in the calling thread before `broadcast` returns, bypassing the batched writer. (Defaults to false)
+- `writer_batch_size` - maximum number of messages per batched write. Ignored when `inline_broadcasts` is true. (Defaults to 4)
+- `writer_batch_delay` - maximum time to collect messages for a batch once the writer starts collecting. Ignored when `inline_broadcasts` is true. (Defaults to 0.001.seconds)
 - `encrypt` - whether to encrypt message payloads with Active Record Encryption.
   (Defaults to false)
 

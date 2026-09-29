@@ -8,6 +8,7 @@ require "concurrent/atomic/semaphore"
 module ActionCable
   module SubscriptionAdapter
     class SolidCable < ::ActionCable::SubscriptionAdapter::Base
+      include ::SolidCable::Trimming
       prepend ::ActionCable::SubscriptionAdapter::ChannelPrefix
 
       def initialize(*)
@@ -24,7 +25,12 @@ module ActionCable
       end
 
       def broadcast(channel, payload)
-        broadcaster.broadcast(channel, payload)
+        if ::SolidCable.inline_broadcasts?
+          ::SolidCable::Message.broadcast(channel, payload)
+          trim_batches(1).times { ::SolidCable::TrimJob.perform_now } if ::SolidCable.autotrim?
+        else
+          broadcaster.broadcast(channel, payload)
+        end
       end
 
       def subscribe(channel, subscriber, success_callback = nil)

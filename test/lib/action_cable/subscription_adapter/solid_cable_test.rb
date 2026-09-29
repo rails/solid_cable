@@ -46,6 +46,62 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "inline broadcasts are persisted before returning inside the Rails executor" do
+    with_cable_config inline_broadcasts: true, autotrim: false do
+      Rails.application.executor.wrap do
+        3.times do |index|
+          payload = "inline chunk #{index}"
+          @tx_adapter.broadcast("inline-channel", payload)
+
+          message = SolidCable::Message.order(:id).last
+          assert_equal "inline-channel", message.channel
+          assert_equal payload, message.payload
+          assert_not_includes message.payload_before_type_cast, payload if SolidCable.encrypt?
+        end
+      end
+    end
+  end
+
+  test "inline broadcasts write and trim in the calling thread" do
+    writes = []
+    trims = []
+
+    with_cable_config inline_broadcasts: true, trim_batch_size: 2 do
+      SolidCable::Message.stub(:broadcast, ->(channel, payload) { writes << [ Thread.current, channel, payload ] }) do
+        SolidCable::TrimJob.stub(:perform_now, -> { trims << Thread.current }) do
+          @tx_adapter.broadcast("channel", "payload")
+        end
+      end
+    end
+
+    assert_equal [ [ Thread.current, "channel", "payload" ] ], writes
+    assert_equal [ Thread.current ], trims
+  end
+
+  test "inline broadcasts respect disabled autotrimming" do
+    trims = []
+
+    with_cable_config inline_broadcasts: true, autotrim: false, trim_batch_size: 2 do
+      SolidCable::TrimJob.stub(:perform_now, -> { trims << true }) do
+        @tx_adapter.broadcast("channel", "payload")
+      end
+    end
+
+    assert_empty trims
+  end
+
+  test "inline broadcasts propagate write errors to the caller" do
+    write_error = ActiveRecord::ConnectionFailed.new("write failed")
+
+    with_cable_config inline_broadcasts: true do
+      SolidCable::Message.stub(:broadcast, ->(*) { raise write_error }) do
+        assert_same write_error, assert_raises(ActiveRecord::ConnectionFailed) {
+          @tx_adapter.broadcast("channel", "payload")
+        }
+      end
+    end
+  end
+
   test "reads existing unencrypted payloads" do
     skip "Encrypted binary columns are unsupported on PostgreSQL with Rails 7" unless SolidCable.encrypt?
 
