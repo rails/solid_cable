@@ -7,7 +7,7 @@ module SolidCable
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
       :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
-      :encrypt, :encryption_context_properties
+      :encrypt, :encryption_context_properties, :late_commit_window
 
     def connects_to
       @connects_to ||= options.connects_to.to_h.deep_transform_values(&:to_sym)
@@ -22,6 +22,10 @@ module SolidCable
     def polling_interval
       @polling_interval ||=
         parse_duration(options.polling_interval, default: 0.1.seconds)
+    end
+
+    def late_commit_window
+      @late_commit_window ||= parse_duration(options.late_commit_window, default: 1.second)
     end
 
     def message_retention
