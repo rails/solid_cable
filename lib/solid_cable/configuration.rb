@@ -93,12 +93,17 @@ module SolidCable
       end
 
       def parse_duration(duration, default:)
-        if duration.present?
-          *amount, units = duration.to_s.split(".")
-          amount.join(".").to_f.public_send(units)
-        else
-          default
-        end
+        return default unless duration.present?
+        return duration if duration.is_a?(ActiveSupport::Duration)
+        return duration.seconds if duration.is_a?(Numeric)
+
+        *amount, units = duration.to_s.split(".")
+        return default if amount.empty?
+
+        parsed = amount.join(".").to_f.public_send(units)
+        parsed.is_a?(ActiveSupport::Duration) ? parsed : default
+      rescue NoMethodError, ArgumentError, TypeError
+        default
       end
   end
 end
