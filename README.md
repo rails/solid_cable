@@ -81,7 +81,7 @@ The options are:
 - `connects_to` - set the Active Record database configuration for the Solid Cable models. All options available in Active Record can be used here.
 - `polling_interval` - sets the frequency of the polling interval. (Defaults to
   0.1.seconds)
-- `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed. (Defaults to 1.day)
+- `message_retention` - sets the retention time for messages kept in the database. Used as the cut-off when trimming is performed. (Defaults to 1.day) Messages only need to outlive the slowest subscriber's polling interval, plus some margin for a listener that is reconnecting, so a few minutes is plenty for most apps. The default is generous: an app broadcasting 60 messages per second keeps about 5 million rows (≈3.5 GB on SQLite) with `1.day`, and about 18,000 rows with `5.minutes`.
 - `autotrim` - sets wether you want Solid Cable to handle autotrimming messages. (Defaults to true)
 - `silence_polling` - whether to silence Active Record logs emitted when polling (Defaults to true)
 - `use_skip_locked` - whether to use `FOR UPDATE SKIP LOCKED` when performing trimming. This will be automatically detected in the future, and for now, you'd only need to set this to `false` if your database doesn't support it. For MySQL, that'd be versions < 8, and for PostgreSQL, versions < 9.5. If you use SQLite, this has no effect, as writes are sequential. (Defaults to true)
@@ -126,7 +126,7 @@ with Rails 7. Solid Cable raises during boot for that unsupported combination.
 
 ## Trimming
 
-Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. For every message written, Solid Cable attempts to trim twice as many expired messages.
+Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. For every message written, Solid Cable attempts to trim twice as many expired messages, so the table settles at roughly `broadcast rate × message_retention` rows. If you broadcast many times per second, lowering `message_retention` matters more than tuning the trim batch size.
 
 Autotrimming can negatively impact performance slightly depending on your workload because it is potentially doing a delete on broadcast. If
 you would prefer, you can disable autotrimming by setting `autotrim: false` and you can manually enqueue the job later, `SolidCable::TrimJob.perform_later`, or run it on a recurring interval out of band.
