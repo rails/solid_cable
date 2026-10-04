@@ -87,4 +87,46 @@ class SolidCableTest < ActiveSupport::TestCase
 
     assert_same encryptor, configuration.encryption_context_properties[:encryptor]
   end
+
+  test "duration settings keep valid ruby-style values" do
+    configuration = SolidCable::Configuration.new(
+      message_retention: "1.day",
+      polling_interval: "0.1.seconds",
+      writer_batch_delay: "0.001.seconds"
+    )
+
+    assert_equal 1.day, configuration.message_retention
+    assert_equal 0.1.seconds, configuration.polling_interval
+    assert_equal 0.001.seconds, configuration.writer_batch_delay
+  end
+
+  test "duration settings accept a duration or a number of seconds" do
+    configuration = SolidCable::Configuration.new(
+      message_retention: 2.hours,
+      polling_interval: 0.5,
+      writer_batch_delay: 30
+    )
+
+    assert_equal 2.hours, configuration.message_retention
+    assert_equal 0.5.seconds, configuration.polling_interval
+    assert_equal 30.seconds, configuration.writer_batch_delay
+    assert_equal 86400.seconds, SolidCable::Configuration.new(message_retention: 86400).message_retention
+  end
+
+  test "invalid duration settings fall back to their defaults" do
+    configuration = SolidCable::Configuration.new(
+      message_retention: "1 day",
+      polling_interval: "1",
+      writer_batch_delay: "soon"
+    )
+
+    assert_equal 1.day, configuration.message_retention
+    assert_equal 0.1.seconds, configuration.polling_interval
+    assert_equal 0.001.seconds, configuration.writer_batch_delay
+
+    missing = SolidCable::Configuration.new
+    assert_equal 1.day, missing.message_retention
+    assert_equal 0.1.seconds, missing.polling_interval
+    assert_equal 0.001.seconds, missing.writer_batch_delay
+  end
 end
