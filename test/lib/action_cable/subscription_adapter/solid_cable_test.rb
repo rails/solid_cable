@@ -254,6 +254,82 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "retries after a statement timeout and keeps listening" do
+    raised = false
+    original = SolidCable::Message.method(:broadcastable)
+    queue = Queue.new
+
+    SolidCable::Message.stub(:broadcastable, lambda { |channels, last_id|
+      if raised
+        original.call(channels, last_id)
+      else
+        raised = true
+        raise ActiveRecord::StatementTimeout, "database is busy"
+      end
+    }) do
+      listener = ActionCable::SubscriptionAdapter::SolidCable::Listener.new(@rx_adapter, Concurrent::ImmediateExecutor.new)
+      listener.add_subscriber("timeout-channel", ->(message) { queue << message }, nil)
+      @tx_adapter.broadcast("timeout-channel", "hello")
+
+      assert_equal "hello", queue.pop(timeout: WAIT_WHEN_EXPECTING_EVENT)
+    ensure
+      listener.shutdown if listener&.send(:thread)&.alive?
+    end
+
+    assert raised
+  end
+
+  {
+    "exhausted connection retries" => [ ActiveRecord::ConnectionFailed, [ 0 ], 2, ActiveRecord::ConnectionFailed ],
+    "exhausted statement timeout retries" => [ ActiveRecord::StatementTimeout, [ 0 ], 2, ActiveRecord::StatementTimeout ],
+    "decryption failures" => [ ActiveRecord::Encryption::Errors::Decryption, [ 0 ], 1, ActiveRecord::Encryption::Errors::Decryption ],
+    "invalid reconnect configuration" => [ ActiveRecord::ConnectionFailed, "1", 1, ArgumentError ]
+  }.each do |name, (poll_error_class, reconnect_attempts, expected_polls, reported_error_class)|
+    test "reports #{name} when the listener stops" do
+      with_cable_config reconnect_attempts: reconnect_attempts do
+        reports = Queue.new
+        log_output = StringIO.new
+        @rx_adapter.logger.reopen(log_output)
+        @rx_adapter.logger.level = Logger::ERROR
+        polls = 0
+
+        Rails.error.stub(:report, ->(error, **options) { reports << [ error, options ] }) do
+          SolidCable::Message.stub(:broadcastable, lambda { |*|
+            polls += 1
+            raise poll_error_class, "poll failed"
+          }) do
+            listener = ActionCable::SubscriptionAdapter::SolidCable::Listener.new(@rx_adapter, Concurrent::ImmediateExecutor.new)
+            thread = listener.send(:thread)
+            reported_error, options = reports.pop(timeout: WAIT_WHEN_EXPECTING_EVENT)
+
+            assert_instance_of reported_error_class, reported_error
+            assert_equal false, options[:handled]
+            assert thread.join(WAIT_WHEN_EXPECTING_EVENT), "Listener did not stop"
+            listener.shutdown
+            assert_equal expected_polls, polls
+            assert_empty reports
+            assert_includes log_output.string, "Solid Cable listener stopped"
+            assert_includes log_output.string, reported_error.class.name
+            assert_includes log_output.string, reported_error.message
+          ensure
+            listener.shutdown if thread&.alive?
+          end
+        end
+      end
+    end
+  end
+
+  test "does not report normal listener shutdown" do
+    reports = Queue.new
+
+    Rails.error.stub(:report, ->(error, **) { reports << error }) do
+      subscribe_as_queue("shutdown-channel") { |queue| }
+      @rx_adapter.shutdown
+    end
+
+    assert_empty reports
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
