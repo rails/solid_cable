@@ -91,9 +91,13 @@ module ActionCable
 
               begin
                 listen
-              rescue *CONNECTION_ERRORS
+              rescue *CONNECTION_ERRORS, ActiveRecord::StatementTimeout
                 retry if retry_connecting?
+                raise
               end
+            rescue StandardError => error
+              logger.error("Solid Cable listener stopped: #{error.full_message}")
+              Rails.error.report(error, handled: false)
             end
           end
 
