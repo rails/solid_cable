@@ -46,6 +46,26 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "synchronous writer inserts before broadcast returns" do
+    with_cable_config writer_async: false do
+      @tx_adapter.broadcast("channel", "synchronous payload")
+
+      message = SolidCable::Message.order(:id).last
+      assert_equal "synchronous payload", message.payload
+      assert_not_includes message.payload_before_type_cast, "synchronous payload" if SolidCable.encrypt?
+    end
+  end
+
+  test "synchronous writer propagates write errors" do
+    with_cable_config writer_async: false do
+      error = RuntimeError.new("write failed")
+
+      SolidCable::Message.stub(:broadcast, ->(*) { raise error }) do
+        assert_same error, assert_raises(RuntimeError) { @tx_adapter.broadcast("channel", "payload") }
+      end
+    end
+  end
+
   test "reads existing unencrypted payloads" do
     skip "Encrypted binary columns are unsupported on PostgreSQL with Rails 7" unless SolidCable.encrypt?
 

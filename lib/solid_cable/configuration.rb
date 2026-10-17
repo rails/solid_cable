@@ -6,7 +6,7 @@ module SolidCable
 
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
-      :reconnect_attempts, :writer_batch_size, :writer_batch_delay,
+      :reconnect_attempts, :writer_async, :writer_batch_size, :writer_batch_delay,
       :encrypt, :encryption_context_properties
 
     def connects_to
@@ -55,6 +55,12 @@ module SolidCable
         attempts = Array.new(attempts, 0) if attempts.is_a?(Integer)
         attempts
       end
+    end
+
+    def writer_async?
+      return @writer_async if defined?(@writer_async)
+
+      @writer_async = options.writer_async != false
     end
 
     def writer_batch_size
