@@ -49,7 +49,11 @@ module ActionCable
 
         def broadcaster
           @broadcaster || @mutex.synchronize do
-            @broadcaster ||= ::SolidCable::BatchedBroadcaster.new
+            @broadcaster ||= if ::SolidCable.writer_async?
+              ::SolidCable::BatchedBroadcaster.new
+            else
+              ::SolidCable::SynchronousBroadcaster.new
+            end
           end
         end
 

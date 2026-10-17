@@ -27,6 +27,22 @@ class SolidCableTest < ActiveSupport::TestCase
     end
   end
 
+  test "writer_async defaults to true" do
+    assert SolidCable::Configuration.new.writer_async?
+  end
+
+  test "writer_async can be disabled" do
+    with_cable_config writer_async: false do
+      assert_not SolidCable.writer_async?
+    end
+  end
+
+  test "writer_async can be enabled" do
+    with_cable_config writer_async: true do
+      assert SolidCable.writer_async?
+    end
+  end
+
   test "default trim_batch_size is 100" do
     assert_equal 100, SolidCable.trim_batch_size
   end

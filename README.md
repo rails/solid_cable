@@ -88,8 +88,25 @@ The options are:
 - `trim_batch_size` - the batch size to use when deleting old records (default: `100`)
 - `reconnect_attempts` - Supports a number of connection attempts or an array of
   durations to wait between attempts. (Defaults to 1 retry attempt)
+- `writer_async` - whether to batch writes on a background thread. (Defaults to true)
+  Set to `false` to write each message in the calling thread and propagate database
+  write errors to the caller. This trades batching throughput for caller-visible
+  write completion. Proportional autotrimming still runs asynchronously.
 - `encrypt` - whether to encrypt message payloads with Active Record Encryption.
   (Defaults to false)
+
+By default, `broadcast` returns after adding the message to an in-memory queue,
+before the database write. Failed batches are reported through `Rails.error` and
+discarded without retrying. Graceful shutdown drains the queue, but a process crash
+can lose queued messages.
+
+With `writer_async: false`, writes are serialized within each broadcaster;
+`writer_batch_size` and `writer_batch_delay` have no effect. Shutdown waits for an
+in-flight write and subsequent broadcasts are rejected. A successful return does
+not guarantee subscriber delivery or commit an enclosing application transaction.
+A database connection error can
+also leave the commit outcome unknown: retrying in application code may duplicate
+a message. Neither writer automatically retries failed writes.
 
 ### Enabling encryption
 
