@@ -6,7 +6,7 @@ module SolidCable
 
     attr_writer :connects_to, :silence_polling, :polling_interval,
       :message_retention, :autotrim, :trim_batch_size, :use_skip_locked,
-      :reconnect_attempts, :writer_batch_size, :writer_batch_delay, :inline_broadcasts,
+      :reconnect_attempts, :reconnect_interval, :writer_batch_size, :writer_batch_delay, :inline_broadcasts,
       :encrypt, :encryption_context_properties
 
     def connects_to
@@ -53,8 +53,16 @@ module SolidCable
       @reconnect_attempts ||= begin
         attempts = options[:reconnect_attempts] || 1
         attempts = Array.new(attempts, 0) if attempts.is_a?(Integer)
-        attempts
+        attempts.to_s == "unlimited" ? :unlimited : attempts
       end
+    end
+
+    def reconnect_interval
+      @reconnect_interval ||= parse_duration(options.reconnect_interval, default: 5).to_f
+      unless @reconnect_interval.finite? && @reconnect_interval.positive?
+        raise ArgumentError, "reconnect_interval must be a finite, positive duration"
+      end
+      @reconnect_interval
     end
 
     def writer_batch_size

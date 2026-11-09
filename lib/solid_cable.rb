@@ -11,7 +11,7 @@ module SolidCable
   class << self
     delegate :connects_to, :silence_polling?, :polling_interval,
       :message_retention, :autotrim?, :trim_batch_size, :use_skip_locked,
-      :reconnect_attempts, :writer_batch_size, :writer_batch_delay, :inline_broadcasts?,
+      :reconnect_attempts, :reconnect_interval, :writer_batch_size, :writer_batch_delay, :inline_broadcasts?,
       :encrypt?, :encryption_context_properties,
       to: :configuration
 

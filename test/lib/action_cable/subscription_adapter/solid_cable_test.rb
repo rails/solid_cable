@@ -310,6 +310,167 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "reports exhausted connection retries instead of silently ending the listener" do
+    attempts = 0
+    errors = []
+    error = ActiveRecord::ConnectionFailed.new("database unavailable")
+
+    Rails.error.stub(:report, ->(exception, **options) { errors << [ exception, options ] }) do
+      SolidCable::Message.stub(:broadcastable, ->(*) { attempts += 1; raise error }) do
+        listener = @rx_adapter.send(:listener)
+        assert listener.send(:thread).join(WAIT_WHEN_EXPECTING_EVENT), "Listener did not exhaust its default retry"
+      end
+    end
+
+    assert_equal 2, attempts
+    assert_equal [ [ error, { handled: false, source: "solid_cable.listener" } ] ], errors
+  end
+
+  test "unlimited retries recover and report once per outage" do
+    with_cable_config reconnect_attempts: "unlimited", reconnect_interval: "0.01.seconds" do
+      failures = 4
+      reports = Queue.new
+      original = SolidCable::Message.method(:broadcastable)
+
+      Rails.error.stub(:report, ->(error, **options) { reports << [ error, options ] }) do
+        SolidCable::Message.stub(:broadcastable, lambda { |channels, last_id|
+          if failures.positive?
+            failures -= 1
+            raise ActiveRecord::ConnectionNotEstablished, "database unavailable"
+          end
+          original.call(channels, last_id)
+        }) do
+          subscribe_as_queue("unlimited-reconnect-channel") do |queue|
+            @tx_adapter.broadcast("unlimited-reconnect-channel", "first recovery")
+            assert_equal "first recovery", next_message_in_queue(queue)
+            assert_equal 1, reports.size
+            assert_equal({ handled: true, source: "solid_cable.listener" }, reports.pop.last)
+
+            failures = 3
+            @tx_adapter.broadcast("unlimited-reconnect-channel", "second recovery")
+            assert_equal "second recovery", next_message_in_queue(queue)
+            assert_equal 1, reports.size
+            assert_equal({ handled: true, source: "solid_cable.listener" }, reports.pop.last)
+          end
+        end
+      end
+    end
+  end
+
+  test "shutdown interrupts a connection retry wait without reporting an error" do
+    [ [ 60 ], "unlimited" ].each do |attempts|
+      with_cable_config reconnect_attempts: attempts, reconnect_interval: "60.seconds" do
+        reports = []
+        entered_sleep = Queue.new
+        listener_class = Class.new(ActionCable::SubscriptionAdapter::SolidCable::Listener) do
+          define_method(:sleep) do |duration|
+            entered_sleep << duration
+            super(duration)
+          end
+        end
+
+        Rails.error.stub(:report, ->(error, **) { reports << error }) do
+          SolidCable::Message.stub(:broadcastable, ->(*) { raise ActiveRecord::ConnectionFailed }) do
+            listener = listener_class.new(@rx_adapter, @rx_adapter.send(:pubsub_executor))
+            begin
+              assert_equal 60, next_message_in_queue(entered_sleep)
+              Timeout.timeout(1) { listener.shutdown }
+              assert_not_predicate listener.send(:thread), :alive?
+              assert_equal(attempts == "unlimited" ? 1 : 0, reports.size)
+            ensure
+              listener.shutdown
+            end
+          end
+        end
+      end
+    end
+  end
+
+  test "recovery from an empty poll is logged outside polling silence" do
+    with_cable_config reconnect_attempts: "unlimited", reconnect_interval: "0.01.seconds" do
+      output = StringIO.new
+      logger = ActiveSupport::Logger.new(output)
+      recovered = Queue.new
+      polls = 0
+      listener_class = Class.new(ActionCable::SubscriptionAdapter::SolidCable::Listener) do
+        define_method(:broadcast_messages) do
+          polls += 1
+          raise ActiveRecord::ConnectionFailed if polls == 1
+        end
+
+        define_method(:sleep) do |duration|
+          recovered << true if polls > 1
+          super(duration)
+        end
+      end
+
+      Rails.error.stub(:report, ->(*) {}) do
+        with_active_record_logger(logger) do
+          @rx_adapter.stub(:logger, logger) do
+            listener = listener_class.new(@rx_adapter, @rx_adapter.send(:pubsub_executor))
+            begin
+              assert next_message_in_queue(recovered)
+              assert_equal 0, listener.send(:reconnect_attempt)
+              assert_includes output.string, "Solid Cable listener reconnected"
+            ensure
+              listener.shutdown
+            end
+          end
+        end
+      end
+    end
+  end
+
+  test "shutdown waits for the protected polling section after reconnecting" do
+    poll_started = Queue.new
+    finish_poll = Queue.new
+    polls = 0
+    listener_class = Class.new(ActionCable::SubscriptionAdapter::SolidCable::Listener) do
+      define_method(:broadcast_messages) do
+        polls += 1
+        raise ActiveRecord::ConnectionFailed if polls == 1
+
+        poll_started << true
+        finish_poll.pop
+      end
+    end
+
+    listener = listener_class.new(@rx_adapter, @rx_adapter.send(:pubsub_executor))
+    assert next_message_in_queue(poll_started)
+    shutdown_started = Queue.new
+    shutdown = Thread.new do
+      shutdown_started << true
+      listener.shutdown
+    end
+
+    assert next_message_in_queue(shutdown_started)
+    assert_nil shutdown.join(WAIT_WHEN_NOT_EXPECTING_EVENT), "Shutdown interrupted a protected poll after reconnecting"
+    finish_poll << true
+    assert shutdown.join(WAIT_WHEN_EXPECTING_EVENT), "Shutdown did not complete after the poll"
+  ensure
+    finish_poll << true
+    shutdown&.join(WAIT_WHEN_EXPECTING_EVENT)
+    listener&.shutdown
+  end
+
+  test "unlimited retries do not retry unrelated errors" do
+    with_cable_config reconnect_attempts: "unlimited" do
+      attempts = 0
+      reports = []
+      error = RuntimeError.new("unexpected listener failure")
+
+      Rails.error.stub(:report, ->(exception, **options) { reports << [ exception, options ] }) do
+        SolidCable::Message.stub(:broadcastable, ->(*) { attempts += 1; raise error }) do
+          listener = @rx_adapter.send(:listener)
+          assert listener.send(:thread).join(WAIT_WHEN_EXPECTING_EVENT)
+        end
+      end
+
+      assert_equal 1, attempts
+      assert_equal [ [ error, { handled: false, source: "solid_cable.listener" } ] ], reports
+    end
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",

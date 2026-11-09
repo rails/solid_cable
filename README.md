@@ -86,13 +86,36 @@ The options are:
 - `silence_polling` - whether to silence Active Record logs emitted when polling (Defaults to true)
 - `use_skip_locked` - whether to use `FOR UPDATE SKIP LOCKED` when performing trimming. This will be automatically detected in the future, and for now, you'd only need to set this to `false` if your database doesn't support it. For MySQL, that'd be versions < 8, and for PostgreSQL, versions < 9.5. If you use SQLite, this has no effect, as writes are sequential. (Defaults to true)
 - `trim_batch_size` - the batch size to use when deleting old records (default: `100`)
-- `reconnect_attempts` - Supports a number of connection attempts or an array of
-  durations to wait between attempts. (Defaults to 1 retry attempt)
+- `reconnect_attempts` - Supports a number of connection attempts, an array of
+  durations to wait between attempts, or `unlimited` to keep retrying connection
+  failures until shutdown. (Defaults to 1 retry attempt)
+- `reconnect_interval` - The positive, finite duration between unlimited retry
+  attempts. (Defaults to 5.seconds)
 - `inline_broadcasts` - write messages in the calling thread before `broadcast` returns, bypassing the batched writer. (Defaults to false)
 - `writer_batch_size` - maximum number of messages per batched write. Ignored when `inline_broadcasts` is true. (Defaults to 4)
 - `writer_batch_delay` - maximum time to collect messages for a batch once the writer starts collecting. Ignored when `inline_broadcasts` is true. (Defaults to 0.001.seconds)
 - `encrypt` - whether to encrypt message payloads with Active Record Encryption.
   (Defaults to false)
+
+### Recovering from database outages
+
+By default, the listener retries a connection failure once without waiting. Integer retry counts and arrays of delays remain finite: when exhausted, the listener stops and reports the error through the logger and `Rails.error`. Restart the application to start a new listener.
+
+To keep trying until the database recovers, configure:
+
+```yaml
+production:
+  adapter: solid_cable
+  connects_to:
+    database:
+      writing: cable
+  reconnect_attempts: unlimited
+  reconnect_interval: 5.seconds
+```
+
+Unlimited retries apply to connection failures, connection timeouts, and connections that cannot be established. The first failure in each outage is logged and reported through `Rails.error` as handled, with source `solid_cable.listener`. Further failures during the same outage are not reported repeatedly. A successful poll logs recovery and resets this reporting state, even when there are no messages to deliver. Configure an error subscriber to forward reports to your monitoring service.
+
+Normal shutdown interrupts the retry wait. Unrelated listener errors still stop the listener and are logged and reported as unhandled. This option only recovers the listener; it does not retry failed broadcast writes or guarantee delivery to browsers.
 
 ### Enabling encryption
 

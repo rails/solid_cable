@@ -63,6 +63,32 @@ class SolidCableTest < ActiveSupport::TestCase
     end
   end
 
+  test "reconnect_attempts accepts unlimited from YAML or Ruby" do
+    [ "unlimited", :unlimited ].each do |attempts|
+      with_cable_config reconnect_attempts: attempts do
+        assert_equal :unlimited, SolidCable.reconnect_attempts
+      end
+    end
+  end
+
+  test "unlimited reconnection interval defaults to five seconds" do
+    assert_equal 5, SolidCable::Configuration.new.reconnect_interval
+  end
+
+  test "unlimited reconnection interval is configurable" do
+    with_cable_config reconnect_interval: "0.5.seconds" do
+      assert_equal 0.5, SolidCable.reconnect_interval
+    end
+  end
+
+  test "unlimited reconnection interval must be positive and finite" do
+    [ "0.seconds", "-1.second", "1e309.seconds" ].each do |interval|
+      with_cable_config reconnect_interval: interval do
+        assert_raises(ArgumentError) { SolidCable.reconnect_interval }
+      end
+    end
+  end
+
   test "encryption is disabled by default" do
     configuration = SolidCable::Configuration.new
 

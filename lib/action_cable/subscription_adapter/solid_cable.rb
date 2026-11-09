@@ -96,9 +96,18 @@ module ActionCable
               Thread.current.report_on_exception = true
 
               begin
-                listen
-              rescue *CONNECTION_ERRORS
-                retry if retry_connecting?
+                begin
+                  listen
+                rescue *CONNECTION_ERRORS => error
+                  report_error(error, handled: true) if unlimited_reconnects? && reconnect_attempt.zero?
+                  retry if retry_connecting?
+                  raise
+                end
+              rescue Stop
+              rescue StandardError => error
+                report_error(error, handled: false)
+              ensure
+                @critical.release
               end
             end
           end
@@ -108,15 +117,14 @@ module ActionCable
               begin
                 instance = interruptible { Rails.application.executor.run! }
                 with_polling_volume { broadcast_messages }
+                logger.info("Solid Cable listener reconnected") if unlimited_reconnects? && reconnect_attempt.positive?
+                self.reconnect_attempt = 0
               ensure
                 instance.complete! if instance
               end
 
               interruptible { sleep ::SolidCable.polling_interval }
             end
-          rescue Stop
-          ensure
-            @critical.release
           end
 
           def interruptible
@@ -174,8 +182,6 @@ module ActionCable
                   broadcast(message) if should_broadcast_message
                   self.last_id = message.id
                 end
-
-              self.reconnect_attempt = 0
             end
 
             def broadcast(message)
@@ -194,14 +200,23 @@ module ActionCable
               @reconnect_attempts ||= ::SolidCable.reconnect_attempts
             end
 
+            def unlimited_reconnects?
+              reconnect_attempts == :unlimited
+            end
+
+            def report_error(error, handled:)
+              logger.error("Solid Cable listener error: #{error.full_message}")
+              Rails.error.report(error, handled: handled, source: "solid_cable.listener")
+            end
+
             def retry_connecting?
               self.reconnect_attempt += 1
 
-              return false if reconnect_attempt > reconnect_attempts.size
+              return false unless unlimited_reconnects? || reconnect_attempt <= reconnect_attempts.size
 
-              sleep_t = reconnect_attempts[reconnect_attempt - 1]
+              sleep_t = unlimited_reconnects? ? ::SolidCable.reconnect_interval : reconnect_attempts[reconnect_attempt - 1]
 
-              sleep(sleep_t) if sleep_t > 0
+              interruptible { sleep(sleep_t) } if sleep_t > 0
 
               true
             end
