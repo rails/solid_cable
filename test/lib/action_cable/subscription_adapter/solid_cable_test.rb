@@ -310,6 +310,31 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "broadcasts from a forked process are written after the parent has broadcast" do
+    @tx_adapter.broadcast("channel", "from parent")
+    wait_for_messages("from parent")
+
+    reader, writer = IO.pipe
+    pid = fork do
+      reader.close
+      written = Queue.new
+
+      SolidCable::Message.stub(:broadcast_batch, ->(batch) { written << batch.map(&:payload) }) do
+        @tx_adapter.broadcast("channel", "from child")
+        writer.write(written.pop(timeout: WAIT_WHEN_EXPECTING_EVENT).inspect)
+      end
+    ensure
+      writer.close
+      exit!(0)
+    end
+    writer.close
+
+    assert_equal [ "from child" ].inspect, reader.read
+  ensure
+    reader&.close
+    Process.wait(pid) if pid
+  end
+
   private
     def cable_config
       { adapter: "solid_cable", message_retention: "1.second",
