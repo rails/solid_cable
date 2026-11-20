@@ -126,6 +126,31 @@ class SolidCable::BatchedBroadcasterTest < ActiveSupport::TestCase
     assert_instance_of ActiveRecord::StatementTimeout, reported_errors.pop
   end
 
+  test "writes a batch again after a busy SQLite database on Rails 7.2" do
+    @broadcaster = SolidCable::BatchedBroadcaster.new(batch_size: 1, batch_delay: 0, retry_delays: [ 0 ])
+    written = Queue.new
+    attempts = 0
+
+    SolidCable::Message.stub(:broadcast_batch, ->(batch) {
+      attempts += 1
+      if attempts == 1
+        begin
+          raise SQLite3::BusyException, "database is locked"
+        rescue SQLite3::BusyException
+          raise ActiveRecord::StatementInvalid, "SQLite3::BusyException: database is locked"
+        end
+      end
+
+      written << batch.map(&:payload)
+    }) do
+      @broadcaster.broadcast("channel", "payload")
+      @broadcaster.shutdown
+    end
+
+    assert_equal 2, attempts
+    assert_equal [ "payload" ], written.pop
+  end
+
   test "does not write a batch again after other errors" do
     @broadcaster = SolidCable::BatchedBroadcaster.new(batch_size: 1, batch_delay: 0, retry_delays: [ 0 ])
     attempts = 0

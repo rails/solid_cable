@@ -102,13 +102,19 @@ module SolidCable
 
         begin
           SolidCable::Message.broadcast_batch(batch)
-        rescue *RETRYABLE_ERRORS
-          raise unless attempt < retry_delays.size
+        rescue *RETRYABLE_ERRORS, ActiveRecord::StatementInvalid => error
+          raise unless retryable?(error) && attempt < retry_delays.size
 
           sleep retry_delays[attempt]
           attempt += 1
           retry
         end
+      end
+
+      def retryable?(error)
+        # Rails 7.2 raises a busy SQLite database as a plain StatementInvalid.
+        RETRYABLE_ERRORS.any? { |klass| error.is_a?(klass) } ||
+          (defined?(::SQLite3::BusyException) && error.cause.is_a?(::SQLite3::BusyException))
       end
 
       def async(&block)
