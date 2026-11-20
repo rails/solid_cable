@@ -9,9 +9,22 @@ module SolidCable
     Stopped = Class.new(StandardError)
     Message = Struct.new(:channel, :payload, keyword_init: true)
 
-    def initialize(batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay)
+    # The database refused the insert before writing it (a busy SQLite file,
+    # a lock or statement timeout, a deadlock, no connection available), so
+    # writing the batch again cannot duplicate it.
+    RETRYABLE_ERRORS = [
+      ActiveRecord::StatementTimeout,
+      ActiveRecord::QueryCanceled,
+      ActiveRecord::LockWaitTimeout,
+      ActiveRecord::Deadlocked,
+      ActiveRecord::ConnectionTimeoutError
+    ]
+    RETRY_DELAYS = [ 0.1, 0.2, 0.4, 0.8, 1.6 ]
+
+    def initialize(batch_size: SolidCable.writer_batch_size, batch_delay: SolidCable.writer_batch_delay, retry_delays: RETRY_DELAYS)
       @batch_size = batch_size
       @batch_delay = batch_delay
+      @retry_delays = retry_delays
       @queue = Queue.new
       @background = Concurrent::FixedThreadPool.new(1, max_queue: 100, fallback_policy: :discard)
 
@@ -38,7 +51,7 @@ module SolidCable
     end
 
     private
-      attr_reader :batch_size, :batch_delay, :queue, :thread, :background
+      attr_reader :batch_size, :batch_delay, :retry_delays, :queue, :thread, :background
 
       def listen_for_initial_messages
         loop do
@@ -77,11 +90,25 @@ module SolidCable
 
       def flush(batch)
         Rails.application.executor.wrap do
-          SolidCable::Message.broadcast_batch(batch)
+          write(batch)
           track_writes(batch.size) if SolidCable.autotrim?
         end
       rescue StandardError => error
         Rails.error.report(error)
+      end
+
+      def write(batch)
+        attempt = 0
+
+        begin
+          SolidCable::Message.broadcast_batch(batch)
+        rescue *RETRYABLE_ERRORS
+          raise unless attempt < retry_delays.size
+
+          sleep retry_delays[attempt]
+          attempt += 1
+          retry
+        end
       end
 
       def async(&block)
