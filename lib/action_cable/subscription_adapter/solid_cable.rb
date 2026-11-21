@@ -42,7 +42,7 @@ module ActionCable
       end
 
       def shutdown
-        @broadcaster&.shutdown
+        @broadcaster&.shutdown(wait: false)
         @listener&.shutdown
       end
 
