@@ -22,6 +22,7 @@ module ActionCable
 
         @listener = nil
         @broadcaster = nil
+        @broadcaster_pid = nil
       end
 
       def broadcast(channel, payload)
@@ -53,10 +54,19 @@ module ActionCable
           end
         end
 
+        # The writer thread does not survive a fork, so a forked process
+        # (a Puma worker, a Solid Queue process) starts its own broadcaster.
         def broadcaster
-          @broadcaster || @mutex.synchronize do
-            @broadcaster ||= ::SolidCable::BatchedBroadcaster.new
+          return @broadcaster if @broadcaster_pid == Process.pid
+
+          @mutex.synchronize do
+            if @broadcaster_pid != Process.pid
+              @broadcaster = ::SolidCable::BatchedBroadcaster.new
+              @broadcaster_pid = Process.pid
+            end
           end
+
+          @broadcaster
         end
 
         def pubsub_executor
