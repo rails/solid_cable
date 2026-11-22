@@ -60,7 +60,7 @@ module ActionCable
           return @broadcaster if @broadcaster_pid == Process.pid
 
           @mutex.synchronize do
-            unless @broadcaster_pid == Process.pid
+            if @broadcaster_pid != Process.pid
               @broadcaster = ::SolidCable::BatchedBroadcaster.new
               @broadcaster_pid = Process.pid
             end
