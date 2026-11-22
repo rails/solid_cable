@@ -4,6 +4,7 @@ require "solid_cable/version"
 require "solid_cable/engine"
 require "solid_cable/configuration"
 require "solid_cable/trimming"
+require "solid_cable/retrying"
 require "solid_cable/batched_broadcaster"
 require "action_cable/subscription_adapter/solid_cable"
 

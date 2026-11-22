@@ -69,6 +69,8 @@ module ActionCable
         end
 
         class Listener < ::ActionCable::SubscriptionAdapter::SubscriberMap
+          include ::SolidCable::Retrying
+
           CONNECTION_ERRORS = [
             ActiveRecord::ConnectionFailed,
             ActiveRecord::ConnectionTimeoutError,
@@ -98,7 +100,8 @@ module ActionCable
               begin
                 listen
               rescue *CONNECTION_ERRORS
-                retry if retry_connecting?
+                self.reconnect_attempt += 1
+                retry if retry_attempt?(reconnect_attempt, reconnect_attempts)
               end
             end
           end
@@ -192,18 +195,6 @@ module ActionCable
 
             def reconnect_attempts
               @reconnect_attempts ||= ::SolidCable.reconnect_attempts
-            end
-
-            def retry_connecting?
-              self.reconnect_attempt += 1
-
-              return false if reconnect_attempt > reconnect_attempts.size
-
-              sleep_t = reconnect_attempts[reconnect_attempt - 1]
-
-              sleep(sleep_t) if sleep_t > 0
-
-              true
             end
         end
     end

@@ -5,6 +5,7 @@ require "concurrent"
 module SolidCable
   class BatchedBroadcaster
     include Trimming
+    include Retrying
 
     Stopped = Class.new(StandardError)
     Message = Struct.new(:channel, :payload, keyword_init: true)
@@ -103,10 +104,9 @@ module SolidCable
         begin
           SolidCable::Message.broadcast_batch(batch)
         rescue *RETRYABLE_ERRORS, ActiveRecord::StatementInvalid => error
-          raise unless retryable?(error) && attempt < retry_delays.size
-
-          sleep retry_delays[attempt]
           attempt += 1
+          raise unless retryable?(error) && retry_attempt?(attempt, retry_delays)
+
           retry
         end
       end
