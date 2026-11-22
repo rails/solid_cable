@@ -19,6 +19,7 @@ module SolidCable
         Thread.current.name = "solid_cable_writer"
         Thread.current.abort_on_exception = true
         listen_for_initial_messages
+        background.shutdown
       end
     end
 
@@ -30,10 +31,14 @@ module SolidCable
       raise Stopped, "Solid Cable writer has stopped"
     end
 
-    def shutdown
+    # With wait: false the writer still writes what was accepted, without
+    # anyone waiting for it: a code reload restarts Action Cable while holding
+    # the lock the writer needs.
+    def shutdown(wait: true)
       queue.close
+      return unless wait
+
       thread.join
-      background.shutdown
       background.wait_for_termination
     end
 

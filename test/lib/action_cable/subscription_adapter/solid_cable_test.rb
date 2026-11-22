@@ -102,6 +102,18 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
     end
   end
 
+  test "shutdown during a code reload does not wait for the batched writer" do
+    with_reloading_executor do
+      # What the reloader holds when before_class_unload restarts Action Cable
+      ActiveSupport::Dependencies.interlock.unloading do
+        @tx_adapter.broadcast("channel", "accepted before the reload")
+        Timeout.timeout(2) { @tx_adapter.shutdown }
+      end
+    end
+
+    wait_for_messages("accepted before the reload")
+  end
+
   test "reads existing unencrypted payloads" do
     skip "Encrypted binary columns are unsupported on PostgreSQL with Rails 7" unless SolidCable.encrypt?
 
@@ -349,5 +361,12 @@ class ActionCable::SubscriptionAdapter::SolidCableTest < ActionCable::TestCase
       Timeout.timeout(5, nil, "Failed to persist broadcasts") do
         sleep 0.001 until SolidCable::Message.order(id: :desc).limit(payloads.size).pluck(:payload).sort == payloads.sort
       end
+    end
+
+    # Development registers this hook (config.enable_reloading); the test app does not.
+    def with_reloading_executor(&block)
+      executor = Class.new(ActiveSupport::Executor)
+      executor.register_hook(Rails::Application::Finisher::InterlockHook, outer: true)
+      Rails.application.stub(:executor, executor, &block)
     end
 end
