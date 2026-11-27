@@ -127,6 +127,13 @@ Active Record Encryption does not support encrypted binary columns on PostgreSQL
 with Rails 7. Solid Cable raises during boot for that unsupported combination.
 
 
+## Testing
+
+Testing a database write from `ActionCable.server.broadcast` requires the test
+environment to use `solid_cable` and the `solid_cable_messages` table. Also note
+that `ActionCable::TestHelper` can replace the global pubsub with its in-memory
+test adapter; when that happens, the broadcast never reaches Solid Cable.
+
 ## Trimming
 
 Messages are autotrimmed based upon the `message_retention` setting to determine how long messages are to be kept around. If no `message_retention` is given or parsing fails, it defaults to `1.day`. For every message written, Solid Cable attempts to trim twice as many expired messages, so the table settles at roughly `broadcast rate × message_retention` rows. If you broadcast many times per second, lowering `message_retention` matters more than tuning the trim batch size.
