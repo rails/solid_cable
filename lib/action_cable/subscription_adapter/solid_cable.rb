@@ -117,7 +117,7 @@ module ActionCable
             loop do
               begin
                 instance = interruptible { Rails.application.executor.run! }
-                with_polling_volume { broadcast_messages }
+                with_polling_volume { ::SolidCable::Message.uncached { broadcast_messages } }
               ensure
                 instance.complete! if instance
               end
